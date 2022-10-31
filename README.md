@@ -12,6 +12,9 @@ Use any web browser as GUI, with V, and HTML/JS/TS/CSS in the frontend.
 - Use private browser profile for safety
 - Customized app mode look & feel
 
+## Installation
+
+Run ```v install malisipi.VWebUI``` or ```v install https://github.com/malisipi/vwebui```
 
 ## Supported Browser
 
