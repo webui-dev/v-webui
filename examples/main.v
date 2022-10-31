@@ -53,12 +53,12 @@ mut my_window := webui.new_window()
 
 // UI HTML
 my_html := "<!DOCTYPE html>\
-<html><head><title>WebUI 2 - C99 Example</title>\
+<html><head><title>WebUI 2 - V Example</title>\
 <style>body{color: white; background: #0F2027;\
 background: -webkit-linear-gradient(to right, #2C5364, #203A43, #0F2027);\
 background: linear-gradient(to right, #2C5364, #203A43, #0F2027);\
 text-align:center; font-size: 18px; font-family: sans-serif;}</style></head><body>\
-<h1>WebUI 2 - C99 Example</h1><br>\
+<h1>WebUI 2 - V Example</h1><br>\
 <input type=\"password\" id=\"MyInput\"><br><br>\
 <button id=\"MyButton1\">Check Password</button> - <button id=\"MyButton2\">Exit</button>\
 </body></html>"
