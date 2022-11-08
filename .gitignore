@@ -1,0 +1,34 @@
+# Build
+*.exe
+*.dll
+*.so
+*.dylib
+*.a
+*.ilk
+*.pdb
+*.lib
+*.exp
+*.res
+*.out
+*.o
+*.def
+*.obj
+
+# IDE
+.idea/
+.vscode/
+.vs/
+Debug/
+Release/
+
+# Python
+__pycache__/
+dist/
+webui2.egg-info/
+
+# Rust
+target/
+*.lock
+
+# Broken NTFS
+nul

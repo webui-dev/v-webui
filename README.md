@@ -6,11 +6,12 @@ Use any web browser as GUI, with V, and HTML/JS/TS/CSS in the frontend.
 
 ## Features
 
-- Lightweight and small memory footprint
-- Fast binary communication (*App--WebUI--Browser*)
-- Multiplatform & Multi Browser
-- Use private browser profile for safety
-- Customized app mode look & feel
+- Fully Independent (*No need for any third-party library*)
+- Lightweight (*~900 Kb*) & Small memory footprint
+- Fast WS binary communication (*App--WebUI--Browser*)
+- One header file
+- Multi-platform & Multi-Browser
+- Using private profile for safety
 
 ## Installation
 
