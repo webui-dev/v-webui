@@ -52,7 +52,7 @@ fn close_the_application(e &webui.Event) {
 mut my_window := webui.new_window()
 
 // UI HTML
-my_html = ('
+my_html := ('
     <!DOCTYPE html>
     <html><head><title>WebUI 2 - V Example</title>
     <style>body{color: white; background: #0F2027;
