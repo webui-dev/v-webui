@@ -12,7 +12,7 @@ fn check_the_password(e &webui.Event_t) { // Check the password function
     mut js := webui.Script_t {timeout: 3} // This function get called every time the user click on "MyButton1"
     js.set_script("return document.getElementById(\"MyInput\").value;")
 
-    e.window.script(&js) // Check if there is any JavaScript error
+    e.window.script(&js)
     
     if js.result.error { // Check if there is any JavaScript error
         println("JavaScript Error:\n"+js.result.get())
