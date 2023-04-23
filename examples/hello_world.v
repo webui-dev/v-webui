@@ -9,27 +9,14 @@
 import malisipi.vwebui as webui
 
 fn check_the_password(e &webui.Event_t) { // Check the password function
-    mut js := webui.Script_t {timeout: 3} // This function get called every time the user click on "MyButton1"
-    js.set_script("return document.getElementById(\"MyInput\").value;")
-
-    e.window.script(&js)
-    
-    if js.result.error { // Check if there is any JavaScript error
-        println("JavaScript Error:\n"+js.result.get())
-        return
-    }
-
-    password := js.result.get() // Get the password
+    password := e.window.script("return document.getElementById(\"MyInput\").value;", 0, 4096)
     println("Password: "+password)
     
     if password == "123456" { // Check the password
-        js.set_script("alert('Good. Password is correct.')") // Correct password
+        e.window.script("alert('Good. Password is correct.');", 0, 0) // Correct password
     } else {
-        js.set_script("alert('Sorry. Wrong password.')") // Wrong password
+        e.window.script("alert('Sorry. Wrong password.');", 0, 0) // Wrong password
     }
-    e.window.script(&js)
-    
-    js.cleanup() // Free data resources
 }
 
 fn close_the_application(e &webui.Event_t) { // Close all opened windows
