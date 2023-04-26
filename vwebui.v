@@ -171,3 +171,7 @@ pub fn exit() {
 pub fn (window Window_t) bind (button_id string, funct Webui_function) {
 	C.webui_bind(window, button_id.str, funct)
 }
+
+pub fn set_timeout(timeout int){
+	C.webui_set_timeout(timeout)
+}
