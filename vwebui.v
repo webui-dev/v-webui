@@ -1,11 +1,21 @@
+/*
+  V-WebUI 2.2.0
+  https://github.com/malisipi/vwebui
+  Copyright (c) 2023 Mehmet Ali.
+  Licensed under GNU General Public License v2.0.
+  All rights reserved.
+*/
+
 module vwebui
 
+// WebUI Core
+
 #include "@VMODROOT/webui/mongoose.h"
-#flag @VMODROOT/webui/mongoose.c
 #include "@VMODROOT/webui/webui.h"
+#include "@VMODROOT/webui/webui_core.h"
+#flag @VMODROOT/webui/mongoose.c
 #flag @VMODROOT/webui/webui.c
-#flag windows -lws2_32
-#flag windows -luser32
+#flag windows -lws2_32 -lAdvapi32 -luser32 -DWEBUI_NO_TLHELPER32
 
 // Consts
 
@@ -28,150 +38,121 @@ pub const (
 	browser_vivaldi = 8
 	browser_epic = 9
 	browser_yandex = 10
+	runtime_none = 0
+	runtime_deno = 1
+	runtime_nodejs = 2
 )
 
 // Typedefs of struct
 
-pub type Window_t = voidptr
-pub type Webui_function = fn(details &C.webui_event_t)
-pub type Event_t = C.webui_event_t
-
-// C Functions & Typedefs
-
+pub type WebuiWindow = voidptr
 pub struct C.webui_event_t {
-pub mut:
-	window_id    u32
-	element_id   u32
-	element_name &char
-	window       Window_t
-	data         voidptr
-	response     voidptr
-	@type        int // It's not my fault. `type` is a keyword of V.
+	pub mut:
+	window		WebuiWindow // Pointer to the window object
+	event_type	u32 // Event type :)
+	element		&char // HTML element ID
+	data		&char // JavaScript data
+	response	&char // Callback response
 }
+pub type WebuiEvent = C.webui_event_t
+pub type WebuiFunction = fn(e &WebuiEvent)
 
-pub struct C.webui_javascript_result_t {
-pub mut:
-	error  bool
-	length u32
-	data   &char
-}
+// C Functions
 
-fn C.webui_new_window() Window_t
-
-fn C.webui_bind(win Window_t, element &char, func fn (&C.webui_event_t)) u32
-
-fn C.webui_show(win Window_t, content &char) bool
-
-fn C.webui_show_browser(win Window_t, url &char, browser u32) bool
-
+fn C.webui_new_window() WebuiWindow
+fn C.webui_bind(win WebuiWindow, element &char, func fn (&WebuiEvent)) u32
+fn C.webui_show(win WebuiWindow, content &char) bool
+fn C.webui_show_browser(win WebuiWindow, content &char, browser u32) bool
 fn C.webui_wait()
-
-fn C.webui_close(win Window_t)
-
+fn C.webui_close(win WebuiWindow)
 fn C.webui_exit()
-
-fn C.webui_is_shown(win Window_t) bool
-
+fn C.webui_is_shown(win WebuiWindow) bool
 fn C.webui_set_timeout(second u32)
-
-fn C.webui_set_icon(win Window_t, icon_s &char, type_s &char)
-
-fn C.webui_multi_access(win Window_t, status bool)
-
-// ? fn C.webui_run(win Window_t, script &char)
-
-fn C.webui_script(win Window_t, script &char, timeout int, buffer &char, size_buffer int)
-
-// fn C.webui_set_runtime(win Window_t, script &char)
-
-fn C.webui_get_int(e &C.webui_event_t) i64
-
-fn C.webui_get_string(e &C.webui_event_t) &char
-
-fn C.webui_get_bool(e &C.webui_event_t) bool
-
-fn C.webui_return_int(e &C.webui_event_t, n i64)
-
-fn C.webui_return_string(e &C.webui_event_t, s &char)
-
-fn C.webui_return_bool(e &C.webui_event_t, b bool)
-
-fn C.webui_bind_interface(win Window_t, element &char, func fn (u32, u32, &char, Window_t, &char, &&char)) u32
-
-// ? fn C.webui_interface_set_response(ptr &char, response &char)
-
-fn C.webui_is_app_running() bool
-
-fn C.webui_interface_get_window_id(win Window_t) u32
+fn C.webui_set_icon(win WebuiWindow, icon &char, icon_type &char)
+fn C.webui_multi_access(win WebuiWindow, status bool)
+fn C.webui_run(win WebuiWindow, script &char)
+fn C.webui_script(win WebuiWindow, script &char, timeout u32, buffer &char, size_buffer u32)
+fn C.webui_set_runtime(win WebuiWindow, runtime u32)
+fn C.webui_get_int(e &WebuiEvent) i64
+fn C.webui_get_string(e &WebuiEvent) &char
+fn C.webui_get_bool(e &WebuiEvent) bool
+fn C.webui_return_int(e &WebuiEvent, n i64)
+fn C.webui_return_string(e &WebuiEvent, s &char)
+fn C.webui_return_bool(e &WebuiEvent, b bool)
+fn C.webui_interface_is_app_running() bool
+fn C.webui_interface_get_window_id(win WebuiWindow) u32
 
 // V Interface
 
-pub fn (window Window_t) script (javascript string, timeout int, size_buffer int) string {
+pub fn (window WebuiWindow) script (javascript string, timeout u32, size_buffer int) string {
 	response := &char(" ".repeat(size_buffer).str)
     C.webui_script(window, &char(javascript.str), timeout, response, size_buffer)
 	return unsafe { response.vstring() }
 }
 
+// Get
 struct WebuiResponseData {
 pub mut:
 	string	string
-	int		int
+	u32		u32
 	bool	bool
 }
-
-pub fn (event &C.webui_event_t) get () WebuiResponseData {
-    str := unsafe { C.webui_get_string(event).vstring() }
+pub fn (e &WebuiEvent) get () WebuiResponseData {
+    str := unsafe { C.webui_get_string(e).vstring() }
     return WebuiResponseData {
         string: str
-        int: str.int()
+        u32: str.u32()
         bool: str == "true"
     }
 }
 
-type WebuiResponseReturn = int | string | bool
-
-pub fn (event &C.webui_event_t) @return (response WebuiResponseReturn) {
+// Return
+type WebuiResponseReturn = u32 | string | bool
+pub fn (e &WebuiEvent) @return (response WebuiResponseReturn) {
     match response {
         string {
-            C.webui_return_string(event, &char(response.str))
+            C.webui_return_string(e, &char(response.str))
     	}
-        int {
-            C.webui_return_int(event, response)
+        u32 {
+            C.webui_return_int(e, i64(response))
     	}
         bool {
-            C.webui_return_bool(event, int(response))
+            C.webui_return_bool(e, int(response))
     	}
     }
 }
 
-pub fn new_window() Window_t {
+// Create a new webui window object.
+pub fn new_window() WebuiWindow {
 	return C.webui_new_window()
 }
 
+// Wait until all opened windows get closed.
 pub fn wait() {
 	C.webui_wait()
 }
 
-pub fn (window Window_t) show (html_code string) bool {
-	return C.webui_show(window, html_code.str)
+// Show a window using a embedded HTML, or a file. If the window is already opened then it will be refreshed.
+pub fn (window WebuiWindow) show (content string) bool {
+	return C.webui_show(window, content.str)
 }
 
-pub fn (window Window_t) close () {
+// Close a specific window.
+pub fn (window WebuiWindow) close () {
 	C.webui_close(window)
 }
 
-pub fn (window Window_t) open (html_code string, browser int) bool {
-	return C.webui_show_browser(window, html_code.str, browser)
-}
-
+// Close all opened windows. webui_wait() will break.
 pub fn exit() {
 	C.webui_exit()
 }
 
-pub fn (window Window_t) bind (button_id string, funct Webui_function) {
-	C.webui_bind(window, button_id.str, funct)
+// Bind a specific html element click event with a function. Empty element means all events.
+pub fn (window WebuiWindow) bind (element string, func WebuiFunction) {
+	C.webui_bind(window, element.str, func)
 }
 
-pub fn set_timeout(timeout int){
+// Set the maximum time in seconds to wait for browser to start
+pub fn set_timeout(timeout u32){
 	C.webui_set_timeout(timeout)
 }
