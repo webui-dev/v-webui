@@ -1,5 +1,5 @@
 // v install https://github.com/malisipi/vwebui
-import vwebui as webui
+import malisipi.vwebui as webui
 
 fn check_the_password(e &webui.Event) { // Check the password function
     password := e.window.script("return document.getElementById(\"MyInput\").value;", 0, 4096)

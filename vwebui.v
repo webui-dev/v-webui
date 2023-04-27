@@ -15,9 +15,14 @@ module vwebui
 #include "@VMODROOT/webui/webui_core.h"
 #flag @VMODROOT/webui/mongoose.c
 #flag @VMODROOT/webui/webui.c
-#flag windows -m64 -DUNICODE -Dstrtoll=_strtoi64 -Dstrtoull=_strtoui64 -lws2_32 -lAdvapi32 -luser32 -DWEBUI_NO_TLHELPER32
+#flag windows -Dstrtoll=_strtoi64 -Dstrtoull=_strtoui64 -lws2_32 -lAdvapi32 -luser32
+$if tinyc {
+	#flag windows -DWEBUI_NO_TLHELPER32
+}
 // Debug
-#flag windows -DWEBUI_LOG
+$if webui_log? {
+	#flag -DWEBUI_LOG
+}
 
 // Consts
 

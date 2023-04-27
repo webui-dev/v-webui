@@ -1,5 +1,5 @@
 // v install https://github.com/malisipi/vwebui
-import vwebui as webui
+import malisipi.vwebui as webui
 
 fn my_function_count(e &webui.Event) {
   count := e.window.script("return count;", 0, 48)

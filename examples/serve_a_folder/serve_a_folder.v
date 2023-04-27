@@ -1,5 +1,5 @@
 // v install https://github.com/malisipi/vwebui
-import vwebui as webui
+import malisipi.vwebui as webui
 
 fn events(e &webui.Event) { // Close all opened windows
     // This function gets called every time
