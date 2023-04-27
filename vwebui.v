@@ -17,7 +17,7 @@ module vwebui
 #flag @VMODROOT/webui/webui.c
 #flag windows -m64 -DUNICODE -Dstrtoll=_strtoi64 -Dstrtoull=_strtoui64 -lws2_32 -lAdvapi32 -luser32 -DWEBUI_NO_TLHELPER32
 // Debug
-#flag windows -DWEBUI_LOG
+// #flag windows -DWEBUI_LOG
 
 // Consts
 
