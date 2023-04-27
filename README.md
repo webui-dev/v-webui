@@ -1,15 +1,14 @@
 # V-WebUI
 
-Use any web browser as GUI, with V, and HTML/JS/TS/CSS in the frontend.
+Use any web browser as GUI, with V in the backend and HTML5 in the frontend, all in a lightweight portable lib.
 
 ![ScreenShot](screenshot.png)
 
 ## Features
 
-- Fully Independent (*No need for any third-party library*)
+- Fully Independent (*No need for any third-party runtimes*)
 - Lightweight (*~900 Kb*) & Small memory footprint
-- Fast WS binary communication (*App--WebUI--Browser*)
-- One header file
+- Fast binary communication protocol between WebUI and the browser (*Instead of JSON*)
 - Multi-platform & Multi-Browser
 - Using private profile for safety
 
@@ -17,22 +16,44 @@ Use any web browser as GUI, with V, and HTML/JS/TS/CSS in the frontend.
 
 Run ```v install malisipi.VWebUI``` or ```v install https://github.com/malisipi/vwebui```
 
-## Supported Browser
+## Supported Web Browsers
 
 | OS | Browser | Status |
 | ------ | ------ | ------ |
-| Windows | Firefox | ✔️ |
-| Windows | Chrome | ✔️ |
-| Windows | Edge | ✔️ |
-| Linux | Firefox | ✔️ |
-| Linux | Chrome | ✔️ |
-| macOS | Firefox | *coming soon* |
-| macOS | Chrome | *coming soon* |
-| macOS | Safari | *coming soon* |
+| Windows | Mozilla Firefox | ✔️ |
+| Windows | Google Chrome | ✔️ |
+| Windows | Microsoft Edge | ✔️ |
+| Windows | Chromium | ✔️ |
+| Windows | Yandex | ✔️ |
+| Windows | Brave | ✔️ |
+| Windows | Vivaldi | ✔️ |
+| Windows | Epic | ✔️ |
+| Windows | Opera | *coming soon* |
+| - | - | - |
+| Linux | Mozilla Firefox | ✔️ |
+| Linux | Google Chrome | ✔️ |
+| Linux | Microsoft Edge | ✔️ |
+| Linux | Chromium | ✔️ |
+| Linux | Yandex | ✔️ |
+| Linux | Brave | ✔️ |
+| Linux | Vivaldi | ✔️ |
+| Linux | Epic | *Does Not Exist* |
+| Linux | Opera | *coming soon* |
+| - | - | - |
+| macOS | Mozilla Firefox | *coming soon* |
+| macOS | Google Chrome | ✔️ |
+| macOS | Microsoft Edge | *coming soon* |
+| macOS | Chromium | *coming soon* |
+| macOS | Yandex | *coming soon* |
+| macOS | Brave | *coming soon* |
+| macOS | Vivaldi | *coming soon* |
+| macOS | Epic | *coming soon* |
+| macOS | Apple Safari | *coming soon* |
+| macOS | Opera | *coming soon* |
 
 ### License
 
-GNU General Public License v3.0
+> Licensed under GNU General Public License v2.0.
 
 ### Original Library
 

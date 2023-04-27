@@ -1,6 +1,7 @@
-import malisipi.vwebui as webui
+// v install https://github.com/malisipi/vwebui
+import vwebui as webui
 
-fn my_function_string(e &webui.Event_t) {
+fn my_function_string(e &webui.Event) {
     // JavaScript:
     // webui_fn('MyID_One', 'Hello');
 
@@ -13,7 +14,7 @@ fn my_function_string(e &webui.Event_t) {
     // you can send a JSON string from JavaScript then decode it.
 }
 
-fn my_function_integer(e &webui.Event_t) {
+fn my_function_integer(e &webui.Event) {
     // JavaScript:
     // webui_fn('MyID_Two', 123456789);
 
@@ -21,7 +22,7 @@ fn my_function_integer(e &webui.Event_t) {
     println("my_function_integer: ${response}") // 123456789
 }
 
-fn my_function_boolean(e &webui.Event_t) {
+fn my_function_boolean(e &webui.Event) {
     // JavaScript:
     // webui_fn('MyID_Three', true);
 
@@ -29,7 +30,7 @@ fn my_function_boolean(e &webui.Event_t) {
     println("my_function_boolean: ${response}") // true
 }
 
-fn my_function_with_response(e &webui.Event_t) {
+fn my_function_with_response(e &webui.Event) {
     // JavaScript:
     // const result = webui_fn('MyID_Four', number);
 
@@ -43,7 +44,7 @@ mut my_window := webui.new_window() // Create a window
 my_html := ('
 <html>
   <head>
-    <title>Call C from JavaScript Example</title>
+    <title>Call V from JavaScript Example</title>
     <style>
       body {
         color: white;
@@ -55,8 +56,8 @@ my_html := ('
     </style>
   </head>
   <body>
-    <h2>WebUI - Call C from JavaScript Example</h2>
-    <p>Call C function with argument (<em>See the logs in your terminal</em>)</p>
+    <h2>WebUI - Call V from JavaScript Example</h2>
+    <p>Call V function with argument (<em>See the logs in your terminal</em>)</p>
     <br>
     <button onclick="webui_fn(\'MyID_One\', \'Hello\');">Call my_function_string()</button>
     <br>
@@ -67,7 +68,7 @@ my_html := ('
     <button onclick="webui_fn(\'MyID_Three\', true);">Call my_function_boolean()</button>
     <br>
     <br>
-    <p>Call C function and wait for the response</p>
+    <p>Call V function and wait for the response</p>
     <br>
     <button onclick="MyJS();">Call my_function_with_response()</button>
     <br>

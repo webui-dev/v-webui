@@ -1,14 +1,7 @@
-/*
-    WebUI Library 2.x
-    V Example
-    Licensed under GNU General Public License v3.0.
-    Copyright (C)2022 Hassan DRAGA <https://github.com/hassandraga>.
-    Copyright (C)2022-2023 Mehmet Ali Şipi <https://github.com/malisipi>.
-*/
+// v install https://github.com/malisipi/vwebui
+import vwebui as webui
 
-import malisipi.vwebui as webui
-
-fn check_the_password(e &webui.Event_t) { // Check the password function
+fn check_the_password(e &webui.Event) { // Check the password function
     password := e.window.script("return document.getElementById(\"MyInput\").value;", 0, 4096)
     println("Password: "+password)
     
@@ -19,7 +12,7 @@ fn check_the_password(e &webui.Event_t) { // Check the password function
     }
 }
 
-fn close_the_application(e &webui.Event_t) { // Close all opened windows
+fn close_the_application(e &webui.Event) { // Close all opened windows
     webui.exit()
 }
 
