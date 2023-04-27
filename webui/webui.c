@@ -2228,7 +2228,7 @@ bool _webui_browser_exist(_webui_window_t* win, unsigned int browser) {
             char browser_folder[WEBUI_MAX_PATH];
 
             // Search in `HKEY_LOCAL_MACHINE` (If Google Chrome installed for multi-user)
-            if(_webui_get_windows_reg_value(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe", "Path", browser_folder)) {
+            if(_webui_get_windows_reg_value(HKEY_LOCAL_MACHINE, L"Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe", L"Path", browser_folder)) {
 
                 // Make sure its Google Chrome and not Chromium
                 if(_webui_is_google_chrome_folder(browser_folder)) {
@@ -2241,7 +2241,7 @@ bool _webui_browser_exist(_webui_window_t* win, unsigned int browser) {
             }
 
             // Search in `HKEY_CURRENT_USER` (If Google Chrome installed for one user)
-            if(_webui_get_windows_reg_value(HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe", "Path", browser_folder)) {
+            if(_webui_get_windows_reg_value(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe", L"Path", browser_folder)) {
 
                 // Make sure its Google Chrome and not Chromium
                 if(_webui_is_google_chrome_folder(browser_folder)) {
@@ -2300,7 +2300,7 @@ bool _webui_browser_exist(_webui_window_t* win, unsigned int browser) {
             char browser_fullpath[WEBUI_MAX_PATH];
 
             // Search in `HKEY_LOCAL_MACHINE` (If Edge installed for multi-user)
-            if(_webui_get_windows_reg_value(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\msedge.exe", "", browser_fullpath)) {
+            if(_webui_get_windows_reg_value(HKEY_LOCAL_MACHINE, L"Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\msedge.exe", L"", browser_fullpath)) {
 
                 // Make sure the browser executable file exist
                 if(_webui_file_exist(browser_fullpath)) {
@@ -2313,7 +2313,7 @@ bool _webui_browser_exist(_webui_window_t* win, unsigned int browser) {
             }
 
             // Search in `HKEY_CURRENT_USER` (If Edge installed for one user)
-            if(_webui_get_windows_reg_value(HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\msedge.exe", "", browser_fullpath)) {
+            if(_webui_get_windows_reg_value(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\msedge.exe", L"", browser_fullpath)) {
 
                 // Make sure the browser executable file exist
                 if(_webui_file_exist(browser_fullpath)) {
@@ -2366,7 +2366,7 @@ bool _webui_browser_exist(_webui_window_t* win, unsigned int browser) {
             char browser_fullpath[WEBUI_MAX_PATH];
 
             // Search in `HKEY_CURRENT_USER` (If Epic installed for one user)
-            if(_webui_get_windows_reg_value(HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\epic.exe", "", browser_fullpath)) {
+            if(_webui_get_windows_reg_value(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\epic.exe", L"", browser_fullpath)) {
 
                 // Make sure the browser executable file exist
                 if(_webui_file_exist(browser_fullpath)) {
@@ -2379,7 +2379,7 @@ bool _webui_browser_exist(_webui_window_t* win, unsigned int browser) {
             }
 
             // Search in `HKEY_LOCAL_MACHINE` (If Epic installed for multi-user)
-            if(_webui_get_windows_reg_value(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\epic.exe", "", browser_fullpath)) {
+            if(_webui_get_windows_reg_value(HKEY_LOCAL_MACHINE, L"Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\epic.exe", L"", browser_fullpath)) {
 
                 // Make sure the browser executable file exist
                 if(_webui_file_exist(browser_fullpath)) {
@@ -2431,7 +2431,7 @@ bool _webui_browser_exist(_webui_window_t* win, unsigned int browser) {
             char browser_fullpath[WEBUI_MAX_PATH];
 
             // Search in `HKEY_LOCAL_MACHINE` (If Vivaldi installed for multi-user)
-            if(_webui_get_windows_reg_value(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\vivaldi.exe", "", browser_fullpath)) {
+            if(_webui_get_windows_reg_value(HKEY_LOCAL_MACHINE, L"Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\vivaldi.exe", L"", browser_fullpath)) {
 
                 // Make sure the browser executable file exist
                 if(_webui_file_exist(browser_fullpath)) {
@@ -2444,7 +2444,7 @@ bool _webui_browser_exist(_webui_window_t* win, unsigned int browser) {
             }
 
             // Search in `HKEY_CURRENT_USER` (If Vivaldi installed for one user)
-            if(_webui_get_windows_reg_value(HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\vivaldi.exe", "", browser_fullpath)) {
+            if(_webui_get_windows_reg_value(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\vivaldi.exe", L"", browser_fullpath)) {
 
                 // Make sure the browser executable file exist
                 if(_webui_file_exist(browser_fullpath)) {
@@ -2496,7 +2496,7 @@ bool _webui_browser_exist(_webui_window_t* win, unsigned int browser) {
             char browser_fullpath[WEBUI_MAX_PATH];
 
             // Search in `HKEY_LOCAL_MACHINE` (If Brave installed for multi-user)
-            if(_webui_get_windows_reg_value(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\brave.exe", "", browser_fullpath)) {
+            if(_webui_get_windows_reg_value(HKEY_LOCAL_MACHINE, L"Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\brave.exe", L"", browser_fullpath)) {
 
                 // Make sure the browser executable file exist
                 if(_webui_file_exist(browser_fullpath)) {
@@ -2509,7 +2509,7 @@ bool _webui_browser_exist(_webui_window_t* win, unsigned int browser) {
             }
 
             // Search in `HKEY_CURRENT_USER` (If Brave installed for one user)
-            if(_webui_get_windows_reg_value(HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\brave.exe", "", browser_fullpath)) {
+            if(_webui_get_windows_reg_value(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\brave.exe", L"", browser_fullpath)) {
 
                 // Make sure the browser executable file exist
                 if(_webui_file_exist(browser_fullpath)) {
@@ -2561,7 +2561,7 @@ bool _webui_browser_exist(_webui_window_t* win, unsigned int browser) {
             char browser_fullpath[WEBUI_MAX_PATH];
 
             // Search in `HKEY_LOCAL_MACHINE` (If Firefox installed for multi-user)
-            if(_webui_get_windows_reg_value(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\firefox.exe", "", browser_fullpath)) {
+            if(_webui_get_windows_reg_value(HKEY_LOCAL_MACHINE, L"Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\firefox.exe", L"", browser_fullpath)) {
 
                 // Make sure the browser executable file exist
                 if(_webui_file_exist(browser_fullpath)) {
@@ -2574,7 +2574,7 @@ bool _webui_browser_exist(_webui_window_t* win, unsigned int browser) {
             }
 
             // Search in `HKEY_CURRENT_USER` (If Firefox installed for one user)
-            if(_webui_get_windows_reg_value(HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\firefox.exe", "", browser_fullpath)) {
+            if(_webui_get_windows_reg_value(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\firefox.exe", L"", browser_fullpath)) {
 
                 // Make sure the browser executable file exist
                 if(_webui_file_exist(browser_fullpath)) {
@@ -2629,7 +2629,7 @@ bool _webui_browser_exist(_webui_window_t* win, unsigned int browser) {
             char browser_fullpath[WEBUI_MAX_PATH];
 
             // Search in `HKEY_CURRENT_USER` (If Yandex installed for one user)
-            if(_webui_get_windows_reg_value(HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\browser.exe", "", browser_fullpath)) {
+            if(_webui_get_windows_reg_value(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\browser.exe", L"", browser_fullpath)) {
 
                 // Make sure the browser executable file exist
                 if(_webui_file_exist(browser_fullpath)) {
@@ -2642,7 +2642,7 @@ bool _webui_browser_exist(_webui_window_t* win, unsigned int browser) {
             }
 
             // Search in `HKEY_LOCAL_MACHINE` (If Yandex installed for multi-user)
-            if(_webui_get_windows_reg_value(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\browser.exe", "", browser_fullpath)) {
+            if(_webui_get_windows_reg_value(HKEY_LOCAL_MACHINE, L"Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\browser.exe", L"", browser_fullpath)) {
 
                 // Make sure the browser executable file exist
                 if(_webui_file_exist(browser_fullpath)) {
@@ -2694,7 +2694,7 @@ bool _webui_browser_exist(_webui_window_t* win, unsigned int browser) {
             char browser_folder[WEBUI_MAX_PATH];
 
             // Search in `HKEY_CURRENT_USER` (If Chromium installed for one user)
-            if(_webui_get_windows_reg_value(HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe", "Path", browser_folder)) {
+            if(_webui_get_windows_reg_value(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe", L"Path", browser_folder)) {
 
                 // Make sure its Chromium and not Google Chrome
                 if(!_webui_is_google_chrome_folder(browser_folder)) {
@@ -2707,7 +2707,7 @@ bool _webui_browser_exist(_webui_window_t* win, unsigned int browser) {
             }
 
             // Search in `HKEY_LOCAL_MACHINE` (If Chromium installed for multi-user)
-            if(_webui_get_windows_reg_value(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe", "Path", browser_folder)) {
+            if(_webui_get_windows_reg_value(HKEY_LOCAL_MACHINE, L"Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe", L"Path", browser_folder)) {
 
                 // Make sure its Chromium and not Google Chrome
                 if(!_webui_is_google_chrome_folder(browser_folder)) {
@@ -3239,24 +3239,26 @@ bool _webui_is_process_running(const char* process_name) {
 
     #ifdef _WIN32
         // Microsoft Windows
-        HANDLE hSnapshot;
-        PROCESSENTRY32 pe32;
-        hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-        if(hSnapshot == INVALID_HANDLE_VALUE)
-            return false;
-        pe32.dwSize = sizeof(PROCESSENTRY32);
-        if(!Process32First(hSnapshot, &pe32)) {
-            CloseHandle(hSnapshot);
-            return false;
-        }
-        do {
-            if (strcmp(pe32.szExeFile, process_name) == 0) {
-                isRunning = true;
-                break;
+        #ifndef WEBUI_NO_TLHELPER32
+            HANDLE hSnapshot;
+            PROCESSENTRY32 pe32;
+            hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+            if(hSnapshot == INVALID_HANDLE_VALUE)
+                return false;
+            pe32.dwSize = sizeof(PROCESSENTRY32);
+            if(!Process32First(hSnapshot, &pe32)) {
+                CloseHandle(hSnapshot);
+                return false;
             }
-        }
-        while (Process32Next(hSnapshot, &pe32));
-        CloseHandle(hSnapshot);
+            do {
+                if (strcmp(pe32.szExeFile, process_name) == 0) {
+                    isRunning = true;
+                    break;
+                }
+            }
+            while (Process32Next(hSnapshot, &pe32));
+            CloseHandle(hSnapshot);
+        #endif
     #elif __linux__
         // Linux
         DIR *dir;
@@ -4303,7 +4305,7 @@ WEBUI_CB
             return -1;
     }
 
-    bool _webui_get_windows_reg_value(HKEY key, const char* reg, const char* value_name, char value[WEBUI_MAX_PATH]) {
+    bool _webui_get_windows_reg_value(HKEY key, LPCWSTR reg, LPCWSTR value_name, char value[WEBUI_MAX_PATH]) {
 
         #ifdef WEBUI_LOG
             printf("[Core]\t\t_webui_get_windows_reg_value([%s])... \n", reg);
@@ -4311,13 +4313,20 @@ WEBUI_CB
 
         HKEY hKey;
 
-        if(RegOpenKeyEx(key, reg, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
+        if(RegOpenKeyExW(key, reg, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
 
-            DWORD valueSize = WEBUI_MAX_PATH;
-            // If `value_name` is empty then
-            // will read the "(default)" reg-key
-            if(RegQueryValueEx(hKey, value_name, NULL, NULL, (LPBYTE)value, &valueSize) == ERROR_SUCCESS) {
+            DWORD VALUE_TYPE;
+            BYTE VALUE_DATA[WEBUI_MAX_PATH];
+            DWORD VALUE_SIZE = sizeof(VALUE_DATA);
 
+            // If `value_name` is empty then it will read the "(default)" reg-key
+            if(RegQueryValueExW(hKey, value_name, NULL, &VALUE_TYPE, VALUE_DATA, &VALUE_SIZE) == ERROR_SUCCESS) {
+
+                if(VALUE_TYPE == REG_SZ)
+                    sprintf(value, "%S", (LPCWSTR)VALUE_DATA);
+                else if(VALUE_TYPE == REG_DWORD)
+                    sprintf(value, "%u", *((DWORD *)VALUE_DATA));
+                
                 RegCloseKey(hKey);
                 return true;
             }

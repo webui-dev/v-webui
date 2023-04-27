@@ -1,6 +1,7 @@
-import malisipi.vwebui as webui
+// v install https://github.com/malisipi/vwebui
+import vwebui as webui
 
-fn events(e &webui.Event_t) { // Close all opened windows
+fn events(e &webui.Event) { // Close all opened windows
     // This function gets called every time
     // there is an event
     if e.@type == webui.event_connected {
@@ -14,20 +15,20 @@ fn events(e &webui.Event_t) { // Close all opened windows
     }
 }
 
-fn switch_to_second_page(e &webui.Event_t) {
+fn switch_to_second_page(e &webui.Event) {
     // This function gets called every
     // time the user clicks on "SwitchToSecondPage"
     // Switch to `/second.html` in the same opened window.
     e.window.show("second.html")
 }
 
-fn show_second_window(e &webui.Event_t) {
+fn show_second_window(e &webui.Event) {
     mut my_second_window := webui.new_window()
     my_second_window.bind("Exit", exit_app)
     my_second_window.show("second.html")
 }
 
-fn exit_app(e &webui.Event_t) { // Close all opened windows
+fn exit_app(e &webui.Event) { // Close all opened windows
     webui.exit()
 }
 
