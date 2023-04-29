@@ -55,11 +55,11 @@ pub const (
 pub type Window = voidptr
 pub struct C.webui_event_t {
 	pub mut:
-		window		Window // Pointer to the window object
-		@type		u64 // Event type :)
-		element		&char // HTML element ID
-		data		&char // JavaScript data
-		response	&char // Callback response
+		window			Window // Pointer to the window object
+		event_type		u64 // Event type
+		element			&char // HTML element ID
+		data			&char // JavaScript data
+		event_number	u64 // To set the callback response
 }
 pub type Event = C.webui_event_t
 pub type Function = fn(e &Event)

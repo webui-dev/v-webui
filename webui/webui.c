@@ -39,7 +39,6 @@ static const char* webui_javascript_bridge =
 "const _WEBUI_CLICK = 252; \n"
 "const _WEBUI_SWITCH = 251; \n"
 "const _WEBUI_CLOSE = 250; \n"
-"const _WEBUI_FUNCTION = 249; \n"
 "function _webui_close(reason = 0, value = 0) { \n"
 "    _webui_send_event_navigation(value); \n"
 "    _webui_ws_status = false; \n"
@@ -282,8 +281,8 @@ bool webui_run(void* window, const char* script) {
     unsigned char run_id = _webui_get_run_id();
     _webui_core.run_done[run_id] = false;
     _webui_core.run_error[run_id] = false;
-    if((void *)_webui_core.run_responses[run_id] != NULL)
-        _webui_free_mem((void *)_webui_core.run_responses[run_id]);
+    if((void*)_webui_core.run_responses[run_id] != NULL)
+        _webui_free_mem((void*)_webui_core.run_responses[run_id]);
     
     // Prepare the packet
     size_t packet_len = 3 + js_len; // [header][js]
@@ -296,7 +295,7 @@ bool webui_run(void* window, const char* script) {
     
     // Send packets
     _webui_window_send(win, packet, packet_len);
-    _webui_free_mem((void *)packet);
+    _webui_free_mem((void*)packet);
 
     return true;
 }
@@ -332,8 +331,8 @@ bool webui_script(void* window, const char* script, unsigned int timeout_second,
     unsigned char run_id = _webui_get_run_id();
     _webui_core.run_done[run_id] = false;
     _webui_core.run_error[run_id] = false;
-    if((void *)_webui_core.run_responses[run_id] != NULL)
-        _webui_free_mem((void *)_webui_core.run_responses[run_id]);
+    if((void*)_webui_core.run_responses[run_id] != NULL)
+        _webui_free_mem((void*)_webui_core.run_responses[run_id]);
 
     // Prepare the packet
     size_t packet_len = 3 + js_len;             // [header][js]
@@ -346,7 +345,7 @@ bool webui_script(void* window, const char* script, unsigned int timeout_second,
     
     // Send packets
     _webui_window_send(win, packet, packet_len);
-    _webui_free_mem((void *)packet);
+    _webui_free_mem((void*)packet);
 
     // Wait for UI response
     if(timeout_second < 1 || timeout_second > 86400) {
@@ -387,7 +386,7 @@ bool webui_script(void* window, const char* script, unsigned int timeout_second,
             memcpy(buffer, _webui_core.run_responses[run_id], bytes_to_cpy);
         }
 
-        _webui_free_mem((void *)_webui_core.run_responses[run_id]);
+        _webui_free_mem((void*)_webui_core.run_responses[run_id]);
 
         return _webui_core.run_error[run_id];
     }
@@ -441,7 +440,7 @@ void webui_close(void* window) {
 
         // Send packets
         _webui_window_send(win, packet, 4);
-        _webui_free_mem((void *)packet);
+        _webui_free_mem((void*)packet);
     }
 }
 
@@ -469,17 +468,17 @@ void webui_set_multi_access(void* window, bool status) {
     win->multi_access = status;
 }
 
-void webui_set_icon(void* window, const char* icon, const char* type) {
+void webui_set_icon(void* window, const char* icon, const char* icon_type) {
 
     // Dereference
     _webui_window_t* win = (_webui_window_t*)window;
 
     #ifdef WEBUI_LOG
-        printf("[User] webui_set_icon([%s], [%s])... \n", icon, type);
+        printf("[User] webui_set_icon([%s], [%s])... \n", icon, icon_type);
     #endif
 
     win->icon = icon;
-    win->icon_type = type;
+    win->icon_type = icon_type;
 }
 
 bool webui_show(void* window, const char* content) {
@@ -538,7 +537,7 @@ unsigned int webui_bind(void* window, const char* element, void (*func)(webui_ev
         // Replace a reference
         _webui_core.cb[cb_index] = func;
 
-        _webui_free_mem((void *)webui_internal_id);
+        _webui_free_mem((void*)webui_internal_id);
     }
     else {
 
@@ -548,7 +547,7 @@ unsigned int webui_bind(void* window, const char* element, void (*func)(webui_ev
         if(cb_index > 0)
             _webui_core.cb[cb_index] = func;
         else
-            _webui_free_mem((void *)webui_internal_id);
+            _webui_free_mem((void*)webui_internal_id);
     }
 
     return cb_index;
@@ -605,9 +604,17 @@ void webui_return_int(webui_event_t* e, long long int n) {
         printf("[User] webui_return_int([%lld])... \n", n);
     #endif
 
+    // Dereference
+    _webui_window_t* win = (_webui_window_t*)e->window;
+
+    // Get buffer
+    if(win->event_core[e->event_number] == NULL)
+        return;
+    char** response = &win->event_core[e->event_number]->response;
+
     // Free
-    if(e->response != NULL)
-        _webui_free_mem(e->response);
+    if(*response != NULL)
+        _webui_free_mem((void*)*response);
 
     // Int to Str
     // 64-bit max is -9,223,372,036,854,775,808 (20 character)
@@ -615,7 +622,7 @@ void webui_return_int(webui_event_t* e, long long int n) {
     sprintf(buf, "%lld", n);
 
     // Set response
-    e->response = buf;
+    *response = buf;
 }
 
 void webui_return_string(webui_event_t* e, char* s) {
@@ -626,10 +633,18 @@ void webui_return_string(webui_event_t* e, char* s) {
 
     if(_webui_is_empty(s))
         return;
+
+    // Dereference
+    _webui_window_t* win = (_webui_window_t*)e->window;
+
+    // Get buffer
+    if(win->event_core[e->event_number] == NULL)
+        return;
+    char** response = &win->event_core[e->event_number]->response;
     
     // Free
-    if(e->response != NULL)
-        _webui_free_mem(e->response);
+    if(*response != NULL)
+        _webui_free_mem((void*)*response);
 
     // Copy Str
     int len = strlen(s);
@@ -637,7 +652,7 @@ void webui_return_string(webui_event_t* e, char* s) {
     memcpy(buf, s, len);
 
     // Set response
-    e->response = buf;
+    *response = buf;
 }
 
 void webui_return_bool(webui_event_t* e, bool b) {
@@ -646,9 +661,17 @@ void webui_return_bool(webui_event_t* e, bool b) {
         printf("[User] webui_return_bool([%d])... \n", b);
     #endif
 
+    // Dereference
+    _webui_window_t* win = (_webui_window_t*)e->window;
+
+    // Get buffer
+    if(win->event_core[e->event_number] == NULL)
+        return;
+    char** response = &win->event_core[e->event_number]->response;
+
     // Free
-    if(e->response != NULL)
-        _webui_free_mem(e->response);
+    if(*response != NULL)
+        _webui_free_mem((void*)*response);
 
     // Bool to Str
     int len = 1;
@@ -656,7 +679,7 @@ void webui_return_bool(webui_event_t* e, bool b) {
     sprintf(buf, "%d", b);
 
     // Set response
-    e->response = buf;
+    *response = buf;
 }
 
 void webui_exit(void) {
@@ -762,30 +785,40 @@ void _webui_interface_bind_handler(webui_event_t* e) {
     char* webui_internal_id = _webui_generate_internal_id(e->window, e->element);
     unsigned int cb_index = _webui_get_cb_index(webui_internal_id);
 
+    // void* window; // Pointer to the window object
+    // unsigned int event_type; // Event type
+    // char* element; // HTML element ID
+    // char* data; // JavaScript data
+    // unsigned int event_number; // Internal WebUI
+
     if(cb_index > 0 && _webui_core.cb_interface[cb_index] != NULL) {
 
         #ifdef WEBUI_LOG
             printf("[Core]\t\t_webui_interface_bind_handler() -> User callback @ 0x%p\n", _webui_core.cb_interface[cb_index]);
-            printf("[Core]\t\t_webui_interface_bind_handler() -> Response set @ 0x%p\n", (char*)&e->response);
-            printf("[Core]\t\t_webui_interface_bind_handler() -> type [%u]\n", e->type);
-            printf("[Core]\t\t_webui_interface_bind_handler() -> data [%s]\n", e->data);
-            printf("[Core]\t\t_webui_interface_bind_handler() -> element [%s]\n", e->element);
+            printf("[Core]\t\t_webui_interface_bind_handler() -> e->event_type [%u]\n", e->event_type);
+            printf("[Core]\t\t_webui_interface_bind_handler() -> e->element [%s]\n", e->element);
+            printf("[Core]\t\t_webui_interface_bind_handler() -> e->data [%s]\n", e->data);
+            printf("[Core]\t\t_webui_interface_bind_handler() -> e->event_number %d\n", e->event_number);
         #endif
-        _webui_core.cb_interface[cb_index](e->window, e->type, e->element, e->data, (char*)&e->response);
+
+        // Call cb
+        _webui_core.cb_interface[cb_index](e->window, e->event_type, e->element, e->data, e->event_number);
     }
-    
-    if(_webui_is_empty((const char *)e->response))
-        e->response = (char*)webui_empty_string;
-    
+
     // Free
-    _webui_free_mem((void *)webui_internal_id);
+    _webui_free_mem((void*)webui_internal_id);
 
     #ifdef WEBUI_LOG
-        printf("[Core]\t\t_webui_interface_bind_handler() -> user-callback response [%s] @ 0x%p\n", (const char *)e->response, e->response);
+        // Print cb response
+        char* response = NULL;
+        _webui_window_t* win = (_webui_window_t*)e->window;
+        if(win->event_core[e->event_number] != NULL)
+            response = *(&win->event_core[e->event_number]->response);
+        printf("[Core]\t\t_webui_interface_bind_handler() -> user-callback response [%s]\n", response);
     #endif
 }
 
-unsigned int webui_interface_bind(void* window, const char* element, void (*func)(void*, unsigned int, char*, char*, char*)) {
+unsigned int webui_interface_bind(void* window, const char* element, void (*func)(void*, unsigned int, char*, char*, unsigned int)) {
 
     // Dereference
     _webui_window_t* win = (_webui_window_t*)window;
@@ -800,28 +833,32 @@ unsigned int webui_interface_bind(void* window, const char* element, void (*func
     return cb_index;
 }
 
-void webui_interface_set_response(char* ptr, const char* response) {
+void webui_interface_set_response(void* window, unsigned int event_number, const char* response) {
 
     #ifdef WEBUI_LOG
         printf("[User] webui_interface_set_response()... \n");
-        printf("[User] webui_interface_set_response() -> Pointer @ 0x%p \n", ptr);
+        printf("[User] webui_interface_set_response() -> event_number %d \n", event_number);
         printf("[User] webui_interface_set_response() -> Response [%s] \n", response);
     #endif
 
-    size_t len = strlen(response);
+    // Dereference
+    _webui_window_t* win = (_webui_window_t*)window;
 
-    if(len < 1)
-        return;
+    // Get internal response buffer
+    if(win->event_core[event_number] != NULL) {
 
-    char* buf = (char*) _webui_malloc(len);
-    char** _ptr = (char**)ptr;
-    *_ptr = buf;
-    strcpy(*_ptr, response);
+        char** buffer = NULL;
+        buffer = &win->event_core[event_number]->response;
 
-    #ifdef WEBUI_LOG
-        printf("[User] webui_interface_set_response() -> Internal buffer @ 0x%p \n", (*_ptr));
-        printf("[User] webui_interface_set_response() -> Internal buffer [%s] \n", (*_ptr));
-    #endif
+        // Set the response
+        size_t len = strlen(response);
+        *buffer = (char*) _webui_malloc(len);
+        strcpy(*buffer, response);
+
+        #ifdef WEBUI_LOG
+            printf("[User] webui_interface_set_response() -> Internal buffer [%s] \n", *buffer);
+        #endif
+    }
 }
 
 bool webui_interface_is_app_running(void) {
@@ -1051,9 +1088,25 @@ void* _webui_malloc(int size) {
 
     memset(block, 0, size);
 
-    _webui_ptr_add((void *) block, size);
+    _webui_ptr_add((void*) block, size);
 
     return block;
+}
+
+unsigned int _webui_get_free_event_core_pos(_webui_window_t* win) {
+
+    #ifdef WEBUI_LOG
+        printf("[Core]\t\t_webui_get_free_event_core_pos()... \n");
+    #endif
+
+    for(unsigned int i = 1; i < WEBUI_MAX_ARRAY; i++) {
+        if(win->event_core[i] == NULL)
+            return i;
+    }
+
+    // Fatal. No free pos found
+    // let's use the first pos
+    return 0;
 }
 
 static void _webui_sleep(long unsigned int ms) {
@@ -1158,8 +1211,8 @@ bool _webui_file_exist_mg(void *ev_data) {
 
     bool exist = _webui_file_exist(full_path);
 
-    _webui_free_mem((void *)file);
-    _webui_free_mem((void *)full_path);
+    _webui_free_mem((void*)file);
+    _webui_free_mem((void*)full_path);
 
     return exist;
 }
@@ -1308,34 +1361,42 @@ bool _webui_nodejs_exist(void) {
 const char* _webui_interpret_command(const char* cmd) {
     
     #ifdef WEBUI_LOG
-        printf("[Core]\t\t_webui_interpret_command()... \n");
+        printf("[Core]\t\t_webui_interpret_command([%s])... \n", cmd);
     #endif
 
-    // Redirect stderr to stdout
-    char cmd_redirected[1024];
-    sprintf(cmd_redirected, "%s 2>&1", cmd);
+    // Run the command with redirection of errors to stdout
+    // and return the output.
 
-    FILE *runtime = WEBUI_POPEN(cmd_redirected, "r");
+    // Output buffer
+    char* out = NULL;
 
-    if(runtime == NULL)
-        return NULL;
+    #ifdef _WIN32
+        // Redirect stderr to stdout
+        char cmd_with_redirection[512];
+        sprintf(cmd_with_redirection, "cmd.exe /c %s 2>&1", cmd);    
+        _webui_system_win32_out(cmd_with_redirection, &out, false);
+    #else
+        // Redirect stderr to stdout
+        char cmd_with_redirection[512];
+        sprintf(cmd_with_redirection, "%s 2>&1", cmd);    
 
-    // Get STDOUT length
-    // int c;
-    // while ((c = fgetc(runtime)) != EOF)
-    //     len++;
-    int len = 1024 * 8;
+        FILE *pipe = WEBUI_POPEN(cmd_with_redirection, "r");
 
-    // Read STDOUT
-    char* out = (char*) _webui_malloc(len);
-    char* line = (char*) _webui_malloc(4000);
-    while(fgets(line, 4000, runtime) != NULL)
-        strcat(out, line);
+        if(pipe == NULL)
+            return NULL;
+        
+        // Read STDOUT
+        out = (char*) _webui_malloc(WEBUI_CMD_STDOUT_BUF);
+        char* line = (char*) _webui_malloc(1024);
+        while(fgets(line, 1024, pipe) != NULL)
+            strcat(out, line);
+        WEBUI_PCLOSE(pipe);
 
-    WEBUI_PCLOSE(runtime);
-    _webui_free_mem((void *)line);
+        // Clean
+        _webui_free_mem((void*)line);
+    #endif
 
-    return (const char*) out;
+    return (const char*)out;
 }
 
 static void _webui_interpret_file(_webui_window_t* win, struct mg_connection *c, void *ev_data, char* index) {
@@ -1344,22 +1405,24 @@ static void _webui_interpret_file(_webui_window_t* win, struct mg_connection *c,
         printf("[Core]\t\t_webui_interpret_file()... \n");
     #endif
 
-    // Run the JavaScript / TypeScript runtime
-    // and send back the output with HTTP 200 status code
-    // otherwise, send the file as a normal text based one
+    // Interpret the file using JavaScript/TypeScript runtimes
+    // and send back the output. otherwise, send the file as a normal text based    
 
     char* file;
     char* full_path;
+    char* query;
 
+    // Get file full path
     if(index != NULL && !_webui_is_empty(index)) {
 
-        // Parse index file
+        // Parse as index file
+
         file = index;
         full_path = index;
     }
     else {
 
-        // Parse other files
+        // Parse as other non-index files
 
         struct mg_http_message *hm = (struct mg_http_message *) ev_data;
 
@@ -1377,12 +1440,20 @@ static void _webui_interpret_file(_webui_window_t* win, struct mg_connection *c,
         if(!_webui_file_exist(full_path)) {
 
             // File not exist - 404
-            _webui_serve_file(win, c, ev_data);
+            mg_http_reply(
+                c, 404,
+                "",
+                webui_html_res_not_available
+            );
 
-            _webui_free_mem((void *)file);
-            _webui_free_mem((void *)full_path);
+            _webui_free_mem((void*)file);
+            _webui_free_mem((void*)full_path);
             return;
         }
+
+        // Get query
+        query = (char*) _webui_malloc(hm->query.len);
+        sprintf(query, "%.*s", (int)hm->query.len, hm->query.ptr);
     }
 
     // Get file extension
@@ -1395,16 +1466,15 @@ static void _webui_interpret_file(_webui_window_t* win, struct mg_connection *c,
         if(win->runtime == Deno) {
 
             // Use Deno
-
             if(_webui_deno_exist()) {
 
                 // Set command
                 // [disable coloring][file]
                 char* cmd = (char*) _webui_malloc(64 + strlen(full_path));
                 #ifdef _WIN32
-                    sprintf(cmd, "Set NO_COLOR=1 & deno run --allow-all \"%s\"", full_path);
+                    sprintf(cmd, "Set NO_COLOR=1 & Set DENO_NO_UPDATE_CHECK=1 & deno run --quiet --allow-all --unstable \"%s\" \"%s\"", full_path, query);
                 #else
-                    sprintf(cmd, "NO_COLOR=1 & deno run --allow-all \"%s\"", full_path);
+                    sprintf(cmd, "NO_COLOR=1; DENO_NO_UPDATE_CHECK=1; deno run --quiet --allow-all --unstable \"%s\" \"%s\"", full_path, query);
                 #endif
 
                 // Run command
@@ -1412,7 +1482,7 @@ static void _webui_interpret_file(_webui_window_t* win, struct mg_connection *c,
 
                 if(out != NULL) {
 
-                    // Send deno output
+                    // Send Deno output
                     mg_http_reply(
                         c, 200,
                         "",
@@ -1426,15 +1496,15 @@ static void _webui_interpret_file(_webui_window_t* win, struct mg_connection *c,
                     _webui_serve_file(win, c, ev_data);
                 }
 
-                _webui_free_mem((void *)cmd);
-                _webui_free_mem((void *)out);
+                _webui_free_mem((void*)cmd);
+                _webui_free_mem((void*)out);
             }
             else {
 
                 // Deno not installed
 
                 mg_http_reply(
-                    c, 200,
+                    c, 404,
                     "",
                     webui_deno_not_found
                 );
@@ -1449,7 +1519,7 @@ static void _webui_interpret_file(_webui_window_t* win, struct mg_connection *c,
                 // Set command
                 // [node][file]
                 char* cmd = (char*) _webui_malloc(16 + strlen(full_path));
-                sprintf(cmd, "node \"%s\"", full_path);
+                sprintf(cmd, "node \"%s\" \"%s\"", full_path, query);
 
                 // Run command
                 const char* out = _webui_interpret_command(cmd);
@@ -1470,15 +1540,15 @@ static void _webui_interpret_file(_webui_window_t* win, struct mg_connection *c,
                     _webui_serve_file(win, c, ev_data);
                 }
 
-                _webui_free_mem((void *)cmd);
-                _webui_free_mem((void *)out);
+                _webui_free_mem((void*)cmd);
+                _webui_free_mem((void*)out);
             }
             else {
 
                 // Node.js not installed
 
                 mg_http_reply(
-                    c, 200,
+                    c, 404,
                     "",
                     webui_nodejs_not_found
                 );
@@ -1498,8 +1568,8 @@ static void _webui_interpret_file(_webui_window_t* win, struct mg_connection *c,
         _webui_serve_file(win, c, ev_data);
     }
 
-    _webui_free_mem((void *)file);
-    _webui_free_mem((void *)full_path);
+    _webui_free_mem((void*)file);
+    _webui_free_mem((void*)full_path);
 }
 
 const char* _webui_generate_js_bridge(_webui_window_t* win) {
@@ -1580,7 +1650,7 @@ static void _webui_server_event_handler(struct mg_connection *c, int ev, void *e
                 js
             );
 
-            _webui_free_mem((void *)js);
+            _webui_free_mem((void*)js);
         }
         else if(strncmp(hm->uri.ptr, "/WEBUI/FUNC/", 12) == 0 && hm->uri.len >= 15) {
             
@@ -1619,41 +1689,48 @@ static void _webui_server_event_handler(struct mg_connection *c, int ev, void *e
             // Generate WebUI internal id
             char* webui_internal_id = _webui_generate_internal_id(win, element);
 
-            // Call user function
+            // Create new event core to hold the response
+            webui_event_core_t* event_core = (webui_event_core_t*) _webui_malloc(sizeof(webui_event_core_t));
+            unsigned int event_core_pos = _webui_get_free_event_core_pos(win);
+            win->event_core[event_core_pos] = event_core;
+            char** response = &win->event_core[event_core_pos]->response;
+
+            // Create new event
             webui_event_t e;
-            e.element = element;
             e.window = win;
+            e.event_type = WEBUI_EVENT_CALLBACK;
+            e.element = element;
             e.data = data;
-            e.response = NULL;
-            e.type = WEBUI_EVENT_CALLBACK;
+            e.event_number = event_core_pos;
 
+            // Call user function
             unsigned int cb_index = _webui_get_cb_index(webui_internal_id);
-
-            // Check for bind
             if(cb_index > 0 && _webui_core.cb[cb_index] != NULL) {
 
                 // Call user cb
                 _webui_core.cb[cb_index](&e);
             }
 
-            if(_webui_is_empty(e.response))
-                e.response = (char*)webui_empty_string;
+            // Check the response
+            if(_webui_is_empty(*response))
+                *response = (char*)webui_empty_string;
 
             #ifdef WEBUI_LOG
-                printf("[Core]\t\t_webui_server_event_handler()... user-callback response [%s]\n", (const char*)e.response);
+                printf("[Core]\t\t_webui_server_event_handler()... user-callback response [%s]\n", *response);
             #endif
 
             // Send response
             mg_http_reply(
                 c, 200,
                 "",
-                e.response
+                *response
             );
 
             // Free
-            _webui_free_mem((void *)packet);
-            _webui_free_mem((void *)webui_internal_id);
-            _webui_free_mem((void *)e.response);
+            _webui_free_mem((void*)packet);
+            _webui_free_mem((void*)webui_internal_id);
+            _webui_free_mem((void*)*response);
+            _webui_free_mem((void*)event_core);
         }
         else if(mg_http_match_uri(hm, "/")) {
 
@@ -1669,7 +1746,7 @@ static void _webui_server_event_handler(struct mg_connection *c, int ev, void *e
                     // Forbidden 403
 
                     #ifdef WEBUI_LOG
-                        printf("[Core]\t\t_webui_server_event_handler()... HTML Main Already Handled (403)\n");
+                        printf("[Core]\t\t_webui_server_event_handler()... Embedded Index HTML Already Handled (403)\n");
                     #endif
 
                     // Header
@@ -1688,7 +1765,7 @@ static void _webui_server_event_handler(struct mg_connection *c, int ev, void *e
                     win->html_handled = true;
 
                     #ifdef WEBUI_LOG
-                        printf("[Core]\t\t_webui_server_event_handler()... HTML Main\n");
+                        printf("[Core]\t\t_webui_server_event_handler()... Embedded Index HTML\n");
                     #endif
 
                     char* html = (char*) webui_empty_string;
@@ -1706,21 +1783,8 @@ static void _webui_server_event_handler(struct mg_connection *c, int ev, void *e
                             win->html, js
                         );
 
-                        _webui_free_mem((void *)js);
+                        _webui_free_mem((void*)js);
                     }
-
-                    // // HTTP Header
-                    // char header[512];
-                    // memset(header, 0x00, 512);
-                    // sprintf(header,
-                    //     "HTTP/1.1 200 OK\r\n"
-                    //     "Content-Type: text/html; charset=utf-8\r\n"
-                    //     "Host: localhost:%d\r\n"
-                    //     "Cache-Control: no-cache\r\n"
-                    //     "Content-Length: %d\r\n"
-                    //     "Connection: close\r\n\r\n",
-                    //     win->server_port, strlen(html)
-                    // );
 
                     // Send
                     mg_http_reply(
@@ -1729,17 +1793,17 @@ static void _webui_server_event_handler(struct mg_connection *c, int ev, void *e
                         html
                     );
 
-                    _webui_free_mem((void *)html);
+                    _webui_free_mem((void*)html);
                 }
             }
             else {
 
-                // Serve local files
+                // Serve as index local file
 
                 win->html_handled = true;
 
                 #ifdef WEBUI_LOG
-                    printf("[Core]\t\t_webui_server_event_handler()... HTML Root Index\n");
+                    printf("[Core]\t\t_webui_server_event_handler()... Local Index File\n");
                 #endif
 
                 // Set full path
@@ -1751,9 +1815,12 @@ static void _webui_server_event_handler(struct mg_connection *c, int ev, void *e
                 if(_webui_file_exist(index)) {
 
                     // TypeScript Index
-                    _webui_interpret_file(win, c, ev_data, index);
+                    if(win->runtime != None)
+                        _webui_interpret_file(win, c, ev_data, index);
+                    else
+                        _webui_serve_file(win, c, ev_data);
 
-                   _webui_free_mem((void *)index);
+                   _webui_free_mem((void*)index);
                     return;
                 }
 
@@ -1762,13 +1829,16 @@ static void _webui_server_event_handler(struct mg_connection *c, int ev, void *e
                 if(_webui_file_exist(index)) {
 
                     // JavaScript Index
-                    _webui_interpret_file(win, c, ev_data, index);
+                    if(win->runtime != None)
+                        _webui_interpret_file(win, c, ev_data, index);
+                    else
+                        _webui_serve_file(win, c, ev_data);
 
-                    _webui_free_mem((void *)index);
+                    _webui_free_mem((void*)index);
                     return;
                 }
 
-                _webui_free_mem((void *)index);
+                _webui_free_mem((void*)index);
                 
                 // Index.html
                 // Serve as a normal HTML text-based file
@@ -1826,58 +1896,22 @@ static void _webui_server_event_handler(struct mg_connection *c, int ev, void *e
 
             // [/file]
 
-            if(win->is_embedded_html) {
+            if(win->runtime != None) {
 
-                if(win->runtime != None) {
-
-                    // Interpret file
-
-                    #ifdef WEBUI_LOG
-                        printf("[Core]\t\t_webui_server_event_handler()... HTML Interpret file\n");
-                    #endif
-
-                    _webui_interpret_file(win, c, ev_data, NULL);
-                }
-                else {
-
-                    // Serve local files
-
-                    #ifdef WEBUI_LOG
-                        printf("[Core]\t\t_webui_server_event_handler()... HTML Root file\n");
-                    #endif
-
-                    // Serve as a normal text-based file
-                    _webui_serve_file(win, c, ev_data);
-                }
+                #ifdef WEBUI_LOG
+                    printf("[Core]\t\t_webui_server_event_handler()... Trying to interpret local file\n");
+                #endif
+                
+                _webui_interpret_file(win, c, ev_data, NULL);
             }
             else {
 
-                // This is a non-server-folder mode
-                // but the HTML body request a local file
-                // this request can be css, js, image, etc...
-
-                if(_webui_file_exist_mg(ev_data)) {
-
-                    // Serve as a normal text-based file
-                    _webui_serve_file(win, c, ev_data);
-                }
-                else {
-
-                    // 404
-
-                    #ifdef WEBUI_LOG
-                        printf("[Core]\t\t_webui_server_event_handler()... HTML 404\n");
-                    #endif
-
-                    // Header
-                    // text/html; charset=utf-8
-
-                    mg_http_reply(
-                        c, 404,
-                        "",
-                        webui_html_res_not_available
-                    );
-                }
+                #ifdef WEBUI_LOG
+                    printf("[Core]\t\t_webui_server_event_handler()... Text based local file\n");
+                #endif
+                
+                // Serve as a normal text-based file
+                _webui_serve_file(win, c, ev_data);
             }
         }
     }
@@ -1929,19 +1963,19 @@ static void _webui_server_event_handler(struct mg_connection *c, int ev, void *e
             }
         }
 
-        // Events
+        // New Event
         if(win->has_events) {
 
             // Generate WebUI internal id
             char* webui_internal_id = _webui_generate_internal_id(win, "");
 
             _webui_window_event(
-                win,                // Window
-                webui_internal_id,  // WebUI Internal ID
-                "",                 // User HTML ID
-                NULL,               // User Custom Data
-                0,                  // User Data Len
-                event_type          // Type of this event
+                win,                // Event -> Window
+                event_type,         // Event -> Type of this event
+                "",                 // Event -> HTML Element
+                NULL,               // Event -> User Custom Data
+                0,                  // Event -> Event Number
+                webui_internal_id   // Extras -> WebUI Internal ID
             );
         }
     }
@@ -1975,12 +2009,12 @@ static void _webui_server_event_handler(struct mg_connection *c, int ev, void *e
             char* webui_internal_id = _webui_generate_internal_id(win, "");
 
             _webui_window_event(
-                win,                        // Window
-                webui_internal_id,          // WebUI Internal ID
-                "",                         // User HTML ID
-                NULL,                       // User Custom Data
-                0,                          // User Data Len
-                WEBUI_EVENT_DISCONNECTED    // Type of this event
+                win,                        // Event -> Window
+                WEBUI_EVENT_DISCONNECTED,   // Event -> Type of this event
+                "",                         // Event -> HTML Element
+                NULL,                       // Event -> User Custom Data
+                0,                          // Event -> Event Number
+                webui_internal_id           // Extras -> WebUI Internal ID
             );
         }
     }
@@ -3428,9 +3462,9 @@ bool _webui_show_window(_webui_window_t* win, const char* content, bool is_embed
 
     // Initialization
     if(win->html != NULL)
-        _webui_free_mem((void *)win->html);
+        _webui_free_mem((void*)win->html);
     if(win->url != NULL)
-        _webui_free_mem((void *)win->url);
+        _webui_free_mem((void*)win->url);
 
     if(is_embedded_html) {
 
@@ -3467,21 +3501,21 @@ bool _webui_show_window(_webui_window_t* win, const char* content, bool is_embed
         if(!_webui_browser_start(win, win->url, browser)) {
 
             // Browser not available
-            _webui_free_mem((void *)win->html);
-            _webui_free_mem((void *)win->url);
+            _webui_free_mem((void*)win->html);
+            _webui_free_mem((void*)win->url);
             _webui_free_port(win->server_port);
             return false;
         }
         
         // New server thread
         #ifdef _WIN32
-            HANDLE thread = CreateThread(NULL, 0, _webui_server_start, (void *)win, 0, NULL);
+            HANDLE thread = CreateThread(NULL, 0, _webui_server_start, (void*)win, 0, NULL);
             win->server_thread = thread;
             if(thread != NULL)
                 CloseHandle(thread);
         #else
             pthread_t thread;
-            pthread_create(&thread, NULL, &_webui_server_start, (void *)win);
+            pthread_create(&thread, NULL, &_webui_server_start, (void*)win);
             pthread_detach(thread);
             win->server_thread = thread;
         #endif
@@ -3501,40 +3535,42 @@ bool _webui_show_window(_webui_window_t* win, const char* content, bool is_embed
 
         // Send the packet
         _webui_window_send(win, packet, packet_len);
-        _webui_free_mem((void *)packet);
+        _webui_free_mem((void*)packet);
     }
 
     return true;
 }
 
-static void _webui_window_event(_webui_window_t* win, char* webui_internal_id, char* element, void* data, unsigned int data_len, int event_type) {
+static void _webui_window_event(_webui_window_t* win, int event_type, char* element, char* data, unsigned int event_number, char* webui_internal_id) {
 
     #ifdef WEBUI_LOG
         printf("[Core]\t\t_webui_window_event([%s], [%s])... \n", webui_internal_id, element);
     #endif
 
     // Create a thread, and call the used cb function
-    _webui_cb_t* arg = (_webui_cb_t*) _webui_malloc(sizeof(_webui_cb_t));
-    arg->win = win;
-    arg->webui_internal_id = webui_internal_id;
-    arg->element_name = element;
-    arg->event_type = event_type;
-    if(data != NULL) {
-        arg->data = data;
-        arg->data_len = data_len;
-    }
-    else {
-        arg->data = (void*) webui_empty_string;
-        arg->data_len = 0;
-    }
+    // no need to wait for the response. This is fire
+    // and forget.
 
+    // Create a new CB args struct
+    _webui_cb_arg_t* arg = (_webui_cb_arg_t*) _webui_malloc(sizeof(_webui_cb_arg_t));
+    
+    // Event
+    arg->window = win;
+    arg->event_type = event_type;
+    arg->element = element;
+    arg->data = data;
+    arg->event_number = event_number;
+    // Extras
+    arg->webui_internal_id = webui_internal_id;
+
+    // fire and forget.
     #ifdef _WIN32
-        HANDLE user_fun_thread = CreateThread(NULL, 0, _webui_cb, (void *) arg, 0, NULL);
+        HANDLE user_fun_thread = CreateThread(NULL, 0, _webui_cb, (void*) arg, 0, NULL);
         if(user_fun_thread != NULL)
             CloseHandle(user_fun_thread); 
     #else
         pthread_t thread;
-        pthread_create(&thread, NULL, &_webui_cb, (void *) arg);
+        pthread_create(&thread, NULL, &_webui_cb, (void*) arg);
         pthread_detach(thread);
     #endif
 }
@@ -3599,7 +3635,7 @@ bool _webui_get_data(const char* packet, size_t packet_len, unsigned int pos, si
     *data_len = strlen(*data);
     if(*data_len < 1) {
 
-        _webui_free_mem((void *) data);
+        _webui_free_mem((void*) data);
         *data = NULL;
         data_len = 0;
         return false;
@@ -3642,12 +3678,12 @@ static void _webui_window_receive(_webui_window_t* win, const char* packet, size
         char* webui_internal_id = _webui_generate_internal_id(win, element);
 
         _webui_window_event(
-            win,                // Window
-            webui_internal_id,  // WebUI Internal ID
-            element,            // User HTML ID
-            NULL,               // User Custom Data
-            0,                  // User Data Len
-            WEBUI_EVENT_MOUSE_CLICK // Type of this event
+            win,                        // Event -> Window
+            WEBUI_EVENT_MOUSE_CLICK,    // Event -> Type of this event
+            element,                    // Event -> HTML Element
+            NULL,                       // Event -> User Custom Data
+            0,                          // Event -> Event Number
+            webui_internal_id           // Extras -> WebUI Internal ID
         );
     }
     else if((unsigned char) packet[1] == WEBUI_HEADER_JS) {
@@ -3689,8 +3725,8 @@ static void _webui_window_receive(_webui_window_t* win, const char* packet, size
         #endif
 
         // Initialize pipe
-        if((void *)_webui_core.run_responses[run_id] != NULL)
-            _webui_free_mem((void *)_webui_core.run_responses[run_id]);
+        if((void*)_webui_core.run_responses[run_id] != NULL)
+            _webui_free_mem((void*)_webui_core.run_responses[run_id]);
 
         // Set pipe
         if(data_status && data_len > 0) {
@@ -3707,45 +3743,6 @@ static void _webui_window_receive(_webui_window_t* win, const char* packet, size
 
         // Send ready signal to webui_script()
         _webui_core.run_done[run_id] = true;
-    }
-    else if((unsigned char) packet[1] == WEBUI_HEADER_CALL_FUNC) {
-
-        // Function Call (No response)
-
-        // 0: [Signature]
-        // 1: [Type]
-        // 2: 
-        // 3: [ID, Null, Data]
-
-        // Get html element id
-        char* element;
-        size_t element_len;
-        if(!_webui_get_data(packet, len, 3, &element_len, &element))
-            return;
-
-        // Get data
-        void* data;
-        size_t data_len;
-        if(!_webui_get_data(packet, len, (3 + element_len + 1), &data_len, (char **) &data))
-            return;
-        
-        #ifdef WEBUI_LOG
-            printf("[Core]\t\t_webui_window_receive() -> WEBUI_HEADER_CALL_FUNC \n");
-            printf("[Core]\t\t_webui_window_receive() -> %d bytes \n", (int)element_len);
-            printf("[Core]\t\t_webui_window_receive() -> [%s] \n", element);
-        #endif
-
-        // Generate WebUI internal id
-        char* webui_internal_id = _webui_generate_internal_id(win, element);
-
-        _webui_window_event(
-            win,                // Window
-            webui_internal_id,  // WebUI Internal ID
-            element,            // User HTML ID
-            data,               // User Custom Data
-            data_len,           // User Data Len
-            WEBUI_EVENT_CALLBACK    // Type of this event
-        );
     }
     else if((unsigned char) packet[1] == WEBUI_HEADER_SWITCH) {
 
@@ -3775,12 +3772,12 @@ static void _webui_window_receive(_webui_window_t* win, const char* packet, size
             char* webui_internal_id = _webui_generate_internal_id(win, "");
 
             _webui_window_event(
-                win,                // Window
-                webui_internal_id,  // WebUI Internal ID
-                "",                 // HTML ID
-                url,                // URL
-                url_len,            // URL Len
-                WEBUI_EVENT_NAVIGATION // Type of this event
+                win,                    // Event -> Window
+                WEBUI_EVENT_NAVIGATION, // Event -> Type of this event
+                "",                     // Event -> HTML Element
+                url,                    // Event -> User Custom Data
+                0,                      // Event -> Event Number
+                webui_internal_id       // Extras -> WebUI Internal ID
             );
         }
     }
@@ -3983,7 +3980,7 @@ WEBUI_SERVER_START
     mg_mgr_init(&mgr);
     _webui_core.mg_mgrs[win->window_number] = &mgr;
 
-    if(mg_http_listen(&mgr, win->url, _webui_server_event_handler, (void *)win) != NULL) {
+    if(mg_http_listen(&mgr, win->url, _webui_server_event_handler, (void*)win) != NULL) {
 
         if(_webui_core.startup_timeout > 0) {
 
@@ -4130,25 +4127,26 @@ WEBUI_SERVER_START
 
 WEBUI_CB
 {
-    _webui_cb_t* arg = (_webui_cb_t*) _arg;
-
     #ifdef WEBUI_LOG
         printf("[Core]\t\t[Thread] _webui_cb()... \n");
     #endif
 
+    _webui_cb_arg_t* arg = (_webui_cb_arg_t*) _arg;
+
+    // Event
     webui_event_t e;
-    e.element = arg->element_name;
-    e.window = arg->win;
+    e.window = arg->window;
+    e.event_type = arg->event_type;
+    e.element = arg->element;
     e.data = arg->data;
-    e.response = NULL;
-    e.type = arg->event_type;
+    e.event_number = arg->event_number;
 
-    // Check for all events-binded function
-    if(arg->win->has_events) {
+    // Check for all events-bind functions
+    if(arg->window->has_events) {
 
-        char* events_id = _webui_generate_internal_id(arg->win, "");
+        char* events_id = _webui_generate_internal_id(arg->window, "");
         unsigned int events_cb_index = _webui_get_cb_index(events_id);
-        _webui_free_mem((void *)events_id);
+        _webui_free_mem((void*)events_id);
 
         if(events_cb_index > 0 && _webui_core.cb[events_cb_index] != NULL) {
 
@@ -4157,8 +4155,8 @@ WEBUI_CB
         }
     }
 
-    // Check for the binded function
-    if(arg->element_name != NULL && !_webui_is_empty(arg->element_name)) {
+    // Check for the regular bind functions
+    if(arg->element != NULL && !_webui_is_empty(arg->element)) {
 
         unsigned int cb_index = _webui_get_cb_index(arg->webui_internal_id);
         if(cb_index > 0 && _webui_core.cb[cb_index] != NULL) {
@@ -4172,11 +4170,12 @@ WEBUI_CB
         printf("[Core]\t\t[Thread] _webui_cb()... Stop.\n");
     #endif    
 
-    // Free
-    _webui_free_mem((void *)e.response);
-    _webui_free_mem((void *)arg->webui_internal_id);
-    _webui_free_mem((void *)arg->element_name);
-    _webui_free_mem((void *)arg);
+    // Free event
+    _webui_free_mem((void*)arg->element);
+    _webui_free_mem((void*)arg->data);
+    // Free event extras
+    _webui_free_mem((void*)arg->webui_internal_id);
+    _webui_free_mem((void*)arg);
 
     THREAD_RETURN
 }
@@ -4242,6 +4241,105 @@ WEBUI_CB
 
         // Listening Success
         return true;
+    }
+
+    int _webui_system_win32_out(const char *cmd, char **output, bool show) {
+
+        #ifdef WEBUI_LOG
+            printf("[Core]\t\t_webui_system_win32_out()... \n");
+        #endif
+
+        // Ini
+        *output = NULL;
+        if(cmd == NULL)
+            return -1;
+
+        // Return
+        DWORD Return = 0;
+        
+        // Flags
+        DWORD CreationFlags = CREATE_NO_WINDOW;
+        if(show)
+            CreationFlags = SW_SHOW;
+
+        SECURITY_ATTRIBUTES sa;
+        sa.nLength = sizeof(SECURITY_ATTRIBUTES);
+        sa.bInheritHandle = TRUE;
+        sa.lpSecurityDescriptor = NULL;
+        HANDLE stdout_read, stdout_write;
+        if (!CreatePipe(&stdout_read, &stdout_write, &sa, 0)) {
+            return -1;
+        }
+        if (!SetHandleInformation(stdout_read, HANDLE_FLAG_INHERIT, 0)) {
+            CloseHandle(stdout_read);
+            CloseHandle(stdout_write);
+            return -1;
+        }
+
+        STARTUPINFOA si;
+        ZeroMemory(&si, sizeof(STARTUPINFOA));
+        si.cb = sizeof(STARTUPINFOA);
+        si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
+        si.wShowWindow = SW_HIDE;
+        si.hStdOutput = stdout_write;
+        si.hStdError = stdout_write;
+
+        PROCESS_INFORMATION pi;
+        ZeroMemory(&pi, sizeof(PROCESS_INFORMATION));
+
+        if (!CreateProcessA(
+            NULL,           // No module name (use cmd line)
+            (LPSTR)cmd,     // Command line
+            NULL,           // Process handle not inheritable
+            NULL,           // Thread handle not inheritable
+            TRUE,           // Set handle inheritance to FALSE
+            CreationFlags,  // Creation flags
+            NULL,           // Use parent's environment block
+            NULL,           // Use parent's starting directory 
+            &si,            // Pointer to STARTUP INFO structure
+            &pi))           // Pointer to PROCESS_INFORMATION structure
+        {
+            CloseHandle(stdout_read);
+            CloseHandle(stdout_write);
+            return -1;
+        }
+        CloseHandle(stdout_write);
+
+        SetFocus(pi.hProcess);
+        WaitForSingleObject(pi.hProcess, INFINITE);
+        GetExitCodeProcess(pi.hProcess, &Return);
+
+        DWORD bytes_read;
+        char buffer[WEBUI_CMD_STDOUT_BUF];
+        size_t output_size = 0;
+
+        while (ReadFile(stdout_read, buffer, WEBUI_CMD_STDOUT_BUF, &bytes_read, NULL) && bytes_read > 0) {
+
+            char *new_output = realloc(*output, output_size + bytes_read + 1);
+            if (new_output == NULL) {
+                free(*output);
+                CloseHandle(stdout_read);
+                CloseHandle(pi.hProcess);
+                CloseHandle(pi.hThread);
+                return -1;
+            }
+
+            *output = new_output;
+            memcpy(*output + output_size, buffer, bytes_read);
+            output_size += bytes_read;
+        }
+
+        if (*output != NULL)
+            (*output)[output_size] = '\0';
+
+        CloseHandle(stdout_read);
+        CloseHandle(pi.hProcess);
+        CloseHandle(pi.hThread);
+
+        if(Return == 0)
+            return 0;
+        else
+            return -1;
     }
 
     int _webui_system_win32(char* cmd, bool show) {
