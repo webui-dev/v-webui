@@ -4,13 +4,13 @@ import malisipi.vwebui as webui
 fn events(e &webui.Event) { // Close all opened windows
     // This function gets called every time
     // there is an event
-    if e.@type == webui.event_connected {
+    if e.event_type == webui.event_connected {
         println("Connected.")
-    } else if e.@type == webui.event_disconnected {
+    } else if e.event_type == webui.event_disconnected {
         println("Disconnected.")
-    } else if e.@type == webui.event_mouse_click {
+    } else if e.event_type == webui.event_mouse_click {
         println("Click.")
-    } else if e.@type == webui.event_navigation {
+    } else if e.event_type == webui.event_navigation {
         //println("Starting navigation to: ${e.data}")
     }
 }
