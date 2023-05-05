@@ -53,7 +53,7 @@ Run ```v install malisipi.VWebUI``` or ```v install https://github.com/malisipi/
 
 ### License
 
-> Licensed under GNU General Public License v2.0.
+> Licensed under MIT License.
 
 ### Original Library
 
