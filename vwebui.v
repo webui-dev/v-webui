@@ -1,8 +1,8 @@
 /*
-  V-WebUI 2.2.0
+  V-WebUI 2.3.0
   https://github.com/malisipi/vwebui
   Copyright (c) 2023 Mehmet Ali.
-  Licensed under GNU General Public License v2.0.
+  Licensed under MIT License.
   All rights reserved.
 */
 
@@ -10,11 +10,13 @@ module vwebui
 
 // WebUI Core
 
-#include "@VMODROOT/webui/mongoose.h"
 #include "@VMODROOT/webui/webui.h"
 #include "@VMODROOT/webui/webui_core.h"
-#flag @VMODROOT/webui/mongoose.c
 #flag @VMODROOT/webui/webui.c
+
+#flag @VMODROOT/webui/civetweb/civetweb.c
+#flag -DNDEBUG -DNO_CACHING -DNO_CGI -DNO_SSL -DUSE_WEBSOCKET
+
 #flag windows -Dstrtoll=_strtoi64 -Dstrtoull=_strtoui64 -lws2_32 -lAdvapi32 -luser32
 $if tinyc {
 	#flag windows -DWEBUI_NO_TLHELPER32
@@ -59,7 +61,7 @@ pub struct C.webui_event_t {
 		event_type		u64 // Event type
 		element			&char // HTML element ID
 		data			&char // JavaScript data
-		event_number	u64 // To set the callback response
+		event_number		u64 // To set the callback response
 }
 pub type Event = C.webui_event_t
 pub type Function = fn(e &Event)
@@ -160,6 +162,7 @@ pub fn exit() {
 	C.webui_exit()
 }
 
+// Set the window in Kiosk mode (Full screen)
 pub fn (window Window) set_kiosk (kiosk bool){
 	C.webui_set_kiosk(window, kiosk)
 }
