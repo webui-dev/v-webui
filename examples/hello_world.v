@@ -1,7 +1,7 @@
 // v install https://github.com/malisipi/vwebui
 import malisipi.vwebui as webui
 
-fn check_the_password(e &webui.Event) { // Check the password function
+fn check_the_password(e &webui.Event) webui.Response { // Check the password function
     password := e.window.script("return document.getElementById(\"MyInput\").value;", 0, 4096)
     println("Password: "+password)
     
@@ -10,10 +10,12 @@ fn check_the_password(e &webui.Event) { // Check the password function
     } else {
         e.window.script("alert('Sorry. Wrong password.');", 0, 0) // Wrong password
     }
+    return 0
 }
 
-fn close_the_application(e &webui.Event) { // Close all opened windows
+fn close_the_application(e &webui.Event) webui.Response { // Close all opened windows
     webui.exit()
+    return 0
 }
 
 mut my_window := webui.new_window() // Create a window
