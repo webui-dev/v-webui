@@ -1,3 +1,4 @@
+[translated]
 /*
   V-WebUI 2.3.0
   https://github.com/malisipi/vwebui
