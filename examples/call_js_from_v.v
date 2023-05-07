@@ -1,13 +1,15 @@
 // v install https://github.com/malisipi/vwebui
 import malisipi.vwebui as webui
 
-fn my_function_count(e &webui.Event) {
+fn my_function_count(e &webui.Event) webui.Response {
   count := e.window.script("return count;", 0, 48)
   e.window.script("SetCount(${count.int() + 1});", 0, 0)
+  return 0
 }
 
-fn my_function_exit(e &webui.Event) { // Close all opened windows
+fn my_function_exit(e &webui.Event) webui.Response { // Close all opened windows
     webui.exit()
+    return 0
 }
 
 mut my_window := webui.new_window() // Create a window
