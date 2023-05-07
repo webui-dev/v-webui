@@ -78,7 +78,7 @@ fn C.webui_exit()
 fn C.webui_is_shown(win Window) bool
 fn C.webui_set_timeout(second u64)
 fn C.webui_set_icon(win Window, icon &char, icon_type &char)
-fn C.webui_multi_access(win Window, status bool)
+fn C.webui_set_multi_access(win Window, status bool)
 fn C.webui_run(win Window, script &char)
 fn C.webui_script(win Window, script &char, timeout u64, buffer &char, size_buffer u64)
 fn C.webui_set_kiosk(win Window, kiosk bool)
@@ -150,6 +150,21 @@ pub fn (window Window) show (content string) bool {
 // Show a window using a embedded HTML, or a file with specific browser. If the window is already opened then it will be refreshed.
 pub fn (window Window) show_browser (content string, browser_id u64) bool {
 	return C.webui_show_browser(window, content.str, browser_id)
+}
+
+// Check a specific window if it's still running
+pub fn (window Window) is_shown () bool {
+	return C.webui_is_shown(window)
+}
+
+// Allow the window URL to be re-used in normal web browsers
+pub fn (window Window) set_multi_access (status bool) {
+	C.webui_set_multi_access(window, status)
+}
+
+// Run JavaScript quickly with no waiting for the response.
+pub fn (window Window) run (script string) {
+	C.webui_run(window, &char(script.str))
 }
 
 // Close a specific window.
