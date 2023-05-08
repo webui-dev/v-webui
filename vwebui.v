@@ -87,6 +87,7 @@ fn C.webui_show(win Window, content &char) bool
 fn C.webui_show_browser(win Window, content &char, browser u64) bool
 fn C.webui_wait()
 fn C.webui_close(win Window)
+fn C.webui_destroy(win Window)
 fn C.webui_exit()
 fn C.webui_is_shown(win Window) bool
 fn C.webui_set_timeout(second u64)
@@ -186,10 +187,16 @@ pub fn (window Window) set_runtime (runtime u64) Window {
 	return window
 }
 
-// Close a specific window.
+// Close a specific window only.
 pub fn (window Window) close () {
 	C.webui_close(window)
 }
+
+// Close a specific window and clear all resources.
+pub fn (window Window) destroy () {
+	C.webui_destroy(window)
+}
+
 
 // Close all opened windows. webui_wait() will break.
 pub fn exit() {
