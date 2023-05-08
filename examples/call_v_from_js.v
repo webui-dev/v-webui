@@ -94,9 +94,9 @@ if !my_window.show(my_html) { // Run the window
 }
 
 my_window.bind("MyID_One", my_function_string)
-my_window.bind("MyID_Two", my_function_integer)
-my_window.bind("MyID_Three", my_function_boolean)
-my_window.bind("MyID_Four", my_function_with_response)
+		.bind("MyID_Two", my_function_integer)
+		.bind("MyID_Three", my_function_boolean)
+		.bind("MyID_Four", my_function_with_response)
 
 // Wait until all windows get closed
 webui.wait()

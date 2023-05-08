@@ -169,18 +169,21 @@ pub fn (window Window) is_shown () bool {
 }
 
 // Allow the window URL to be re-used in normal web browsers
-pub fn (window Window) set_multi_access (status bool) {
+pub fn (window Window) set_multi_access (status bool) Window {
 	C.webui_set_multi_access(window, status)
+	return window
 }
 
 // Run JavaScript quickly with no waiting for the response.
-pub fn (window Window) run (script string) {
+pub fn (window Window) run (script string) Window {
 	C.webui_run(window, &char(script.str))
+	return window
 }
 
 // Chose between Deno and Nodejs runtime for .js and .ts files.
-pub fn (window Window) set_runtime (runtime u64) {
+pub fn (window Window) set_runtime (runtime u64) Window {
 	C.webui_set_runtime(window, runtime)
+	return window
 }
 
 // Close a specific window.
@@ -194,8 +197,9 @@ pub fn exit() {
 }
 
 // Set the window in Kiosk mode (Full screen)
-pub fn (window Window) set_kiosk (kiosk bool){
+pub fn (window Window) set_kiosk (kiosk bool) Window {
 	C.webui_set_kiosk(window, kiosk)
+	return window
 }
 
 fn native_event_handler(e &CEvent) {
@@ -213,9 +217,10 @@ fn native_event_handler(e &CEvent) {
 }
 
 // Bind a specific html element click event with a function. Empty element means all events.
-pub fn (window Window) bind (element string, func Function) {
+pub fn (window Window) bind (element string, func Function) Window {
 	function_list[C.webui_interface_get_window_id(window)][element] = func
 	C.webui_bind(window, element.str, native_event_handler)
+	return window
 }
 
 // Set the maximum time in seconds to wait for browser to start
