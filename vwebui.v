@@ -58,7 +58,7 @@ pub const (
 
 // Typedefs of struct
 
-pub type Window = voidptr
+pub type Window = u64
 pub struct C.webui_event_t {
 	pub mut:
 		window			Window // Pointer to the window object
@@ -82,6 +82,7 @@ pub type Function = fn(e &Event) Response
 // C Functions
 
 fn C.webui_new_window() Window
+fn C.webui_new_window_id(win_id u64)
 fn C.webui_bind(win Window, element &char, func fn (&CEvent)) u64
 fn C.webui_show(win Window, content &char) bool
 fn C.webui_show_browser(win Window, content &char, browser u64) bool
@@ -233,4 +234,13 @@ pub fn (window Window) bind (element string, func Function) Window {
 // Set the maximum time in seconds to wait for browser to start
 pub fn set_timeout(timeout u64){
 	C.webui_set_timeout(timeout)
+}
+
+pub fn get_window(win_id u64) Window {
+	return Window(win_id)
+}
+
+pub fn new_window_by_id(win_id u64) Window {
+	C.webui_new_window_id(win_id)
+	return get_window(win_id)
 }
