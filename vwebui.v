@@ -32,29 +32,35 @@ __global (
 	function_list map[u64]map[u64]Function
 )
 
-pub const (
-	event_disconnected = 0
-	event_connected = 1
-	event_multi_connection = 2
-	event_unwanted_connection = 3
-	event_mouse_click = 4
-	event_navigation = 5
-	event_callback = 6
-	browser_any = 0
-	browser_chrome = 1
-	browser_firefox = 2
-	browser_edge = 3
-	browser_safari = 4
-	browser_chromium = 5
-	browser_opera = 6
-	browser_brave = 7
-	browser_vivaldi = 8
-	browser_epic = 9
-	browser_yandex = 10
+pub enum event as u64 {
+	disconnected = 0
+	connected = 1
+	multi_connection = 2
+	unwanted_connection = 3
+	mouse_click = 4
+	navigation = 5
+	callback = 6
+}
+
+pub enum browser as u64 {
+	any = 0
+	chrome = 1
+	firefox = 2
+	edge = 3
+	safari = 4
+	chromium = 5
+	opera = 6
+	brave = 7
+	vivaldi = 8
+	epic = 9
+	yandex = 10
+}
+
+pub enum runtime as u64 {
 	runtime_none = 0
 	runtime_deno = 1
 	runtime_nodejs = 2
-)
+}
 
 // Typedefs of struct
 
@@ -72,7 +78,7 @@ pub type CFunction = fn(e &CEvent)
 pub struct Event {
 	pub mut:
 		window			Window // Pointer to the window object
-		event_type		u64 // Event type
+		event_type		event // Event type
 		element			string // HTML element ID
 		data			WebuiResponseData // JavaScript data
 		event_number	u64 // To set the callback response
@@ -107,6 +113,7 @@ fn C.webui_return_bool(e &CEvent, b bool)
 fn C.webui_interface_is_app_running() bool
 fn C.webui_interface_get_window_id(win Window) u64
 fn C.webui_interface_get_bind_id(win Window, element &char) u64
+fn C.webui_get_new_window_id() u64
 
 // V Interface
 
@@ -162,7 +169,7 @@ pub fn (window Window) show (content string) bool {
 }
 
 // Show a window using a embedded HTML, or a file with specific browser. If the window is already opened then it will be refreshed.
-pub fn (window Window) show_browser (content string, browser_id u64) bool {
+pub fn (window Window) show_browser (content string, browser_id browser) bool {
 	return C.webui_show_browser(window, content.str, browser_id)
 }
 
@@ -184,7 +191,7 @@ pub fn (window Window) run (script string) Window {
 }
 
 // Chose between Deno and Nodejs runtime for .js and .ts files.
-pub fn (window Window) set_runtime (runtime u64) Window {
+pub fn (window Window) set_runtime (runtime runtime) Window {
 	C.webui_set_runtime(window, runtime)
 	return window
 }
@@ -216,7 +223,7 @@ fn native_event_handler(e &CEvent) {
 		bind_id := C.webui_interface_get_bind_id(e.window, e.element)
 		resp := function_list[C.webui_interface_get_window_id(e.window)][bind_id](Event{
 			window: e.window,
-			event_type: e.event_type
+			event_type: vwebui.event(e.event_type)
 			element: e.element.vstring()
 			data: e.get()
 			event_number: e.event_number
@@ -258,4 +265,8 @@ pub fn get_window(win_id u64) Window {
 pub fn new_window_by_id(win_id u64) Window {
 	C.webui_new_window_id(win_id)
 	return get_window(win_id)
+}
+
+pub fn new_id() u64 {
+	return C.webui_get_new_window_id()
 }

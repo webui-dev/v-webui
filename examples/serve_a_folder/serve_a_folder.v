@@ -9,13 +9,13 @@ const (
 fn events(e &webui.Event) webui.Response { // Close all opened windows
     // This function gets called every time
     // there is an event
-    if e.event_type == webui.event_connected {
+    if e.event_type == .connected {
         println("Connected.")
-    } else if e.event_type == webui.event_disconnected {
+    } else if e.event_type == .disconnected {
         println("Disconnected.")
-    } else if e.event_type == webui.event_mouse_click {
+    } else if e.event_type == .mouse_click {
         println("Click.")
-    } else if e.event_type == webui.event_navigation {
+    } else if e.event_type == .navigation {
         println("Starting navigation to: ${e.data}")
     }
     return 0
