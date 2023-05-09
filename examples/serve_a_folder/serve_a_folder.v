@@ -1,6 +1,11 @@
 // v install https://github.com/malisipi/vwebui
 import malisipi.vwebui as webui
 
+const (
+    my_window = 1
+    my_second_window = 2
+)
+
 fn events(e &webui.Event) webui.Response { // Close all opened windows
     // This function gets called every time
     // there is an event
@@ -11,7 +16,7 @@ fn events(e &webui.Event) webui.Response { // Close all opened windows
     } else if e.event_type == webui.event_mouse_click {
         println("Click.")
     } else if e.event_type == webui.event_navigation {
-        //println("Starting navigation to: ${e.data}")
+        println("Starting navigation to: ${e.data}")
     }
     return 0
 }
@@ -25,9 +30,8 @@ fn switch_to_second_page(e &webui.Event) webui.Response {
 }
 
 fn show_second_window(e &webui.Event) webui.Response {
-    webui.new_window()
-    	.bind("Exit", exit_app)
-    	.show("second.html")
+    webui.get_window(my_second_window)
+        .show("second.html")
     return 0
 }
 
@@ -37,14 +41,15 @@ fn exit_app(e &webui.Event) webui.Response { // Close all opened windows
 }
 
 // Create new windows
-mut my_window := webui.new_window()
+webui.new_window_by_id(my_window)
+    // Bind HTML element IDs with a C functions
+    .bind("SwitchToSecondPage", switch_to_second_page)
+    .bind("OpenNewWindow", show_second_window)
+    .bind("Exit", exit_app)
+    .bind("", events) // Bind events
+    .show("index.html") // Show a new window
 
-// Bind HTML element IDs with a C functions
-my_window.bind("SwitchToSecondPage", switch_to_second_page)
-my_window.bind("OpenNewWindow", show_second_window)
-my_window.bind("Exit", exit_app)
-
-my_window.bind("", events) // Bind events
-my_window.show("index.html") // Show a new window
+webui.new_window_by_id(my_second_window)
+    .bind("Exit", exit_app)
 
 webui.wait() // Wait until all windows get closed
