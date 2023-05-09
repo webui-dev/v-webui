@@ -29,7 +29,7 @@ $if webui_log? {
 
 // Consts
 __global (
-	function_list map[u64]map[string]Function
+	function_list map[u64]map[u64]Function
 )
 
 pub const (
@@ -65,7 +65,7 @@ pub struct C.webui_event_t {
 		event_type		u64 // Event type
 		element			&char // HTML element ID
 		data			&char // JavaScript data
-		event_number		u64 // To set the callback response
+		event_number	u64 // To set the callback response
 }
 pub type CEvent = C.webui_event_t
 pub type CFunction = fn(e &CEvent)
@@ -106,6 +106,7 @@ fn C.webui_return_string(e &CEvent, s &char)
 fn C.webui_return_bool(e &CEvent, b bool)
 fn C.webui_interface_is_app_running() bool
 fn C.webui_interface_get_window_id(win Window) u64
+fn C.webui_interface_get_bind_id(win Window, element &char) u64
 
 // V Interface
 
@@ -212,8 +213,8 @@ pub fn (window Window) set_kiosk (kiosk bool) Window {
 
 fn native_event_handler(e &CEvent) {
 	unsafe {
-		registered_function := function_list[C.webui_interface_get_window_id(e.window)][e.element.vstring()]
-		resp := registered_function(Event{
+		bind_id := C.webui_interface_get_bind_id(e.window, e.element)
+		resp := function_list[C.webui_interface_get_window_id(e.window)][bind_id](Event{
 			window: e.window,
 			event_type: e.event_type
 			element: e.element.vstring()
@@ -224,10 +225,24 @@ fn native_event_handler(e &CEvent) {
 	}
 }
 
+fn native_raw_event_handler(e &CEvent) {
+	native_event_handler(&CEvent{
+		window: e.window,
+		event_type: e.event_type,
+		element: c"",
+		data: e.data,
+		event_number: e.event_number
+	})
+}
+
 // Bind a specific html element click event with a function. Empty element means all events.
 pub fn (window Window) bind (element string, func Function) Window {
-	function_list[C.webui_interface_get_window_id(window)][element] = func
-	C.webui_bind(window, element.str, native_event_handler)
+	bind_id := if element != "" {
+		C.webui_bind(window, &char(element.str), native_event_handler)
+	} else {
+		C.webui_bind(window, &char(element.str), native_raw_event_handler)
+	}
+	function_list[C.webui_interface_get_window_id(window)][bind_id] = func
 	return window
 }
 
