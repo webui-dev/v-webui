@@ -32,6 +32,3 @@ target/
 
 # Broken NTFS
 nul
-
-# Skip unfinished examples
-examples/text-editor

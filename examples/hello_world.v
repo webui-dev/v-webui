@@ -6,9 +6,9 @@ fn check_the_password(e &webui.Event) webui.Response { // Check the password fun
     println("Password: "+password)
     
     if password == "123456" { // Check the password
-        e.window.script("alert('Good. Password is correct.');", 0, 0) // Correct password
+        e.window.run("alert('Good. Password is correct.');") // Correct password
     } else {
-        e.window.script("alert('Sorry. Wrong password.');", 0, 0) // Wrong password
+        e.window.run("alert('Sorry. Wrong password.');") // Wrong password
     }
     return 0
 }
