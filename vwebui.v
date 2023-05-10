@@ -221,7 +221,9 @@ pub fn (window Window) set_kiosk (kiosk bool) Window {
 fn native_event_handler(e &CEvent) {
 	unsafe {
 		bind_id := C.webui_interface_get_bind_id(e.window, e.element)
-		resp := function_list[C.webui_interface_get_window_id(e.window)][bind_id](Event{
+		win_id := C.webui_interface_get_window_id(e.window)
+		func := function_list[win_id][bind_id]
+		resp := func(Event{
 			window: e.window,
 			event_type: vwebui.event(e.event_type)
 			element: e.element.vstring()
