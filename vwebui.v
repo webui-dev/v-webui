@@ -131,7 +131,7 @@ pub mut:
 	bool	bool
 }
 pub fn (e &CEvent) get () WebuiResponseData {
-    str := unsafe { C.webui_get_string(e).vstring() }
+    str := unsafe { cstring_to_vstring(C.webui_get_string(e)) }
     return WebuiResponseData {
         string: str
         int: str.int()
