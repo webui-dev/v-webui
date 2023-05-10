@@ -16,9 +16,9 @@ module vwebui
 #flag @VMODROOT/webui/webui.c
 
 #flag @VMODROOT/webui/civetweb/civetweb.c
-#flag -DNDEBUG -DNO_CACHING -DNO_CGI -DNO_SSL -DUSE_WEBSOCKET
+#flag -DNDEBUG -DNO_CACHING -DNO_CGI -DNO_SSL -DUSE_WEBSOCKET -DMUST_IMPLEMENT_CLOCK_GETTIME
 
-#flag windows -Dstrtoll=_strtoi64 -Dstrtoull=_strtoui64 -lws2_32 -lAdvapi32 -luser32
+#flag windows -Dstrtoll=_strtoi64 -Dstrtoull=_strtoui64 -lws2_32 -lAdvapi32 -luser32 -lcomdlg32
 $if tinyc {
 	#flag windows -DWEBUI_NO_TLHELPER32
 }
