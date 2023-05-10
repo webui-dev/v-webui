@@ -61,6 +61,21 @@ Run `v install malisipi.VWebUI` or `v install https://github.com/malisipi/vwebui
 | macOS | Apple Safari | *coming soon* |
 | macOS | Opera | *coming soon* |
 
+### FAQ
+
+<details>
+ <summary>TCC is not working on Windows</summary>
+ 
+ > TCC have not a few header files. So you should use GCC or Clang on Windows. You can look up below to use how to use custom c compiler.
+ 
+</details>
+<details>
+ <summary>How to use Custom C Compiler?</summary>
+ 
+ > You can use a custom compiler with `-cc <compiler name>` flag
+ 
+</details>
+
 ### License
 
 > Licensed under MIT License.
