@@ -1,4 +1,4 @@
-import malisipi.vwebui as webui
+import vwebui as webui
 import encoding.base64
 import os
 import json
