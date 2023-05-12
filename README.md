@@ -20,7 +20,7 @@ This [text editor example](https://github.com/malisipi/vwebui/tree/main/examples
 
 ## Installation
 
-Run `v install malisipi.VWebUI` or `v install https://github.com/malisipi/vwebui`
+Run `v install https://github.com/webui-dev/v-webui`
 
 ## Documentation
 
