@@ -82,4 +82,4 @@ Run `v install malisipi.VWebUI` or `v install https://github.com/malisipi/vwebui
 
 ### Original Library
 
-> This is just a wrapper written in/for V. Thanks to [WebUI](https://github.com/alifcommunity/webui)
+> This is just a wrapper written in/for V. Thanks to [WebUI](https://github.com/webui-dev/webui)
