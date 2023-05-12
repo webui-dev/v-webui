@@ -1,5 +1,4 @@
-// v install https://github.com/malisipi/vwebui
-import malisipi.vwebui as webui
+import vwebui as webui
 
 const (
     my_window = 1
