@@ -1,5 +1,4 @@
-// v install https://github.com/malisipi/vwebui
-import malisipi.vwebui as webui
+import vwebui as webui
 
 fn my_function_string(e &webui.Event) webui.Response {
     // JavaScript:
