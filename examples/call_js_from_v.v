@@ -1,20 +1,20 @@
 import vwebui as webui
 
 fn my_function_count(e &webui.Event) webui.Response {
-  count := e.window.script("return count;", 0, 48)
-  e.window.script("SetCount(${count.int() + 1});", 0, 0)
-  return 0
+	count := e.window.script('return count;', 0, 48)
+	e.window.script('SetCount(${count.int() + 1});', 0, 0)
+	return 0
 }
 
 fn my_function_exit(e &webui.Event) webui.Response { // Close all opened windows
-    webui.exit()
-    return 0
+	webui.exit()
+	return 0
 }
 
 mut my_window := webui.new_window() // Create a window
 
 // UI HTML
-my_html := ('
+my_html := '
 <html>
   <head>
     <title>Call JavaScript from V Example</title>
@@ -50,15 +50,15 @@ my_html := ('
       }
     </script>
   </body>
-</html>')
+</html>'
 
 // Bind HTML elements with functions
-my_window.bind("MyButton1", my_function_count)
-my_window.bind("MyButton2", my_function_exit)
+my_window.bind('MyButton1', my_function_count)
+my_window.bind('MyButton2', my_function_exit)
 
 // Show the window
 if !my_window.show(my_html) { // Run the window
-    panic("The browser(s) was failed") // If not, print a error info
+	panic('The browser(s) was failed') // If not, print a error info
 }
 
 // Wait until all windows get closed

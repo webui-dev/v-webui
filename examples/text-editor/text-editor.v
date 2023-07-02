@@ -9,27 +9,30 @@ fn close(e &webui.Event) webui.Response {
 }
 
 fn open(e &webui.Event) webui.Response {
-	if e.data.string == "" {
+	if e.data.string == '' {
 		e.window.run("webui_fn('Open', prompt`File Location`)")
 		return 0
-	} else if e.data.string == "null" {
+	} else if e.data.string == 'null' {
 		return 0
 	}
 	file := e.data.string
-	if file != "" {
-		file_content :=os.read_file(file) or { println("Failed to read file: ${file}") ""}
+	if file != '' {
+		file_content := os.read_file(file) or {
+			println('Failed to read file: ${file}')
+			''
+		}
 
 		encoded_file := base64.encode_str(file)
 		encoded_file_content := base64.encode_str(file_content)
-		e.window.run("SetFile`${encoded_file}`")
-		e.window.run("addText`${encoded_file_content}`")
-		e.window.run("window.opened_file = `${file}`")
+		e.window.run('SetFile`${encoded_file}`')
+		e.window.run('addText`${encoded_file_content}`')
+		e.window.run('window.opened_file = `${file}`')
 	}
 	return 0
 }
 
 struct Save {
-	file string
+	file    string
 	content string
 }
 
@@ -44,9 +47,9 @@ fn save(e &webui.Event) webui.Response {
 
 main_window := webui.new_window()
 
-main_window.bind("Open", open)
-	.bind("Save", save)
-	.bind("Close", close)
-	.show("ui/MainWindow.html")
+main_window.bind('Open', open)
+	.bind('Save', save)
+	.bind('Close', close)
+	.show('ui/MainWindow.html')
 
 webui.wait()
