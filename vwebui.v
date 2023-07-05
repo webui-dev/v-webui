@@ -187,21 +187,18 @@ pub fn (window Window) is_shown() bool {
 }
 
 // Allow the window URL to be re-used in normal web browsers
-pub fn (window Window) set_multi_access(status bool) Window {
+pub fn (window Window) set_multi_access(status bool) {
 	C.webui_set_multi_access(window, status)
-	return window
 }
 
 // Run JavaScript quickly with no waiting for the response.
-pub fn (window Window) run(script string) Window {
+pub fn (window Window) run(script string) {
 	C.webui_run(window, &char(script.str))
-	return window
 }
 
 // Chose between Deno and Nodejs runtime for .js and .ts files.
-pub fn (window Window) set_runtime(runtime runtime) Window {
+pub fn (window Window) set_runtime(runtime runtime) {
 	C.webui_set_runtime(window, runtime)
-	return window
 }
 
 // Close a specific window only.
@@ -220,9 +217,8 @@ pub fn exit() {
 }
 
 // Set the window in Kiosk mode (Full screen)
-pub fn (window Window) set_kiosk(kiosk bool) Window {
+pub fn (window Window) set_kiosk(kiosk bool) {
 	C.webui_set_kiosk(window, kiosk)
-	return window
 }
 
 fn native_event_handler(e &CEvent) {
