@@ -87,8 +87,8 @@ pub type Function = fn (e &Event) Response
 // C Functions
 
 fn C.webui_new_window() Window
-fn C.webui_new_window_id(win_id u64)
-fn C.webui_bind(win Window, element &char, func fn (&CEvent)) u64
+fn C.webui_new_window_id(win_id Window)
+fn C.webui_bind(win Window, element &char, func fn (&CEvent)) Window
 fn C.webui_show(win Window, content &char) bool
 fn C.webui_show_browser(win Window, content &char, browser u64) bool
 fn C.webui_wait()
@@ -102,7 +102,7 @@ fn C.webui_set_multi_access(win Window, status bool)
 fn C.webui_run(win Window, script &char)
 fn C.webui_script(win Window, script &char, timeout u64, buffer &char, size_buffer u64)
 fn C.webui_set_kiosk(win Window, kiosk bool)
-fn C.webui_set_runtime(win Window, runtime u64)
+fn C.webui_set_runtime(win Window, runtime runtime)
 fn C.webui_get_int(e &CEvent) i64
 fn C.webui_get_string(e &CEvent) &char
 fn C.webui_get_bool(e &CEvent) bool
@@ -110,9 +110,9 @@ fn C.webui_return_int(e &CEvent, n i64)
 fn C.webui_return_string(e &CEvent, s &char)
 fn C.webui_return_bool(e &CEvent, b bool)
 fn C.webui_interface_is_app_running() bool
-fn C.webui_interface_get_window_id(win Window) u64
-fn C.webui_interface_get_bind_id(win Window, element &char) u64
-fn C.webui_get_new_window_id() u64
+fn C.webui_interface_get_window_id(win Window) Window
+fn C.webui_interface_get_bind_id(win Window, element &char) Window
+fn C.webui_get_new_window_id() Window
 
 // V Interface
 
