@@ -267,6 +267,11 @@ pub fn new_window_by_id(win_id u64) Window {
 	return get_window(win_id)
 }
 
+[deprecated: 'use get_new_window_id instead']
 pub fn new_id() u64 {
+	return C.webui_get_new_window_id()
+}
+
+pub fn get_new_window_id() Window {
 	return C.webui_get_new_window_id()
 }
