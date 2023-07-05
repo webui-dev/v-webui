@@ -13,14 +13,19 @@ module vwebui
 
 #include "@VMODROOT/webui/webui.h"
 
-#flag windows -L @VMODROOT/webui -lwebui-2-static-x64-windows -lws2_32
-#flag darwin -L @VMODROOT/webui -lwebui-2-static-x64-macos -lpthread -lm
-#flag linux -L @VMODROOT/webui -lwebui-2-static-x64-linux -lpthread -lm
-#flag -DNDEBUG -DNO_CACHING -DNO_CGI -DNO_SSL -DUSE_WEBSOCKET -DMUST_IMPLEMENT_CLOCK_GETTIME
-#flag windows -Dstrtoll=_strtoi64 -Dstrtoull=_strtoui64 -lws2_32 -lAdvapi32 -luser32 -lcomdlg32
+$if arm64 {
+	#flag darwin -L @VMODROOT/webui -lwebui-2-static-arm64-macos -lpthread -lm
+} $else {
+	#flag linux -L @VMODROOT/webui -lwebui-2-static-x64-linux -lpthread -lm
+	#flag darwin -L @VMODROOT/webui -lwebui-2-static-x64-macos -lpthread -lm
+	#flag windows -L @VMODROOT/webui -lwebui-2-static-x64-windows -lws2_32
+	#flag windows -Dstrtoll=_strtoi64 -Dstrtoull=_strtoui64 -lws2_32 -lAdvapi32 -luser32 -lcomdlg32
+}
 $if tinyc {
 	#flag windows -DWEBUI_NO_TLHELPER32
 }
+#flag -DNDEBUG -DNO_CACHING -DNO_CGI -DNO_SSL -DUSE_WEBSOCKET -DMUST_IMPLEMENT_CLOCK_GETTIME
+
 // Debug
 $if webui_log ? {
 	#flag -DWEBUI_LOG
