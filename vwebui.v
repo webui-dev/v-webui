@@ -52,9 +52,12 @@ pub enum browser as u64 {
 }
 
 pub enum runtime as u64 {
-	runtime_none = 0
-	runtime_deno = 1
-	runtime_nodejs = 2
+	runtime_none = 0 [deprecated: 'use none instead']
+	runtime_deno = 1 [deprecated: 'use deno instead']
+	runtime_nodejs = 2 [deprecated: 'use nodejs instead']
+	@none = 0
+	deno = 1
+	nodejs = 2
 }
 
 // Typedefs of struct
