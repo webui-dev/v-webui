@@ -1,7 +1,7 @@
 /*
   WebUI Library 2.3.0
   http://webui.me
-  https://github.com/alifcommunity/webui
+  https://github.com/webui-dev/webui
   Copyright (c) 2020-2023 Hassan Draga.
   Licensed under MIT License.
   All rights reserved.
@@ -163,6 +163,8 @@ WEBUI_EXPORT void webui_close(size_t window);
 WEBUI_EXPORT void webui_destroy(size_t window);
 // Close all opened windows. webui_wait() will break.
 WEBUI_EXPORT void webui_exit(void);
+// Set the web-server root folder path.
+WEBUI_EXPORT bool webui_set_root_folder(size_t window, const char* path);
 
 // -- Other ---------------------------
 // Check a specific window if it's still running
@@ -190,7 +192,7 @@ WEBUI_EXPORT bool webui_get_bool(webui_event_t* e);
 // Return the response to JavaScript as integer.
 WEBUI_EXPORT void webui_return_int(webui_event_t* e, long long int n);
 // Return the response to JavaScript as string.
-WEBUI_EXPORT void webui_return_string(webui_event_t* e, char* s);
+WEBUI_EXPORT void webui_return_string(webui_event_t* e, const char* s);
 // Return the response to JavaScript as boolean.
 WEBUI_EXPORT void webui_return_bool(webui_event_t* e, bool b);
 // Base64 encoding. Use this to safely send text based data to the UI. If it fails it will return NULL.

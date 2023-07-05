@@ -32,3 +32,6 @@ target/
 
 # Broken NTFS
 nul
+
+# Pre-built static webui libraries
+!libwebui*static*.a
