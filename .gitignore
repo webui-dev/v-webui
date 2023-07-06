@@ -35,3 +35,4 @@ nul
 
 # Pre-built static webui libraries
 !libwebui*static*.a
+!webui*.dll
