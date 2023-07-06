@@ -14,10 +14,10 @@ module vwebui
 #include "@VMODROOT/webui/webui.h"
 
 $if arm64 {
-	#flag darwin -L @VMODROOT/webui -lwebui-2-static-arm64-macos -lpthread -lm
+	#flag darwin -L@VMODROOT/webui -lwebui-2-static-arm64-macos -lpthread -lm
 } $else {
-	#flag linux -L @VMODROOT/webui -lwebui-2-static-x64-linux -lpthread -lm
-	#flag darwin -L @VMODROOT/webui -lwebui-2-static-x64-macos -lpthread -lm
+	#flag linux -L@VMODROOT/webui -lwebui-2-static-x64-linux -lpthread -lm
+	#flag darwin -L@VMODROOT/webui -lwebui-2-static-x64-macos -lpthread -lm
 	#flag windows -L@VMODROOT/webui -lwebui-2-static-x64-windows -lws2_32
 	#flag windows @VMODROOT/webui/webui-2-x64-windows.dll
 }
