@@ -136,7 +136,7 @@ pub mut:
 }
 
 pub fn (e &CEvent) get() WebuiResponseData {
-	str := unsafe { cstring_to_vstring(C.webui_get_string(e)) }
+	str := unsafe { (&char(C.webui_get_string(e))).vstring() }
 	return WebuiResponseData{
 		string: str
 		int: str.int()
@@ -173,12 +173,12 @@ pub fn wait() {
 
 // Show a window using a embedded HTML, or a file. If the window is already opened then it will be refreshed.
 pub fn (window Window) show(content string) bool {
-	return C.webui_show(window, content.str)
+	return C.webui_show(window, &char(content.str))
 }
 
 // Show a window using a embedded HTML, or a file with specific browser. If the window is already opened then it will be refreshed.
 pub fn (window Window) show_browser(content string, browser_id browser) bool {
-	return C.webui_show_browser(window, content.str, browser_id)
+	return C.webui_show_browser(window, &char(content.str), browser_id)
 }
 
 // Check a specific window if it's still running
