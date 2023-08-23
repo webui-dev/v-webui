@@ -57,9 +57,6 @@ pub enum browser as u64 {
 }
 
 pub enum runtime as u64 {
-	runtime_none = 0 [deprecated: 'use none instead']
-	runtime_deno = 1 [deprecated: 'use deno instead']
-	runtime_nodejs = 2 [deprecated: 'use nodejs instead']
 	@none = 0
 	deno = 1
 	nodejs = 2
@@ -273,11 +270,6 @@ pub fn get_window(win_id u64) Window {
 pub fn new_window_by_id(win_id u64) Window {
 	C.webui_new_window_id(win_id)
 	return get_window(win_id)
-}
-
-[deprecated: 'use get_new_window_id instead']
-pub fn new_id() u64 {
-	return C.webui_get_new_window_id()
 }
 
 pub fn get_new_window_id() Window {
