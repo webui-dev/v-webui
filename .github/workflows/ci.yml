@@ -6,78 +6,12 @@ on:
   pull_request:
     paths-ignore: ['**/*.md']
 
-env:
-  # The path where the module would be installed with `v install <giturl>`
-  MOD_NAME: vwebui
-
 jobs:
-  setup:
-    strategy:
-      matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
-      fail-fast: false
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Install V
-        uses: vlang/setup-v@v1.3
-        with:
-          check-latest: true
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-        with:
-          path: ${{ env.MOD_NAME }}
-      - name: Setup WebUI library on Windows
-        if: runner.os != 'Windows'
-        run: |
-          ${{ env.MOD_NAME }}/setup.vsh
-          mv ${{ env.MOD_NAME }} ~/.vmodules/${{ env.MOD_NAME }}
-      - name: Setup WebUI library on Windows
-        if: runner.os == 'Windows'
-        run: |
-          ${{ env.MOD_NAME }}/setup.vsh
-          Move-Item -Path "${{ env.MOD_NAME }}" -Destination "$HOME/.vmodules/${{ env.MOD_NAME }}" -Force
-      - name: Cache
-        uses: actions/cache/save@v3
-        with:
-          path: |
-            vlang
-            ~/.vmodules
-          key: ${{ runner.os }}-${{ github.sha }}
+  linux:
+    uses: ./.github/workflows/linux.yml
 
-  build:
-    needs: setup
-    strategy:
-      matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
-        compiler: [tcc, gcc, clang]
-        optimization: ['', -cstrict, -prod]
-        # excluding arrays / multiple values at once apparently doesn't work properly
-        exclude:
-          - os: macos-latest
-            optimization: -cstrict
-          - os: windows-latest
-            optimization: -cstrict
-          - compiler: tcc
-            optimization: -prod
-          # only gcc on windows for now
-          - os: windows-latest
-            compiler: tcc
-          - os: windows-latest
-            compiler: clang
-      fail-fast: false
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Restore V Cache
-        uses: actions/cache/restore@v3
-        with:
-          path: |
-            vlang
-            ~/.vmodules
-          key: ${{ runner.os }}-${{ github.sha }}
-          fail-on-cache-miss: true
-      - name: Setup V
-        uses: vlang/setup-v@v1.3
-      - name: Build
-        run: |
-          cd $HOME/.vmodules/${{ env.MOD_NAME }}/examples
-          v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} minimal.v
+  macos:
+    uses: ./.github/workflows/macos.yml
+
+  windows:
+    uses: ./.github/workflows/windows.yml
