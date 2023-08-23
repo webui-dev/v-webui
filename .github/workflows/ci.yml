@@ -8,43 +8,41 @@ on:
 
 env:
   # The path where the module would be installed with `v install <giturl>`
-  MOD_PATH: ~/.vmodules/vwebui
-
-defaults:
-  run:
-    # necessary for windows
-    shell: bash
+  MOD_NAME: vwebui
 
 jobs:
   setup:
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
+      fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Cache Status
-        id: cache-status
-        uses: actions/cache@v3
-        with:
-          path: vlang
-          key: ${{ runner.os }}-v-
-
-      - if: ${{ steps.cache-status.outputs.cache-hit != 'true' }}
-        name: Install V
+      - name: Install V
         uses: vlang/setup-v@v1.3
         with:
           check-latest: true
-
-      - if: ${{ steps.cache-status.outputs.cache-hit != 'true' }}
-        name: Add V Version to Environment
-        run: echo "V_VER=$(v -v)" >> $GITHUB_ENV
-
-      - if: ${{ steps.cache-status.outputs.cache-hit != 'true' }}
-        name: Cache V
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          path: ${{ env.MOD_NAME }}
+      - name: Setup WebUI library on Windows
+        if: runner.os != 'Windows'
+        run: |
+          ${{ env.MOD_NAME }}/setup.vsh
+          mv ${{ env.MOD_NAME }} ~/.vmodules/${{ env.MOD_NAME }}
+      - name: Setup WebUI library on Windows
+        if: runner.os == 'Windows'
+        run: |
+          ${{ env.MOD_NAME }}/setup.vsh
+          Move-Item -Path "${{ env.MOD_NAME }}" -Destination "$HOME/.vmodules/${{ env.MOD_NAME }}" -Force
+      - name: Cache
         uses: actions/cache/save@v3
         with:
-          path: vlang
-          key: ${{ runner.os }}-v-${{ env.V_VER }}
+          path: |
+            vlang
+            ~/.vmodules
+          key: ${{ runner.os }}-${{ github.sha }}
 
   build:
     needs: setup
@@ -72,21 +70,14 @@ jobs:
       - name: Restore V Cache
         uses: actions/cache/restore@v3
         with:
-          path: vlang
-          key: ${{ runner.os }}-v-
+          path: |
+            vlang
+            ~/.vmodules
+          key: ${{ runner.os }}-${{ github.sha }}
           fail-on-cache-miss: true
-
       - name: Setup V
         uses: vlang/setup-v@v1.3
-
-      - name: Checkout ${{ github.event.repository.name }}
-        uses: actions/checkout@v3
-        with:
-          path: ${{ github.event.repository.name }}
-
-      - name: Copy ${{ github.event.repository.name }} to .vmodules
-        run: cp -r ${{ github.event.repository.name }} ${{ env.MOD_PATH }}
-
       - name: Build
         run: |
-          v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} ${{ env.MOD_PATH }}/examples/minimal.v
+          cd $HOME/.vmodules/${{ env.MOD_NAME }}/examples
+          v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} minimal.v
