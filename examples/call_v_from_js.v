@@ -2,7 +2,7 @@ import vwebui as webui
 
 fn my_function_string(e &webui.Event) webui.Response {
 	// JavaScript:
-	// webui_fn('MyID_One', 'Hello');
+	// webui.call('MyID_One', 'Hello');
 
 	response := e.data.string
 	println('my_function_string: ${response}') // Hello
@@ -16,7 +16,7 @@ fn my_function_string(e &webui.Event) webui.Response {
 
 fn my_function_integer(e &webui.Event) webui.Response {
 	// JavaScript:
-	// webui_fn('MyID_Two', 123456789);
+	// webui.call('MyID_Two', 123456789);
 
 	response := e.data.int
 	println('my_function_integer: ${response}') // 123456789
@@ -25,7 +25,7 @@ fn my_function_integer(e &webui.Event) webui.Response {
 
 fn my_function_boolean(e &webui.Event) webui.Response {
 	// JavaScript:
-	// webui_fn('MyID_Three', true);
+	// webui.call('MyID_Three', true);
 
 	response := e.data.bool
 	println('my_function_boolean: ${response}') // true
@@ -34,7 +34,7 @@ fn my_function_boolean(e &webui.Event) webui.Response {
 
 fn my_function_with_response(e &webui.Event) webui.Response {
 	// JavaScript:
-	// const result = webui_fn('MyID_Four', number);
+	// const result = webui.call('MyID_Four', number);
 
 	number := e.data.int * 2
 	println('my_function_with_response: ${number}')
@@ -61,13 +61,13 @@ my_html := '
     <h2>WebUI - Call V from JavaScript Example</h2>
     <p>Call V function with argument (<em>See the logs in your terminal</em>)</p>
     <br>
-    <button onclick="webui_fn(\'MyID_One\', \'Hello\');">Call my_function_string()</button>
+    <button onclick="webui.call(\'MyID_One\', \'Hello\');">Call my_function_string()</button>
     <br>
     <br>
-    <button onclick="webui_fn(\'MyID_Two\', 123456789);">Call my_function_integer()</button>
+    <button onclick="webui.call(\'MyID_Two\', 123456789);">Call my_function_integer()</button>
     <br>
     <br>
-    <button onclick="webui_fn(\'MyID_Three\', true);">Call my_function_boolean()</button>
+    <button onclick="webui.call(\'MyID_Three\', true);">Call my_function_boolean()</button>
     <br>
     <br>
     <p>Call V function and wait for the response</p>
@@ -80,7 +80,7 @@ my_html := '
       function MyJS() {
         const MyInput = document.getElementById("MyInputID");
         const number = MyInput.value;
-        webui_fn("MyID_Four", number).then((response) => {
+        webui.call("MyID_Four", number).then((response) => {
             MyInput.value = response;
         });
       }
