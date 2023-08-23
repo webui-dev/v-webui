@@ -20,61 +20,32 @@ This [text editor example](https://github.com/malisipi/vwebui/tree/main/examples
 
 ## Installation
 
-Run `v install https://github.com/webui-dev/v-webui`
+```sh
+v install https://github.com/webui-dev/v-webui
+```
+
+> **Note**
+> On Windows it is recommended to use GCC or Clang to compile a WebUI V program. TCC is currently not working due to missing header files.
+> You can use the `-cc` flag to specify a custom compiler. E.g., `v -cc gcc run .`
 
 ## Documentation
 
- - [Online Documentation - V](https://webui.me/docs/#/v_api)
+- [Online Documentation - V](https://webui.me/docs/2.4.0/#/v_api)
 
 ## Supported Web Browsers
 
-| OS | Browser | Status |
-| ------ | ------ | ------ |
-| Windows | Mozilla Firefox | ✔️ |
-| Windows | Google Chrome | ✔️ |
-| Windows | Microsoft Edge | ✔️ |
-| Windows | Chromium | ✔️ |
-| Windows | Yandex | ✔️ |
-| Windows | Brave | ✔️ |
-| Windows | Vivaldi | ✔️ |
-| Windows | Epic | ✔️ |
-| Windows | Opera | *coming soon* |
-| - | - | - |
-| Linux | Mozilla Firefox | ✔️ |
-| Linux | Google Chrome | ✔️ |
-| Linux | Microsoft Edge | ✔️ |
-| Linux | Chromium | ✔️ |
-| Linux | Yandex | ✔️ |
-| Linux | Brave | ✔️ |
-| Linux | Vivaldi | ✔️ |
-| Linux | Epic | *Does Not Exist* |
-| Linux | Opera | *coming soon* |
-| - | - | - |
-| macOS | Mozilla Firefox | ✔️ |
-| macOS | Google Chrome | ✔️ |
-| macOS | Microsoft Edge | ✔️ |
-| macOS | Chromium | ✔️ |
-| macOS | Yandex | ✔️ |
-| macOS | Brave | ✔️ |
-| macOS | Vivaldi | ✔️ |
-| macOS | Epic | ✔️ |
-| macOS | Apple Safari | *coming soon* |
-| macOS | Opera | *coming soon* |
-
-### FAQ
-
-<details>
- <summary>TCC is not working on Windows</summary>
- 
- > TCC have not a few header files. So you should use GCC or Clang on Windows. You can look up below to use how to use custom c compiler.
- 
-</details>
-<details>
- <summary>How to use Custom C Compiler?</summary>
- 
- > You can use a custom compiler with `-cc <compiler name>` flag
- 
-</details>
+| Browser | Windows | macOS | Linux |
+| ------ | ------ | ------ | ------ |
+| Mozilla Firefox | ✔️ | ✔️ | ✔️ |
+| Google Chrome | ✔️ | ✔️ | ✔️ |
+| Microsoft Edge | ✔️ | ✔️ | ✔️ |
+| Chromium | ✔️ | ✔️ | ✔️ |
+| Yandex | ✔️ | ✔️ | ✔️ |
+| Brave | ✔️ | ✔️ | ✔️ |
+| Vivaldi | ✔️ | ✔️ | ✔️ |
+| Epic | ✔️ | ✔️ | *not available* |
+| Apple Safari | *not available* | *coming soon* | *not available* |
+| Opera | *coming soon* | *coming soon* | *coming soon* |
 
 ### License
 
