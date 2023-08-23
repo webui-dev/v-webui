@@ -67,6 +67,7 @@ pub mut:
 	event_type   u64    // Event type
 	element      &char  // HTML element ID
 	data         &char  // JavaScript data
+	size         u64    // JavaScript data len
 	event_number u64    // To set the callback response
 }
 
