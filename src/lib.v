@@ -13,7 +13,7 @@ __global (
 	function_list map[u64]map[u64]Function
 )
 
-pub enum event as u64 {
+pub enum EventType {
 	disconnected = 0
 	connected = 1
 	multi_connection = 2
@@ -23,7 +23,7 @@ pub enum event as u64 {
 	callback = 6
 }
 
-pub enum browser as u64 {
+pub enum Browser {
 	any = 0
 	chrome = 1
 	firefox = 2
@@ -37,7 +37,7 @@ pub enum browser as u64 {
 	yandex = 10
 }
 
-pub enum runtime as u64 {
+pub enum Runtime {
 	@none = 0
 	deno = 1
 	nodejs = 2
@@ -61,9 +61,9 @@ pub type CFunction = fn (e &CEvent)
 
 pub struct Event {
 pub mut:
-	window       Window // Pointer to the window object
-	event_type   event  // Event type
-	element      string // HTML element ID
+	window       Window    // Pointer to the window object
+	event_type   EventType // Event type
+	element      string    // HTML element ID
 	data         WebuiResponseData // JavaScript data
 	event_number u64 // To set the callback response
 }
@@ -126,7 +126,7 @@ pub fn (window Window) show(content string) bool {
 }
 
 // Show a window using a embedded HTML, or a file with specific browser. If the window is already opened then it will be refreshed.
-pub fn (window Window) show_browser(content string, browser_id browser) bool {
+pub fn (window Window) show_browser(content string, browser_id Browser) bool {
 	return C.webui_show_browser(window, &char(content.str), browser_id)
 }
 
@@ -146,7 +146,7 @@ pub fn (window Window) run(script string) {
 }
 
 // Chose between Deno and Nodejs runtime for .js and .ts files.
-pub fn (window Window) set_runtime(runtime runtime) {
+pub fn (window Window) set_runtime(runtime Runtime) {
 	C.webui_set_runtime(window, runtime)
 }
 
@@ -177,7 +177,7 @@ fn native_event_handler(e &CEvent) {
 		func := function_list[win_id][bind_id]
 		resp := func(Event{
 			window: e.window
-			event_type: event(e.event_type)
+			event_type: EventType(e.event_type)
 			element: e.element.vstring()
 			data: e.get()
 			event_number: e.event_number
