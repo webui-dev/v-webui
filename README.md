@@ -20,6 +20,16 @@ v install https://github.com/webui-dev/v-webui
 
 ## Usage
 
+After the installation, prepare the WebUI library for usage.
+
+```sh
+# Linux / macOs
+~/.vmodules/vwebui/setup.vsh
+
+# Windows PowerShell
+v run $HOME/.vmodules/vwebui/setup.vsh
+```
+
 > **Note**
 > On Windows it is recommended to use GCC or Clang to compile a WebUI V program. TCC is currently not working due to missing header files.
 > You can use the `-cc` flag to specify a custom compiler. E.g.:
