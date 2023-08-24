@@ -4,6 +4,6 @@ Module {
 	version: '2.3.0'
 	license: 'MIT'
 	author: 'Mehmet Ali'
-	repo_url: 'https://github.com/malisipi/vwebui'
+	repo_url: 'https://github.com/webui-dev/v-webui'
 	dependencies: []
 }
