@@ -1,14 +1,14 @@
-import vwebui as webui
+import vwebui as ui
 import encoding.base64
 import os
 import json
 
-fn close(e &webui.Event) webui.Response {
-	webui.exit()
+fn close(e &ui.Event) ui.Response {
+	ui.exit()
 	return 0
 }
 
-fn open(e &webui.Event) webui.Response {
+fn open(e &ui.Event) ui.Response {
 	if e.data.string == '' {
 		e.window.run("webui.call('Open', prompt`File Location`)")
 		return 0
@@ -36,20 +36,24 @@ struct Save {
 	content string
 }
 
-fn save(e &webui.Event) webui.Response {
+fn save(e &ui.Event) ui.Response {
 	resp := json.decode(Save, e.data.string) or {
-		e.window.run("webui.call('Save', JSON.stringify({file:window.opened_file,content:window.atob`${base64.encode_str(e.data.string)}`}))")
+		e.window.run("ui.call('Save', JSON.stringify({file:window.opened_file,content:window.atob`${base64.encode_str(e.data.string)}`}))")
 		return 0
 	}
 	os.write_file(resp.file, resp.content) or { panic(err) }
 	return 0
 }
 
-main_window := webui.new_window()
+fn main() {
+	w := ui.new_window()
 
-main_window.bind('Open', open)
-	.bind('Save', save)
-	.bind('Close', close)
-	.show('ui/MainWindow.html')
+	w.set_root_folder(@VMODROOT)
 
-webui.wait()
+	w.bind('Open', open)
+		.bind('Save', save)
+		.bind('Close', close)
+		.show('ui/MainWindow.html')
+
+	ui.wait()
+}
