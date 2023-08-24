@@ -12,16 +12,11 @@ module vwebui
 // WebUI Core
 
 #include "@VMODROOT/webui/webui.h"
-#include "@VMODROOT/webui/webui_core.h"
-#flag @VMODROOT/webui/webui.c
 
-#flag @VMODROOT/webui/civetweb/civetweb.c
+#flag -L@VMODROOT/webui -lwebui-2-static-x64 -lpthread -lm
+#flag windows @VMODROOT/webui/webui-2-x64.dll -lws2_32
 #flag -DNDEBUG -DNO_CACHING -DNO_CGI -DNO_SSL -DUSE_WEBSOCKET -DMUST_IMPLEMENT_CLOCK_GETTIME
 
-#flag windows -Dstrtoll=_strtoi64 -Dstrtoull=_strtoui64 -lws2_32 -lAdvapi32 -luser32 -lcomdlg32
-$if tinyc {
-	#flag windows -DWEBUI_NO_TLHELPER32
-}
 // Debug
 $if webui_log ? {
 	#flag -DWEBUI_LOG

@@ -6,87 +6,12 @@ on:
   pull_request:
     paths-ignore: ['**/*.md']
 
-env:
-  # The path where the module would be installed with `v install <giturl>`
-  MOD_PATH: ~/.vmodules/vwebui
-
-defaults:
-  run:
-    # necessary for windows
-    shell: bash
-
 jobs:
-  setup:
-    strategy:
-      matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Cache Status
-        id: cache-status
-        uses: actions/cache@v3
-        with:
-          path: vlang
-          key: ${{ runner.os }}-v-
+  linux:
+    uses: ./.github/workflows/linux.yml
 
-      - if: ${{ steps.cache-status.outputs.cache-hit != 'true' }}
-        name: Install V
-        uses: vlang/setup-v@v1.3
-        with:
-          check-latest: true
+  macos:
+    uses: ./.github/workflows/macos.yml
 
-      - if: ${{ steps.cache-status.outputs.cache-hit != 'true' }}
-        name: Add V Version to Environment
-        run: echo "V_VER=$(v -v)" >> $GITHUB_ENV
-
-      - if: ${{ steps.cache-status.outputs.cache-hit != 'true' }}
-        name: Cache V
-        uses: actions/cache/save@v3
-        with:
-          path: vlang
-          key: ${{ runner.os }}-v-${{ env.V_VER }}
-
-  build:
-    needs: setup
-    strategy:
-      matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
-        compiler: [tcc, gcc, clang]
-        optimization: ['', -cstrict, -prod]
-        # excluding arrays / multiple values at once apparently doesn't work properly
-        exclude:
-          - os: macos-latest
-            optimization: -cstrict
-          - os: windows-latest
-            optimization: -cstrict
-          - compiler: tcc
-            optimization: -prod
-          # only gcc on windows for now
-          - os: windows-latest
-            compiler: tcc
-          - os: windows-latest
-            compiler: clang
-      fail-fast: false
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Restore V Cache
-        uses: actions/cache/restore@v3
-        with:
-          path: vlang
-          key: ${{ runner.os }}-v-
-          fail-on-cache-miss: true
-
-      - name: Setup V
-        uses: vlang/setup-v@v1.3
-
-      - name: Checkout ${{ github.event.repository.name }}
-        uses: actions/checkout@v3
-        with:
-          path: ${{ github.event.repository.name }}
-
-      - name: Copy ${{ github.event.repository.name }} to .vmodules
-        run: cp -r ${{ github.event.repository.name }} ${{ env.MOD_PATH }}
-
-      - name: Build
-        run: |
-          v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} ${{ env.MOD_PATH }}/examples/minimal.v
+  windows:
+    uses: ./.github/workflows/windows.yml
