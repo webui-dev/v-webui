@@ -17,7 +17,7 @@ fn C.webui_new_window_id(win_id Window)
 fn C.webui_get_new_window_id() Window
 fn C.webui_bind(win Window, elem &char, func fn (&CEvent)) Window
 fn C.webui_show(win Window, content &char) bool
-fn C.webui_show_browser(win Window, content &char, browser browser) bool
+fn C.webui_show_browser(win Window, content &char, browser Browser) bool
 fn C.webui_set_kiosk(win Window, kiosk bool)
 fn C.webui_wait()
 fn C.webui_close(win Window)
@@ -35,7 +35,7 @@ fn C.webui_set_multi_access(win Window, status bool)
 // -- JavaScript ----------------------
 fn C.webui_run(win Window, script &char)
 fn C.webui_script(win Window, script &char, timeout u64, buffer &char, buffer_length u64) bool
-fn C.webui_set_runtime(win Window, runtime runtime)
+fn C.webui_set_runtime(win Window, runtime Runtime)
 fn C.webui_get_int(e &CEvent) i64
 fn C.webui_get_string(e &CEvent) &char
 fn C.webui_get_bool(e &CEvent) bool
