@@ -55,5 +55,4 @@ jobs:
         run: |
           cd $HOME/.vmodules/${{ env.MOD_NAME }}/examples
           v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} minimal.v
-          cd text-editor
-          v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} text-editor.v
+          v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} text-editor/

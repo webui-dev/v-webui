@@ -165,6 +165,10 @@ pub fn exit() {
 	C.webui_exit()
 }
 
+pub fn (window Window) set_root_folder(path string) {
+	C.webui_set_root_folder(window, &char(path.str))
+}
+
 // Set the window in Kiosk mode (Full screen)
 pub fn (window Window) set_kiosk(kiosk bool) {
 	C.webui_set_kiosk(window, kiosk)

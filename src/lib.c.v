@@ -23,7 +23,7 @@ fn C.webui_wait()
 fn C.webui_close(win Window)
 fn C.webui_destroy(win Window)
 fn C.webui_exit()
-fn C.webui_set_root_folder(win Window, path &char) // currently unused
+fn C.webui_set_root_folder(win Window, path &char)
 fn C.webui_set_file_handler(win Window, handler fn (file_name &char, length int)) // currently unused
 
 // -- Definitions ---------------------

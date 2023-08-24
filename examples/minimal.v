@@ -1,5 +1,5 @@
-import vwebui as webui
+import vwebui as ui
 
-mut my_window := webui.new_window()
-my_window.show('<html>Hello</html>')
-webui.wait()
+mut w := ui.new_window()
+w.show('<html>Hello</html>')
+ui.wait()
