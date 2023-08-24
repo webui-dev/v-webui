@@ -30,7 +30,25 @@ jobs:
             ~/.vmodules
           key: ${{ runner.os }}-${{ github.sha }}
 
-  build:
+  test:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Restore V Cache
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            vlang
+            ~/.vmodules
+          key: ${{ runner.os }}-${{ github.sha }}
+          fail-on-cache-miss: true
+      - name: Setup V
+        uses: vlang/setup-v@v1.3
+      - name: Test
+        run: |
+          v -stats test $HOME/.vmodules/${{ env.MOD_NAME }}
+
+  build-examples:
     needs: setup
     strategy:
       matrix:
@@ -56,4 +74,9 @@ jobs:
         run: |
           cd $HOME/.vmodules/${{ env.MOD_NAME }}/examples
           v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} minimal.v
+          v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} kiosk.v
+          v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} call_js_from_v.v
+          v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} call_v_from_js.v
+          v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} simple_example.v
           v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} text-editor/
+          v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} serve_a_folder/
