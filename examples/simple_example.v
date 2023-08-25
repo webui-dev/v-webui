@@ -26,11 +26,10 @@ const doc = '<!DOCTYPE html>
 </html>'
 
 fn check_the_password(e &ui.Event) {
-	password := e.window.script('return document.getElementById("MyInput").value;', 0,
-		4096)
-	println('Password: ' + password)
+	res := e.window.script('return document.getElementById("MyInput").value;')
+	println('Password: ' + res.output)
 
-	if password == '123456' {
+	if res.output == '123456' {
 		e.window.run("alert('Good. Password is correct.');")
 	} else {
 		e.window.run("alert('Sorry. Wrong password.');")
