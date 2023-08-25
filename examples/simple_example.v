@@ -1,23 +1,5 @@
 import vwebui as ui
 
-fn check_the_password(e &ui.Event) ui.Response { // Check the password function
-	password := e.window.script('return document.getElementById("MyInput").value;', 0,
-		4096)
-	println('Password: ' + password)
-
-	if password == '123456' { // Check the password
-		e.window.run("alert('Good. Password is correct.');") // Correct password
-	} else {
-		e.window.run("alert('Sorry. Wrong password.');") // Wrong password
-	}
-	return 0
-}
-
-fn close_the_application(e &ui.Event) ui.Response { // Close all opened windows
-	ui.exit()
-	return 0
-}
-
 // UI HTML
 const doc = '<!DOCTYPE html>
 <html>
@@ -43,15 +25,33 @@ const doc = '<!DOCTYPE html>
 	</body>
 </html>'
 
-mut w := ui.new_window() // Create a window
+fn check_the_password(e &ui.Event) {
+	password := e.window.script('return document.getElementById("MyInput").value;', 0,
+		4096)
+	println('Password: ' + password)
 
-// Bind HTML elements with functions
+	if password == '123456' {
+		e.window.run("alert('Good. Password is correct.');")
+	} else {
+		e.window.run("alert('Sorry. Wrong password.');")
+	}
+}
+
+// Close all opened windows
+fn close_the_application(e &ui.Event) {
+	ui.exit()
+}
+
+// Create a window
+mut w := ui.new_window()
+
+// Bind HTML elements to functions
 w.bind('MyButton1', check_the_password)
 w.bind('MyButton2', close_the_application)
 
-// Show the window
-if !w.show(doc) { // Run the window
-	panic('The browser(s) was failed') // If not, print a error info
+// Show the window, panic on fail
+if !w.show(doc) {
+	panic('Failed showing window.')
 }
 
 // Wait until all windows get closed

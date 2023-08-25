@@ -1,13 +1,12 @@
 import vwebui as ui
 
 const (
-	my_window        = 1
-	my_second_window = 2
+	w  = ui.Window(1)
+	w2 = ui.Window(2)
 )
 
-fn events(e &ui.Event) ui.Response { // Close all opened windows
-	// This function gets called every time
-	// there is an event
+// This function gets called every time there is an event
+fn events(e &ui.Event) {
 	if e.event_type == .connected {
 		println('Connected.')
 	} else if e.event_type == .disconnected {
@@ -15,40 +14,34 @@ fn events(e &ui.Event) ui.Response { // Close all opened windows
 	} else if e.event_type == .mouse_click {
 		println('Click.')
 	} else if e.event_type == .navigation {
-		println('Starting navigation to: ${e.data}')
+		println('Starting navigation to: ${e.string()}')
 	}
-	return 0
 }
 
-fn switch_to_second_page(e &ui.Event) ui.Response {
-	// This function gets called every
-	// time the user clicks on "SwitchToSecondPage"
-	// Switch to `/second.html` in the same opened window.
+// Switch to `/second.html` in the same opened window.
+fn switch_to_second_page(e &ui.Event) {
 	e.window.show('second.html')
-	return 0
 }
 
-fn show_second_window(e &ui.Event) ui.Response {
-	ui.get_window(my_second_window).show('second.html')
-	return 0
+fn show_second_window(e &ui.Event) {
+	w2.show('second.html')
 }
 
-fn exit_app(e &ui.Event) ui.Response { // Close all opened windows
+fn exit_app(e &ui.Event) {
 	ui.exit()
-	return 0
 }
 
 fn main() {
-	w := ui.new_window_by_id(my_window)
+	w.new_window()
 	w.set_root_folder(@VMODROOT)
 
 	w.bind('SwitchToSecondPage', switch_to_second_page)
-		.bind('OpenNewWindow', show_second_window)
-		.bind('Exit', exit_app)
-		.bind('', events) // Bind events
-		.show('index.html') // Show a new window
+	w.bind('OpenNewWindow', show_second_window)
+	w.bind('Exit', exit_app)
+	w.bind('', events) // Bind events
+	w.show('index.html') // Show a new window
 
-	w2 := ui.new_window_by_id(my_second_window)
+	w2.new_window()
 	w2.set_root_folder(@VMODROOT)
 	w2.bind('Exit', exit_app)
 

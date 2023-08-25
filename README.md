@@ -48,21 +48,21 @@ const html = '<!DOCTYPE html>
   <head>
     <style>
       body {
-        background-color: SlateGray;
-        color: GhostWhite;
+        background: linear-gradient(to left, #36265a, #654da9);
+        color: AliceBlue;
+        font: 16px sans-serif;
         text-align: center;
       }
     </style>
   </head>
   <body>
-    <button onclick="webui.call(\'my_v_func\')">Call V!</button>
     <h1>Thanks for using WebUI!</h1>
+    <button onclick="webui.call(\'my_v_func\')">Call V!</button>
   </body>
 </html>'
 
-fn my_v_func(e &ui.Event) ui.Response {
+fn my_v_func(e &ui.Event) {
 	println('Hello From V!')
-	return 0
 }
 
 w := ui.new_window()

@@ -37,11 +37,10 @@ fn test_v_fn_call() {
 		assert connected
 	}(timeout_ch)
 
-	w.bind('test_v_fn', fn [timeout_ch] (e &Event) Response {
+	w.bind('test_v_fn', fn [timeout_ch] (e &Event) {
 		timeout_ch <- true
-		assert e.data.string == 'foo'
+		assert e.string() == 'foo'
 		e.window.close()
-		return 0
 	})
 	wait()
 }

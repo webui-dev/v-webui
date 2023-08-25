@@ -3,19 +3,19 @@ import encoding.base64
 import os
 import json
 
-fn close(e &ui.Event) ui.Response {
+fn close(e &ui.Event) {
 	ui.exit()
-	return 0
 }
 
-fn open(e &ui.Event) ui.Response {
-	if e.data.string == '' {
+fn open(e &ui.Event) {
+	str := e.string()
+	if str == '' {
 		e.window.run("webui.call('Open', prompt`File Location`)")
-		return 0
-	} else if e.data.string == 'null' {
-		return 0
+		return
+	} else if str == 'null' {
+		return
 	}
-	file := e.data.string
+	file := e.string()
 	if file != '' {
 		file_content := os.read_file(file) or {
 			println('Failed to read file: ${file}')
@@ -28,7 +28,6 @@ fn open(e &ui.Event) ui.Response {
 		e.window.run('addText`${encoded_file_content}`')
 		e.window.run('window.opened_file = `${file}`')
 	}
-	return 0
 }
 
 struct Save {
@@ -36,13 +35,12 @@ struct Save {
 	content string
 }
 
-fn save(e &ui.Event) ui.Response {
-	resp := json.decode(Save, e.data.string) or {
-		e.window.run("ui.call('Save', JSON.stringify({file:window.opened_file,content:window.atob`${base64.encode_str(e.data.string)}`}))")
-		return 0
+fn save(e &ui.Event) {
+	resp := json.decode(Save, e.string()) or {
+		e.window.run("ui.call('Save', JSON.stringify({file:window.opened_file,content:window.atob`${base64.encode_str(e.string())}`}))")
+		return
 	}
 	os.write_file(resp.file, resp.content) or { panic(err) }
-	return 0
 }
 
 fn main() {
@@ -51,9 +49,9 @@ fn main() {
 	w.set_root_folder(@VMODROOT)
 
 	w.bind('Open', open)
-		.bind('Save', save)
-		.bind('Close', close)
-		.show('ui/MainWindow.html')
+	w.bind('Save', save)
+	w.bind('Close', close)
+	w.show('ui/MainWindow.html')
 
 	ui.wait()
 }
