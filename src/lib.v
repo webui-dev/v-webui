@@ -6,12 +6,7 @@ Licensed under MIT License.
 All rights reserved.
 */
 
-[translated]
 module vwebui
-
-__global (
-	function_list map[u64]map[u64]Function
-)
 
 pub enum EventType {
 	disconnected = 0
@@ -43,60 +38,38 @@ pub enum Runtime {
 	nodejs = 2
 }
 
-// Typedefs of struct
+pub type Window = usize
 
-pub type Window = u64
+pub type Function = usize
 
-pub struct C.webui_event_t {
-pub mut:
-	window       Window // Pointer to the window object
-	event_type   u64    // Event type
-	element      &char  // HTML element ID
-	data         &char  // JavaScript data
-	event_number u64    // To set the callback response
+pub type Event = C.webui_event_t
+
+pub fn (e &Event) string() string {
+	// Ensure GCC and Clang compiles with `-cstrict` flag
+	return unsafe { (&char(C.webui_get_string(e))).vstring() }
 }
 
-pub type CEvent = C.webui_event_t
-pub type CFunction = fn (e &CEvent)
-
-pub struct Event {
-pub mut:
-	window       Window    // Pointer to the window object
-	event_type   EventType // Event type
-	element      string    // HTML element ID
-	data         WebuiResponseData // JavaScript data
-	event_number u64 // To set the callback response
+pub fn (e &Event) int() int {
+	return int(C.webui_get_int(e))
 }
 
-pub type Function = fn (e &Event) Response
+pub fn (e &Event) i64() i64 {
+	return C.webui_get_int(e)
+}
 
-pub fn (window Window) script(javascript string, timeout u64, size_buffer int) string {
+pub fn (e &Event) bool() bool {
+	return C.webui_get_bool(e)
+}
+
+pub fn (window Window) script(javascript string, timeout usize, size_buffer int) string {
 	response := &char(' '.repeat(size_buffer).str)
 	C.webui_script(window, &char(javascript.str), timeout, response, size_buffer)
 	return unsafe { response.vstring() }
 }
 
-// Get
-struct WebuiResponseData {
-pub mut:
-	string string
-	int    int
-	bool   bool
-}
+type Response = bool | i64 | int | string
 
-pub fn (e &CEvent) get() WebuiResponseData {
-	str := unsafe { (&char(C.webui_get_string(e))).vstring() }
-	return WebuiResponseData{
-		string: str
-		int: str.int()
-		bool: str == 'true'
-	}
-}
-
-// Return
-type Response = bool | int | string
-
-pub fn (e &CEvent) @return(response Response) {
+pub fn (e &Event) @return(response Response) {
 	match response {
 		string {
 			C.webui_return_string(e, &char(response.str))
@@ -104,8 +77,11 @@ pub fn (e &CEvent) @return(response Response) {
 		int {
 			C.webui_return_int(e, i64(response))
 		}
+		i64 {
+			C.webui_return_int(e, response)
+		}
 		bool {
-			C.webui_return_bool(e, int(response))
+			C.webui_return_bool(e, response)
 		}
 	}
 }
@@ -174,55 +150,18 @@ pub fn (window Window) set_kiosk(kiosk bool) {
 	C.webui_set_kiosk(window, kiosk)
 }
 
-fn native_event_handler(e &CEvent) {
-	unsafe {
-		bind_id := C.webui_interface_get_bind_id(e.window, e.element)
-		win_id := C.webui_interface_get_window_id(e.window)
-		func := function_list[win_id][bind_id]
-		resp := func(Event{
-			window: e.window
-			event_type: EventType(e.event_type)
-			element: e.element.vstring()
-			data: e.get()
-			event_number: e.event_number
-		})
-		e.@return(resp)
-	}
-}
-
-fn native_raw_event_handler(e &CEvent) {
-	native_event_handler(&CEvent{
-		window: e.window
-		event_type: e.event_type
-		element: c''
-		data: e.data
-		event_number: e.event_number
-	})
-}
-
 // Bind a specific html element click event with a function. Empty element means all events.
-pub fn (window Window) bind(element string, func Function) Window {
-	bind_id := if element != '' {
-		C.webui_bind(window, &char(element.str), native_event_handler)
-	} else {
-		C.webui_bind(window, &char(element.str), native_raw_event_handler)
-	}
-	function_list[C.webui_interface_get_window_id(window)][bind_id] = func
-	return window
+pub fn (window Window) bind(element string, func fn (&Event)) Function {
+	return C.webui_bind(window, &char(element.str), func)
 }
 
 // Set the maximum time in seconds to wait for browser to start
-pub fn set_timeout(timeout u64) {
+pub fn set_timeout(timeout usize) {
 	C.webui_set_timeout(timeout)
 }
 
-pub fn get_window(win_id u64) Window {
-	return Window(win_id)
-}
-
-pub fn new_window_by_id(win_id u64) Window {
+pub fn (win_id Window) new_window() {
 	C.webui_new_window_id(win_id)
-	return get_window(win_id)
 }
 
 pub fn get_new_window_id() Window {
