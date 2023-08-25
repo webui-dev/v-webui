@@ -33,7 +33,6 @@ fn exit_app(e &ui.Event) {
 
 fn main() {
 	w.new_window()
-	w.set_root_folder(@VMODROOT)
 
 	w.bind('SwitchToSecondPage', switch_to_second_page)
 	w.bind('OpenNewWindow', show_second_window)
@@ -42,8 +41,8 @@ fn main() {
 	w.show('index.html') // Show a new window
 
 	w2.new_window()
-	w2.set_root_folder(@VMODROOT)
 	w2.bind('Exit', exit_app)
 
+	ui.set_root_folder(@VMODROOT)
 	ui.wait() // Wait until all windows get closed
 }
