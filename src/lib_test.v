@@ -2,6 +2,21 @@ module vwebui
 
 import time
 
+fn test_window_close() {
+	w := new_window()
+	w.show('<html>Hello</html>')
+	time.sleep(5 * time.second)
+	w.close()
+	// Assert from a thread, as a timeout on the main thread after calling `close()` can also prevent closing the window.
+	spawn fn (w Window) {
+		time.sleep(5 * time.second)
+		if w.is_shown() {
+			eprintln('Failed closing window.')
+			assert false
+		}
+	}(w)
+}
+
 fn test_v_fn_call() {
 	doc := '<!DOCTYPE html>
 <html lang="en">
@@ -27,7 +42,7 @@ fn test_v_fn_call() {
 	mut w := new_window()
 	w.show(doc)
 
-	// The window closes only if the bound v function was called successfully.
+	// The window closes only if the bound V function was called successfully.
 	// Therefore we add a 5 sec timeout and check if the function was called.
 	// Otherwise the test can run infinitely.
 	timeout_ch := chan bool{cap: 1}
@@ -42,5 +57,8 @@ fn test_v_fn_call() {
 		assert e.string() == 'foo'
 		e.window.close()
 	})
+}
+
+fn test_start() {
 	wait()
 }
