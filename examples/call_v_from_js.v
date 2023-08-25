@@ -1,44 +1,41 @@
 import vwebui as ui
 
-fn my_function_string(e &ui.Event) ui.Response {
+fn my_function_string(e &ui.Event) {
 	// JavaScript:
 	// webui.call('MyID_One', 'Hello');
 
-	response := e.data.string
+	response := e.string()
 	println('my_function_string: ${response}') // Hello
 
 	// Need Multiple Arguments?
 	//
 	// WebUI support only one argument. To get multiple arguments
 	// you can send a JSON string from JavaScript then decode it.
-	return 0
 }
 
-fn my_function_integer(e &ui.Event) ui.Response {
+fn my_function_integer(e &ui.Event) {
 	// JavaScript:
 	// webui.call('MyID_Two', 123456789);
 
-	response := e.data.int
+	response := e.int()
 	println('my_function_integer: ${response}') // 123456789
-	return 0
 }
 
-fn my_function_boolean(e &ui.Event) ui.Response {
+fn my_function_boolean(e &ui.Event) {
 	// JavaScript:
 	// webui.call('MyID_Three', true);
 
-	response := e.data.bool
+	response := e.bool()
 	println('my_function_boolean: ${response}') // true
-	return 0
 }
 
-fn my_function_with_response(e &ui.Event) ui.Response {
+fn my_function_with_response(e &ui.Event) {
 	// JavaScript:
 	// const result = webui.call('MyID_Four', number);
 
-	number := e.data.int * 2
+	number := e.int() * 2
 	println('my_function_with_response: ${number}')
-	return number
+	e.@return(number)
 }
 
 const doc = '<!DOCTYPE html>
@@ -90,9 +87,9 @@ if !w.show(doc) { // Run the window
 }
 
 w.bind('MyID_One', my_function_string)
-	.bind('MyID_Two', my_function_integer)
-	.bind('MyID_Three', my_function_boolean)
-	.bind('MyID_Four', my_function_with_response)
+w.bind('MyID_Two', my_function_integer)
+w.bind('MyID_Three', my_function_boolean)
+w.bind('MyID_Four', my_function_with_response)
 
 // Wait until all windows get closed
 ui.wait()
