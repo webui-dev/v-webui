@@ -1,15 +1,5 @@
 import vwebui as ui
 
-fn my_function_count(e &ui.Event) {
-	count := e.window.script('return count;', 0, 48)
-	e.window.script('SetCount(${count.int() + 1});', 0, 0)
-}
-
-// Close all opened windows
-fn my_function_exit(e &ui.Event) {
-	ui.exit()
-}
-
 // UI HTML
 const doc = '<!DOCTYPE html>
 <html>
@@ -44,16 +34,27 @@ const doc = '<!DOCTYPE html>
 	</body>
 </html>'
 
+fn my_function_count(e &ui.Event) {
+	count := e.window.script('return count;')
+	dump(count.success)
+	e.window.script('SetCount(${count.output.int() + 1});')
+}
+
+// Close all opened windows
+fn my_function_exit(e &ui.Event) {
+	ui.exit()
+}
+
 // Create a window
 mut w := ui.new_window()
 
-// Bind HTML elements with functions
+// Bind HTML elements to functions
 w.bind('MyButton1', my_function_count)
 w.bind('MyButton2', my_function_exit)
 
-// Show the window
-if !w.show(doc) { // Run the window
-	panic('The browser(s) was failed') // If not, print a error info
+// Show the window, panic on fail
+if !w.show(doc) {
+	panic('The browser(s) was failed')
 }
 
 // Wait until all windows get closed
