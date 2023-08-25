@@ -14,6 +14,18 @@ pub type Function = usize
 
 pub type Event = C.webui_event_t
 
+[params]
+pub struct ScriptOptions {
+	max_response_size usize = 8192
+	timeout           usize
+}
+
+pub struct ScriptResponse {
+pub:
+	success bool
+	output  string
+}
+
 pub enum EventType {
 	disconnected = 0
 	connected = 1
@@ -141,10 +153,14 @@ pub fn (w Window) run(script string) {
 }
 
 // Run JavaScript and get the response back (Make sure your local buffer can hold the response).
-pub fn (w Window) script(javascript string, timeout usize, size_buffer int) string {
-	response := &char(' '.repeat(size_buffer).str)
-	C.webui_script(w, &char(javascript.str), timeout, response, size_buffer)
-	return unsafe { response.vstring() }
+pub fn (w Window) script(javascript string, opts ScriptOptions) ScriptResponse {
+	mut buffer := []u8{len: int(opts.max_response_size)}.str().str
+	status := C.webui_script(w, &char(javascript.str), opts.timeout, &char(buffer), opts.max_response_size)
+	output := unsafe { buffer.vstring() }
+	return ScriptResponse{
+		success: status
+		output: output
+	}
 }
 
 // Chose between Deno and Nodejs as runtime for .js and .ts files.
