@@ -4,12 +4,6 @@ module vwebui
 
 #flag -L@VMODROOT/webui -lwebui-2-static-x64 -lpthread -lm
 #flag windows @VMODROOT/webui/webui-2-x64.dll -lws2_32
-#flag -DNDEBUG -DNO_CACHING -DNO_CGI -DNO_SSL -DUSE_WEBSOCKET -DMUST_IMPLEMENT_CLOCK_GETTIME
-
-// Debug
-$if webui_log ? {
-	#flag -DWEBUI_LOG
-}
 
 struct C.webui_event_t {
 pub:
