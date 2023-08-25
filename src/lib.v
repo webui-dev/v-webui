@@ -123,6 +123,11 @@ pub fn set_timeout(timeout usize) {
 	C.webui_set_timeout(timeout)
 }
 
+// Set the default embedded HTML favicon
+pub fn (w Window) set_icon(icon string, icon_type string) {
+	C.webui_set_icon(w, &char(icon.str), &char(icon_type.str))
+}
+
 // Allow the window URL to be re-used in normal web browsers.
 pub fn (w Window) set_multi_access(status bool) {
 	C.webui_set_multi_access(w, status)
