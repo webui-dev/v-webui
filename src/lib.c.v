@@ -2,8 +2,10 @@ module vwebui
 
 #include "@VMODROOT/webui/webui.h"
 
-#flag -L@VMODROOT/webui -lwebui-2-static-x64 -lpthread -lm
-#flag windows @VMODROOT/webui/webui-2-x64.dll -lws2_32
+#flag -L@VMODROOT/webui -lwebui-2-static
+#flag linux -lpthread -lm
+#flag darwin -lpthread -lm
+#flag windows -lwebui-2 -lws2_32
 
 struct C.webui_event_t {
 pub:
