@@ -63,7 +63,7 @@ fn build() ! {
 	mut p := new_process(cmd)
 	p.set_work_folder(build_dir)
 	p.wait()
-	required := 'libwebui-2-static-x64.a'
+	required := 'libwebui-2-static.a'
 	if !exists('${build_dir}/dist/${required}') {
 		return error('Failed building WebUI. Can\'t find required build output ${required}')
 	}
