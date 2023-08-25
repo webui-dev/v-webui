@@ -30,7 +30,7 @@ fn C.webui_exit()
 fn C.webui_set_root_folder(win Window, path &char)
 fn C.webui_set_file_handler(win Window, handler fn (file_name &char, length int)) // currently unused
 
-// -- Definitions ---------------------
+// -- Other ---------------------------
 fn C.webui_is_shown(win Window) bool
 fn C.webui_set_timeout(second usize)
 fn C.webui_set_icon(win Window, icon &char, icon_type &char)
@@ -46,7 +46,6 @@ fn C.webui_get_bool(e &Event) bool
 fn C.webui_return_int(e &Event, n i64)
 fn C.webui_return_string(e &Event, s &char)
 fn C.webui_return_bool(e &Event, b bool)
-
 fn C.webui_encode(str &char) &char // currently unused
 fn C.webui_decode(str &char) &char // currently unused
 fn C.webui_free(ptr voidptr) // currently unused
