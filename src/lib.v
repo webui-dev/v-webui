@@ -123,7 +123,7 @@ pub fn set_timeout(timeout usize) {
 	C.webui_set_timeout(timeout)
 }
 
-// Set the default embedded HTML favicon
+// Set the default embedded HTML favicon.
 pub fn (w Window) set_icon(icon string, icon_type string) {
 	C.webui_set_icon(w, &char(icon.str), &char(icon_type.str))
 }
@@ -135,19 +135,19 @@ pub fn (w Window) set_multi_access(status bool) {
 
 // == Javascript ==============================================================
 
-// Run JavaScript quickly with no waiting for the response.
+// Run JavaScript without waiting for the response.
 pub fn (w Window) run(script string) {
 	C.webui_run(w, &char(script.str))
 }
 
-// Run a JavaScript, and get the response back (Make sure your local buffer can hold the response).
+// Run JavaScript and get the response back (Make sure your local buffer can hold the response).
 pub fn (w Window) script(javascript string, timeout usize, size_buffer int) string {
 	response := &char(' '.repeat(size_buffer).str)
 	C.webui_script(w, &char(javascript.str), timeout, response, size_buffer)
 	return unsafe { response.vstring() }
 }
 
-// Chose between Deno and Nodejs runtime for .js and .ts files.
+// Chose between Deno and Nodejs as runtime for .js and .ts files.
 pub fn (w Window) set_runtime(runtime Runtime) {
 	C.webui_set_runtime(w, runtime)
 }
