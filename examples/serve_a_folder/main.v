@@ -48,8 +48,9 @@ fn main() {
 		.bind('', events) // Bind events
 		.show('index.html') // Show a new window
 
-	ui.new_window_by_id(my_second_window)
-		.bind('Exit', exit_app)
+	w2 := ui.new_window_by_id(my_second_window)
+	w2.set_root_folder(@VMODROOT)
+	w2.bind('Exit', exit_app)
 
 	ui.wait() // Wait until all windows get closed
 }
