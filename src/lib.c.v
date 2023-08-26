@@ -31,7 +31,7 @@ fn C.webui_destroy(win Window)
 fn C.webui_exit()
 fn C.webui_set_root_folder(win Window, path &char)
 fn C.webui_set_default_root_folder(path &char)
-fn C.webui_set_file_handler(win Window, handler fn (file_name &char, length int)) // currently unused
+fn C.webui_set_file_handler(win Window, handler fn (file_name &char, length int)) // not wrapped
 
 // -- Other ---------------------------
 fn C.webui_is_shown(win Window) bool
@@ -49,16 +49,16 @@ fn C.webui_get_bool(e &Event) bool
 fn C.webui_return_int(e &Event, n i64)
 fn C.webui_return_string(e &Event, s &char)
 fn C.webui_return_bool(e &Event, b bool)
-fn C.webui_encode(str &char) &char // currently unused
-fn C.webui_decode(str &char) &char // currently unused
-fn C.webui_free(ptr voidptr) // currently unused
-fn C.webui_malloc(size usize) voidptr // currently unused
-fn C.webui_send_raw(size Window, func &char, raw voidptr, size usize) // currently unused
-fn C.webui_set_hide(win Window, status bool) // currently unused
+fn C.webui_encode(str &char) &char // not wrapped
+fn C.webui_decode(str &char) &char // not wrapped
+fn C.webui_free(ptr voidptr) // not wrapped
+fn C.webui_malloc(size usize) voidptr // not wrapped
+fn C.webui_send_raw(size Window, func &char, raw voidptr, size usize) // not wrapped
+fn C.webui_set_hide(win Window, status bool)
 
-// -- Interface -----------------------
-fn C.webui_interface_bind(win Window, element &char, func fn (win Window, event_type EventType, element &char, data &char, data_size usize, event_num usize)) usize // currently unused
-fn C.webui_interface_set_response(win Window, event_num usize, resp &char) // currently unused
+// -- Interface ----------------------- // not wrapped
+fn C.webui_interface_bind(win Window, element &char, func fn (win Window, event_type EventType, element &char, data &char, data_size usize, event_num usize)) usize
+fn C.webui_interface_set_response(win Window, event_num usize, resp &char)
 fn C.webui_interface_is_app_running() bool
 fn C.webui_interface_get_window_id(win Window) Window
 fn C.webui_interface_get_bind_id(win Window, element &char) Window
