@@ -192,3 +192,8 @@ pub fn (e &Event) @return(response Response) {
 		}
 	}
 }
+
+// Run the window in hidden mode.
+pub fn (w Window) set_hide(status bool) {
+	C.webui_set_hide(w, status)
+}
