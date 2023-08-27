@@ -30,24 +30,6 @@ jobs:
             ~/.vmodules
           key: ${{ runner.os }}-${{ github.sha }}
 
-  test:
-    needs: setup
-    runs-on: macos-latest
-    steps:
-      - name: Restore V Cache
-        uses: actions/cache/restore@v3
-        with:
-          path: |
-            vlang
-            ~/.vmodules
-          key: ${{ runner.os }}-${{ github.sha }}
-          fail-on-cache-miss: true
-      - name: Setup V
-        uses: vlang/setup-v@v1.3
-      - name: Test
-        run: |
-          v -stats test $HOME/.vmodules/${{ env.MOD_NAME }}
-
   build-examples:
     needs: setup
     strategy:

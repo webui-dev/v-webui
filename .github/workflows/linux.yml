@@ -33,6 +33,7 @@ jobs:
   test:
     needs: setup
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Restore V Cache
         uses: actions/cache/restore@v3
@@ -44,9 +45,13 @@ jobs:
           fail-on-cache-miss: true
       - name: Setup V
         uses: vlang/setup-v@v1.3
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install xvfb x11-xserver-utils
+      - name: Setup Browser
+        uses: browser-actions/setup-chrome@v1
       - name: Test
         run: |
-          v -stats test $HOME/.vmodules/${{ env.MOD_NAME }}
+          xvfb-run v -cc clang -stats test "$HOME/.vmodules/${{ env.MOD_NAME }}/src/"
 
   build-examples:
     needs: setup
