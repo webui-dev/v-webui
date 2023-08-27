@@ -1,62 +1,33 @@
-module vwebui
-
+import vwebui as ui
 import time
 
 fn test_window_close() {
-	w := new_window()
-	w.show('<html>Hello</html>')
-	time.sleep(5 * time.second)
-	w.close()
-	// Assert from a thread, as a timeout on the main thread after calling `close()` can also prevent closing the window.
-	spawn fn (w Window) {
-		time.sleep(5 * time.second)
+	w := ui.new_window()
+
+	// Wait for the window to show
+	ui.set_timeout(30)
+	if !w.show('<html style="background: #654da9; color: #eee"><samp>test_window_close</samp></html>') {
+		eprintln('Failed showing window.')
+		assert false
+	}
+	for i in 0 .. 30 {
 		if w.is_shown() {
-			eprintln('Failed closing window.')
-			assert false
+			break
 		}
-	}(w)
-}
+		time.sleep(1 * time.second)
+	}
+	if !w.is_shown() {
+		eprintln('Timeout showing window.')
+		assert false
+	}
 
-fn test_v_fn_call() {
-	doc := '<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<style>
-			body {
-				background-color: #1c2128;
-				color: AliceBlue;
-			}
-		</style>
-	</head>
-	<body>
-		<h1>WebUI Test</h1>
-	</body>
-	<script>
-		setTimeout(async () => {
-			const res = await webui.call("test_v_fn", "foo");
-			console.log(res)
-		}, 1000)
-	</script>
-</html>'
-
-	mut w := new_window()
-	w.show(doc)
-
-	// The window closes only if the bound V function was called successfully.
-	// Therefore we add a 5 sec timeout and check if the function was called.
-	// Otherwise the test can run infinitely.
-	timeout_ch := chan bool{cap: 1}
-	spawn fn (ch chan bool) {
-		time.sleep(5 * time.second)
-		connected := <-ch
-		assert connected
-	}(timeout_ch)
-
-	w.bind('test_v_fn', fn [timeout_ch] (e &Event) {
-		timeout_ch <- true
-		assert e.string() == 'foo'
-		e.window.close()
-	})
+	// Wait for the window to close
+	w.close()
+	time.sleep(3 * time.second)
+	if w.is_shown() {
+		eprintln('Failed closing window.')
+		assert false
+	}
 }
 
 struct Person {
@@ -64,34 +35,72 @@ struct Person {
 	age  int
 }
 
-fn test_decode() {
-	mut w := new_window()
-	w.bind('decode', fn (e &Event) {
+fn test_fn_call() {
+	w := ui.new_window()
+
+	w.bind('v_fn', fn (e &ui.Event) {
+		assert e.string() == 'foo'
+		// Call a js fuction that should calls another V function.
+		e.window.run('await callV();')
+	})
+	w.bind('v_fn_with_obj_arg', fn (e &ui.Event) {
 		p := e.decode[Person]() or {
 			eprintln('Failed decoding person. ${err}')
 			assert false
 			return
 		}
+		println(p)
 		assert p.name == 'john'
 		assert p.age == 30
 		e.window.close()
 	})
-	w.show('<!DOCTYPE html>
-<html style="background: linear-gradient(to left, #36265a, #654da9);">
-	<head>
-		<script>
-			setTimeout(async () => {
-				const person = {
-					name: "john",
-					age: 30
-				}
-				await webui.call("decode", JSON.stringify(person));
-			}, 500);
-		</script>
-	</head>
-</html>')
+
+	if !w.show('<html style="background: #654da9; color: #eee">
+<body>
+	<samp>test_fn_call</samp>
+	<script>
+		setTimeout(async () => {
+			await webui.call("v_fn", "foo");
+		}, 1000)
+		async function callV() {
+			const person = {
+				name: "john",
+				age: 30
+			}
+			await webui.call("v_fn_with_obj_arg", JSON.stringify(person));
+		}
+	</script>
+</body>
+</html>') {
+		eprintln('Failed showing window.')
+		assert false
+	}
+
+	// Wait for the window to show
+	ui.set_timeout(30)
+	for i in 0 .. 30 {
+		if w.is_shown() {
+			break
+		}
+		time.sleep(1 * time.second)
+	}
+	if !w.is_shown() {
+		eprintln('Timeout showing window.')
+		assert false
+	}
+
+	// We call `w.close()` from the last V function that is called from JS.
+	// Ensure that it closes, otherwise the test can run infinitely. Timeout after 5min.
+	for i in 0 .. 60 {
+		if !w.is_shown() {
+			return
+		}
+		time.sleep(1 * time.second)
+	}
+	eprintln('Failed closing window.')
+	assert false
 }
 
-fn test_start() {
-	wait()
+fn test_run() {
+	ui.wait()
 }
