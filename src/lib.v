@@ -8,6 +8,8 @@ All rights reserved.
 
 module vwebui
 
+import json
+
 pub type Window = usize
 
 pub type Function = usize
@@ -187,6 +189,11 @@ pub fn (e &Event) string() string {
 // Parse argument as boolean.
 pub fn (e &Event) bool() bool {
 	return C.webui_get_bool(e)
+}
+
+// Decode arguments into a V data type.
+pub fn (e Event) decode[T]() !T {
+	return json.decode(T, e.string()) or { return error('Failed decoding arguments. ${err}') }
 }
 
 type Response = bool | i64 | int | string
