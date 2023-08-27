@@ -35,9 +35,11 @@ const doc = '<!DOCTYPE html>
 </html>'
 
 fn my_function_count(e &ui.Event) {
-	count := e.window.script('return count;')
-	dump(count.success)
-	e.window.script('SetCount(${count.output.int() + 1});')
+	res := e.window.script('return count;')
+	if !res.success {
+		return
+	}
+	e.window.run('SetCount(${res.output.int() + 1});')
 }
 
 // Close all opened windows

@@ -38,7 +38,7 @@ fn my_function_with_response(e &ui.Event) {
 	e.@return(number)
 }
 
-const doc = '<!DOCTYPE html>
+doc := '<!DOCTYPE html>
 <html>
 	<head>
 		<title>Call V from JavaScript Example</title>

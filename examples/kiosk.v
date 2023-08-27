@@ -14,9 +14,6 @@ w.show('<!DOCTYPE html>
 				text-align: center;
 				margin-top: 30px;
 			}
-			button {
-				margin: 5px 0 10px;
-			}
 		</style>
 	</head>
 	<body>
