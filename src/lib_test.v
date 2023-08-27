@@ -59,6 +59,39 @@ fn test_v_fn_call() {
 	})
 }
 
+struct Person {
+	name string
+	age  int
+}
+
+fn test_decode() {
+	mut w := new_window()
+	w.bind('decode', fn (e &Event) {
+		p := e.decode[Person]() or {
+			eprintln('Failed decoding person. ${err}')
+			assert false
+			return
+		}
+		assert p.name == 'john'
+		assert p.age == 30
+		e.window.close()
+	})
+	w.show('<!DOCTYPE html>
+<html style="background: linear-gradient(to left, #36265a, #654da9);">
+	<head>
+		<script>
+			setTimeout(async () => {
+				const person = {
+					name: "john",
+					age: 30
+				}
+				await webui.call("decode", JSON.stringify(person));
+			}, 500);
+		</script>
+	</head>
+</html>')
+}
+
 fn test_start() {
 	wait()
 }
