@@ -26,10 +26,13 @@ const doc = '<!DOCTYPE html>
 </html>'
 
 fn check_the_password(e &ui.Event) {
-	res := e.window.script('return document.getElementById("MyInput").value;')
-	println('Password: ' + res.output)
+	password := e.window.script('return document.getElementById("MyInput").value;') or {
+		eprintln(err)
+		return
+	}
+	println('Password: ' + password)
 
-	if res.output == '123456' {
+	if password == '123456' {
 		e.window.run("alert('Good. Password is correct.');")
 	} else {
 		e.window.run("alert('Sorry. Wrong password.');")
@@ -49,9 +52,7 @@ w.bind('MyButton1', check_the_password)
 w.bind('MyButton2', close_the_application)
 
 // Show the window, panic on fail
-if !w.show(doc) {
-	panic('Failed showing window.')
-}
+w.show(doc) or { panic(err) }
 
 // Wait until all windows get closed
 ui.wait()

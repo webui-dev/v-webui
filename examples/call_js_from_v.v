@@ -6,16 +6,16 @@ const doc = '<!DOCTYPE html>
 	<head>
 	<title>Call JavaScript from V Example</title>
 	<style>
-	body {
-		background: linear-gradient(to left, #36265a, #654da9);
-		color: AliceBlue;
-		font: 16px sans-serif;
-		text-align: center;
-		margin-top: 30px;
-	}
-	button {
-		margin: 5px 0 10px;
-	}
+		body {
+			background: linear-gradient(to left, #36265a, #654da9);
+			color: AliceBlue;
+			font: 16px sans-serif;
+			text-align: center;
+			margin-top: 30px;
+		}
+		button {
+			margin: 5px 0 10px;
+		}
 	</style>
 	</head>
 	<body>
@@ -35,11 +35,8 @@ const doc = '<!DOCTYPE html>
 </html>'
 
 fn my_function_count(e &ui.Event) {
-	res := e.window.script('return count;')
-	if !res.success {
-		return
-	}
-	e.window.run('SetCount(${res.output.int() + 1});')
+	count := e.window.script('return count;') or { return }
+	e.window.run('SetCount(${count.int() + 1});')
 }
 
 // Close all opened windows
@@ -55,9 +52,7 @@ w.bind('MyButton1', my_function_count)
 w.bind('MyButton2', my_function_exit)
 
 // Show the window, panic on fail
-if !w.show(doc) {
-	panic('The browser(s) was failed')
-}
+w.show(doc) or { panic(err) }
 
 // Wait until all windows get closed
 ui.wait()

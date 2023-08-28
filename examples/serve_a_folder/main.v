@@ -20,11 +20,11 @@ fn events(e &ui.Event) {
 
 // Switch to `/second.html` in the same opened window.
 fn switch_to_second_page(e &ui.Event) {
-	e.window.show('second.html')
+	e.window.show('second.html') or { eprintln(err) }
 }
 
 fn show_second_window(e &ui.Event) {
-	w2.show('second.html')
+	w2.show('second.html') or { eprintln(err) }
 }
 
 fn exit_app(e &ui.Event) {
@@ -38,7 +38,7 @@ fn main() {
 	w.bind('OpenNewWindow', show_second_window)
 	w.bind('Exit', exit_app)
 	w.bind('', events) // Bind events
-	w.show('index.html') // Show a new window
+	w.show('index.html') or { panic(err) } // Show a new window
 
 	w2.new_window()
 	w2.bind('Exit', exit_app)
