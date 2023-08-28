@@ -82,9 +82,8 @@ doc := '<!DOCTYPE html>
 
 mut w := ui.new_window() // Create a window
 
-if !w.show(doc) { // Run the window
-	panic('The browser(s) was failed') // If not, print a error info
-}
+// Show the window, panic on fail
+w.show(doc) or { panic(err) }
 
 w.bind('MyID_One', my_function_string)
 w.bind('MyID_Two', my_function_integer)

@@ -6,8 +6,7 @@ fn test_window_close() {
 
 	// Wait for the window to show
 	ui.set_timeout(30)
-	if !w.show('<html style="background: #654da9; color: #eee"><samp>test_window_close</samp></html>') {
-		eprintln('Failed showing window.')
+	w.show('<html style="background: #654da9; color: #eee"><samp>test_window_close</samp></html>') or {
 		assert false
 	}
 	for i in 0 .. 30 {
@@ -40,7 +39,7 @@ fn test_fn_call() {
 
 	w.bind('v_fn', fn (e &ui.Event) {
 		assert e.string() == 'foo'
-		// Call a js fuction that should calls another V function.
+		// Call a JS fuction that calls another V function.
 		e.window.run('await callV();')
 	})
 	w.bind('v_fn_with_obj_arg', fn (e &ui.Event) {
@@ -55,7 +54,7 @@ fn test_fn_call() {
 		e.window.close()
 	})
 
-	if !w.show('<html style="background: #654da9; color: #eee">
+	w.show('<html style="background: #654da9; color: #eee">
 <body>
 	<samp>test_fn_call</samp>
 	<script>
@@ -71,8 +70,7 @@ fn test_fn_call() {
 		}
 	</script>
 </body>
-</html>') {
-		eprintln('Failed showing window.')
+</html>') or {
 		assert false
 	}
 
