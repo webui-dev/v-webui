@@ -22,12 +22,6 @@ pub struct ScriptOptions {
 	timeout           usize
 }
 
-pub struct ScriptResponse {
-pub:
-	success bool
-	output  string
-}
-
 pub enum EventType {
 	disconnected = 0
 	connected = 1
@@ -81,13 +75,17 @@ pub fn (w Window) bind(element string, func fn (&Event)) Function {
 }
 
 // Show a window using embedded HTML, or a file. If the window is already open, it will be refreshed.
-pub fn (w Window) show(content string) bool {
-	return C.webui_show(w, &char(content.str))
+pub fn (w Window) show(content string) ! {
+	if !C.webui_show(w, &char(content.str)) {
+		return error('Failed showing window.')
+	}
 }
 
 // Show a window using embedded HTML, or a file in a specified browser. If the window is already open, it will be refreshed.
-pub fn (w Window) show_browser(content string, browser Browser) bool {
-	return C.webui_show_browser(w, &char(content.str), browser)
+pub fn (w Window) show_browser(content string, browser Browser) ! {
+	if !C.webui_show_browser(w, &char(content.str), browser) {
+		return error('Failed showing window in `${browser}`.')
+	}
 }
 
 // Set the window in Kiosk mode (full screen).
@@ -155,14 +153,12 @@ pub fn (w Window) run(script string) {
 }
 
 // Run JavaScript and get the response back (Make sure your local buffer can hold the response).
-pub fn (w Window) script(javascript string, opts ScriptOptions) ScriptResponse {
+pub fn (w Window) script(javascript string, opts ScriptOptions) !string {
 	mut buffer := []u8{len: int(opts.max_response_size)}.str().str
-	status := C.webui_script(w, &char(javascript.str), opts.timeout, &char(buffer), opts.max_response_size)
-	output := unsafe { buffer.vstring() }
-	return ScriptResponse{
-		success: status
-		output: output
+	if !C.webui_script(w, &char(javascript.str), opts.timeout, &char(buffer), opts.max_response_size) {
+		return error('Failed running script. `${javascript}`')
 	}
+	return unsafe { buffer.vstring() }
 }
 
 // Chose between Deno and Nodejs as runtime for .js and .ts files.
@@ -193,7 +189,7 @@ pub fn (e &Event) bool() bool {
 
 // Decode arguments into a V data type.
 pub fn (e Event) decode[T]() !T {
-	return json.decode(T, e.string()) or { return error('Failed decoding arguments. ${err}') }
+	return json.decode(T, e.string()) or { return error('Failed decoding arguments. `${err}`') }
 }
 
 type Response = bool | i64 | int | string
