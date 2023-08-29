@@ -56,6 +56,7 @@ fn C.webui_malloc(size usize) voidptr // not wrapped
 fn C.webui_send_raw(size Window, func &char, raw voidptr, size usize) // not wrapped
 fn C.webui_set_hide(win Window, status bool)
 fn C.webui_set_size(win Window, width usize, height usize)
+fn C.webui_set_position(win Window, x usize, y usize)
 
 // -- Interface ----------------------- // not wrapped
 fn C.webui_interface_bind(win Window, element &char, func fn (win Window, event_type EventType, element &char, data &char, data_size usize, event_num usize)) usize
