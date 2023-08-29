@@ -216,3 +216,8 @@ pub fn (e &Event) @return(response Response) {
 pub fn (w Window) set_hide(status bool) {
 	C.webui_set_hide(w, status)
 }
+
+// Set the window size.
+pub fn (w Window) set_size(width usize, height usize) {
+	C.webui_set_size(w, width, height)
+}
