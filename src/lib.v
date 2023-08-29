@@ -221,3 +221,8 @@ pub fn (w Window) set_hide(status bool) {
 pub fn (w Window) set_size(width usize, height usize) {
 	C.webui_set_size(w, width, height)
 }
+
+// Set the window position.
+pub fn (w Window) set_position(x usize, y usize) {
+	C.webui_set_position(w, x, y)
+}
