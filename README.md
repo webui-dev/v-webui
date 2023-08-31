@@ -53,7 +53,6 @@
 
 > WebUI is not a web-server solution or a framework, but it allows you to use any web browser as a GUI, with your preferred language in the backend and HTML5 in the frontend. All in a lightweight portable lib.
 
-
 </div>
 
 ## Features
@@ -106,6 +105,7 @@ const html = '<!DOCTYPE html>
         text-align: center;
       }
     </style>
+    <script src="/webui.js"></script>
   </head>
   <body>
     <h1>Thanks for using WebUI!</h1>
