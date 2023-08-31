@@ -6,7 +6,10 @@ fn test_window_close() {
 
 	// Wait for the window to show
 	ui.set_timeout(30)
-	w.show('<html style="background: #654da9; color: #eee"><samp>test_window_close</samp></html>') or {
+	w.show('<html style="background: #654da9; color: #eee">
+<head><script src="/webui.js"></script></head>
+<body><samp>test_window_close</samp></body>
+</html>') or {
 		assert false
 	}
 	for i in 0 .. 30 {
@@ -55,6 +58,9 @@ fn test_fn_call() {
 	})
 
 	w.show('<html style="background: #654da9; color: #eee">
+<head>
+	<script src="/webui.js"></script>
+</head>
 <body>
 	<samp>test_fn_call</samp>
 	<script>
