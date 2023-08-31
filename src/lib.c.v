@@ -7,6 +7,7 @@ module vwebui
 #flag darwin -lpthread -lm
 #flag windows -lwebui-2 -lws2_32
 
+[typedef]
 struct C.webui_event_t {
 pub:
 	window       Window    // The window object number
