@@ -51,7 +51,7 @@ fn main() {
 	w.bind('Open', open)
 	w.bind('Save', save)
 	w.bind('Close', close)
-	w.show('ui/MainWindow.html') or { panic(err) }
+	w.show('ui/index.html') or { panic(err) }
 
 	ui.wait()
 }

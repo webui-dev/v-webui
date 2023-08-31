@@ -4,19 +4,21 @@ import vwebui as ui
 const doc = '<!DOCTYPE html>
 <html>
 	<head>
-	<title>Call JavaScript from V Example</title>
-	<style>
-		body {
-			background: linear-gradient(to left, #36265a, #654da9);
-			color: AliceBlue;
-			font: 16px sans-serif;
-			text-align: center;
-			margin-top: 30px;
-		}
-		button {
-			margin: 5px 0 10px;
-		}
-	</style>
+		<title>Call JavaScript from V Example</title>
+		<style>
+			body {
+				background: linear-gradient(to left, #36265a, #654da9);
+				color: AliceBlue;
+				font: 16px sans-serif;
+				text-align: center;
+				margin-top: 30px;
+			}
+			button {
+				margin: 5px 0 10px;
+			}
+		</style>
+		<!-- Connect this window to the background app -->
+		<script src="/webui.js"></script>
 	</head>
 	<body>
 		<h1>WebUI - Call JavaScript from V</h1>

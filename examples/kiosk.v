@@ -15,6 +15,8 @@ w.show('<!DOCTYPE html>
 				margin-top: 30px;
 			}
 		</style>
+		<!-- Connect this window to the background app -->
+		<script src="/webui.js"></script>
 	</head>
 	<body>
 		<h1>WebUI - Kiosk Example</h1>
