@@ -10,11 +10,11 @@ const (
 		false
 	}
 	lib_url   = 'https://github.com/webui-dev/webui'
-	lib_dir   = @VMODROOT + os.path_separator + 'webui'
+	lib_dir   = os.join_path(@VMODROOT, 'webui')
 	build_dir = if is_ci {
 		lib_dir + '_tmp'
 	} else {
-		os.temp_dir() + os.path_separator + 'webui'
+		os.join_path(os.temp_dir(), 'webui')
 	}
 )
 
