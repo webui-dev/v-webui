@@ -78,7 +78,7 @@ After the installation, prepare the WebUI library for usage.
 ~/.vmodules/vwebui/setup.vsh
 
 # Windows PowerShell
-v run $HOME/.vmodules/vwebui/setup.vsh
+v run %USERPROFILE%/.vmodules/vwebui/setup.vsh
 ```
 
 > **Note**
