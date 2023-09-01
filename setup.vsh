@@ -70,12 +70,18 @@ fn build() ! {
 }
 
 fn move() ! {
-	// The using `os.mv` steps currently turns out saver than e.g., especially on Windows
-	// execute('mv ${lib_dir}/dist/ ./dist/ && mv ${lib_dir}/include/* ./dist/')
 	chdir(build_dir)!
-	mv('include/webui.h', 'dist/webui.h')!
-	mv('include/webui.hpp', 'dist/webui.hpp')!
-	mv('dist/', lib_dir)!
+	$if windows {
+		// Using single `os.mv` steps turns out saver on Windows
+		mv('include/webui.h', 'dist/webui.h')!
+		mv('include/webui.hpp', 'dist/webui.hpp')!
+		mv('dist/', lib_dir)!
+	} $else {
+		res := os.execute('mv include/webui.* dist/ && mv dist/ ${lib_dir}/')
+		if res.exit_code != 0 {
+			return error('Failed moving WebUI build output to ${lib_dir}. ${res.output}')
+		}
+	}
 }
 
 fn run(cmd cli.Command) ! {
