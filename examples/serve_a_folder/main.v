@@ -38,7 +38,7 @@ fn main() {
 	w.bind('OpenNewWindow', show_second_window)
 	w.bind('Exit', exit_app)
 	w.bind('', events) // Bind events
-	w.show('index.html') or { panic(err) } // Show a new window
+	w.show('index.html')! // Show a new window
 
 	w2.new_window()
 	w2.bind('Exit', exit_app)
