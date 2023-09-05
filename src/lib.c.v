@@ -22,7 +22,7 @@ pub:
 fn C.webui_new_window() Window
 fn C.webui_new_window_id(win_id Window)
 fn C.webui_get_new_window_id() Window
-fn C.webui_bind(win Window, elem &char, func fn (&Event)) Window
+fn C.webui_bind(win Window, elem &char, func fn (&Event)) Function
 fn C.webui_show(win Window, content &char) bool
 fn C.webui_show_browser(win Window, content &char, browser Browser) bool
 fn C.webui_set_kiosk(win Window, kiosk bool)
