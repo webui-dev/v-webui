@@ -4,16 +4,11 @@ import cli
 import os
 
 const (
-	is_ci = $if ci ? {
-		true
-	} $else {
-		false
-	}
 	lib_url   = 'https://github.com/webui-dev/webui'
 	lib_dir   = os.join_path(@VMODROOT, 'webui')
-	build_dir = if is_ci {
+	build_dir = $if ci ? {
 		lib_dir + '_tmp'
-	} else {
+	} $else {
 		os.join_path(os.temp_dir(), 'webui')
 	}
 )
