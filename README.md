@@ -33,16 +33,10 @@
       src="https://img.shields.io/github/v/release/webui-dev/v-webui?style=for-the-badge&logo=webtrees&logoColor=C0CAF5&labelColor=414868&color=7664C6"
     >
   </a>
-  <a href="https://github.com/webui-dev/v-webui">
-    <img
-      alt="Repo Size"
-      src="https://img.shields.io/github/repo-size/webui-dev/v-webui?style=for-the-badge&label=SIZE&logo=git&logoColor=C0CAF5&labelColor=414868&color=8c73cc"
-    >
-  </a>
   <a href="https://github.com/webui-dev/v-webui/blob/main/LICENSE">
     <img
       alt="License"
-      src="https://img.shields.io/github/license/webui-dev/v-webui?style=for-the-badge&amp&logo=opensourcehardware&label=License&logoColor=C0CAF5&labelColor=414868"
+      src="https://img.shields.io/github/license/webui-dev/v-webui?style=for-the-badge&amp&logo=opensourcehardware&label=License&logoColor=C0CAF5&labelColor=414868&color=8c73cc"
     >
   </a>
 </div>
