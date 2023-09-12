@@ -60,8 +60,8 @@ fn C.webui_set_size(win Window, width usize, height usize)
 fn C.webui_set_position(win Window, x usize, y usize)
 
 // -- Interface ----------------------- // not wrapped
-fn C.webui_interface_bind(win Window, element &char, func fn (win Window, event_type EventType, element &char, data &char, data_size usize, event_num usize)) usize
+fn C.webui_interface_bind(win Window, element &char, func fn (win Window, event_type EventType, element &char, data &char, data_size usize, event_num usize)) Function
 fn C.webui_interface_set_response(win Window, event_num usize, resp &char)
 fn C.webui_interface_is_app_running() bool
 fn C.webui_interface_get_window_id(win Window) Window
-fn C.webui_interface_get_bind_id(win Window, element &char) Window
+fn C.webui_interface_get_bind_id(win Window, element &char) Function
