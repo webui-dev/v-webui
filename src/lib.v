@@ -56,11 +56,13 @@ pub enum Runtime {
 
 // Create a new webui window object.
 pub fn new_window() Window {
+	C.GC_allow_register_threads()
 	return C.webui_new_window()
 }
 
 // Create a new webui window object.
 pub fn (w Window) new_window() {
+	C.GC_allow_register_threads()
 	C.webui_new_window_id(w)
 }
 
@@ -111,7 +113,6 @@ pub fn set_root_folder(path string) {
 
 // Wait until all opened windows get closed.
 pub fn wait() {
-	C.GC_allow_register_threads()
 	C.webui_wait()
 }
 
