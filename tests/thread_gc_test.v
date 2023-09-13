@@ -40,7 +40,7 @@ fn test_thread_gc() {
 		w.destroy()
 	}
 
-	w.bind('v_fn', fn [mut app] (e &ui.Event) {
+	w.bind[voidptr]('v_fn', fn [mut app] (e &ui.Event) {
 		log.info('>>> v_fn called')
 		defer {
 			log.info('>>> v_fn ended')

@@ -3,26 +3,45 @@ import time
 
 struct Person {
 	name string
-	age  int
+mut:
+	age int
 }
 
 fn test_fn_call() {
 	w := ui.new_window()
 
-	w.bind('v_fn', fn (e &ui.Event) {
+	// Initial function that is being called from the browser.
+	w.bind('v_fn', fn (e &ui.Event) voidptr {
 		assert e.string() == 'foo'
-		// Call a JS fuction that calls another V function.
+		// Call a JS function that calls another V function.
 		e.window.run('await callV();')
+		return ui.no_result
 	})
-	w.bind('v_fn_with_obj_arg', fn (e &ui.Event) {
-		p := e.decode[Person]() or {
+	// Next V function that is called from the JS function `callV()` that is called above.
+	w.bind('v_fn_with_obj_arg', fn (e &ui.Event) Person {
+		mut p := e.decode[Person]() or {
 			eprintln('Failed decoding person. ${err}')
 			assert false
-			return
+			exit(0)
 		}
 		println(p)
 		assert p.name == 'john'
 		assert p.age == 30
+		p.age = 31
+		return p
+	})
+	// Next V function that receives the above return value as argument,
+	// asserts it's correctness and closes the window.
+	// Uses the alternative generic declaration for a function with a void return value,
+	// omitting the need to add a return to the function body.
+	w.bind[voidptr]('assert_and_exit', fn (e &ui.Event) {
+		mut p := e.decode[Person]() or {
+			eprintln('Failed decoding person. ${err}')
+			assert false
+			exit(0)
+		}
+		assert p.name == 'john'
+		assert p.age == 31
 		e.window.close()
 	})
 
@@ -41,7 +60,8 @@ fn test_fn_call() {
 				name: "john",
 				age: 30
 			}
-			await webui.call("v_fn_with_obj_arg", JSON.stringify(person));
+			res = await webui.call("v_fn_with_obj_arg", JSON.stringify(person));
+			await webui.call("assert_and_exit", JSON.stringify(res))
 		}
 	</script>
 </body>
