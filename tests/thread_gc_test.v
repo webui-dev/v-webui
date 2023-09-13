@@ -25,7 +25,7 @@ fn allocate_lots_of_memory() {
 	log.info('allocate_lots_of_memory end')
 }
 
-fn test_fn_call() {
+fn test_thread_gc() {
 	log.info('> ${@METHOD} start')
 	defer {
 		log.info('> ${@METHOD} end')
@@ -53,7 +53,7 @@ fn test_fn_call() {
 	w.show('<html style="background: #654da9; color: #eee">
 <head><script src="/webui.js"></script></head>
 <body>
-	<samp>test_fn_call</samp>
+	<samp>${@FN}</samp>
 	<script>setTimeout(async () => { await webui.call("v_fn", "foo"); }, 1000)</script>
 </body>
 </html>') or {
