@@ -52,6 +52,7 @@ jobs:
       - name: Test
         run: |
           xvfb-run v -cc clang -stats test "$HOME/.vmodules/${{ env.MOD_NAME }}/src/"
+          xvfb-run v -cc clang -stats test "$HOME/.vmodules/${{ env.MOD_NAME }}/tests/"
 
   build-examples:
     needs: setup
