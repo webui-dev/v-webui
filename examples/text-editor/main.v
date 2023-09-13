@@ -48,9 +48,9 @@ fn main() {
 
 	w.set_root_folder(@VMODROOT)
 
-	w.bind('Open', open)
-	w.bind('Save', save)
-	w.bind('Close', close)
+	w.bind[voidptr]('Open', open)
+	w.bind[voidptr]('Save', save)
+	w.bind[voidptr]('Close', close)
 	w.show('ui/index.html') or { panic(err) }
 
 	ui.wait()

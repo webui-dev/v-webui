@@ -36,9 +36,10 @@ const doc = '<!DOCTYPE html>
 	</body>
 </html>'
 
-fn my_function_count(e &ui.Event) {
-	count := e.window.script('return count;') or { return }
+fn my_function_count(e &ui.Event) voidptr {
+	count := e.window.script('return count;') or { return ui.no_result }
 	e.window.run('SetCount(${count.int() + 1});')
+	return ui.no_result
 }
 
 // Close all opened windows
@@ -51,7 +52,9 @@ mut w := ui.new_window()
 
 // Bind HTML elements to functions
 w.bind('MyButton1', my_function_count)
-w.bind('MyButton2', my_function_exit)
+// Alternative way to bind a function that does not return a value to JS
+// and omits the return in the function body.
+w.bind[voidptr]('MyButton2', my_function_exit)
 
 // Show the window, panic on fail
 w.show(doc) or { panic(err) }
