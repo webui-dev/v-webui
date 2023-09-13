@@ -18,6 +18,8 @@ pub:
 	event_number usize     // Internal WebUI
 }
 
+struct C.GC_stack_base {}
+
 // -- Definitions ---------------------
 fn C.webui_new_window() Window
 fn C.webui_new_window_id(win_id Window)
@@ -65,3 +67,9 @@ fn C.webui_interface_set_response(win Window, event_num usize, resp &char)
 fn C.webui_interface_is_app_running() bool
 fn C.webui_interface_get_window_id(win Window) Window
 fn C.webui_interface_get_bind_id(win Window, element &char) Function
+
+// -- GC Fix --------------------------
+fn C.GC_allow_register_threads()
+fn C.GC_get_stack_base(ptr &C.GC_stack_base) int
+fn C.GC_register_my_thread(const_ptr &C.GC_stack_base) int
+fn C.GC_unregister_my_thread() int

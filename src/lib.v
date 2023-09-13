@@ -71,7 +71,13 @@ pub fn get_new_window_id() Window {
 
 // Bind a specific html element click event with a function. Empty element means all events.
 pub fn (w Window) bind(element string, func fn (&Event)) Function {
-	return C.webui_bind(w, &char(element.str), func)
+	return C.webui_bind(w, &char(element.str), fn [func] (e &Event) {
+		sb := C.GC_stack_base{}
+		C.GC_get_stack_base(&sb)
+		C.GC_register_my_thread(&sb)
+		func(e)
+		C.GC_unregister_my_thread()
+	})
 }
 
 // Show a window using embedded HTML, or a file. If the window is already open, it will be refreshed.
@@ -105,6 +111,7 @@ pub fn set_root_folder(path string) {
 
 // Wait until all opened windows get closed.
 pub fn wait() {
+	C.GC_allow_register_threads()
 	C.webui_wait()
 }
 
