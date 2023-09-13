@@ -1,44 +1,6 @@
 import vwebui as ui
 
-fn my_function_string(e &ui.Event) {
-	// JavaScript:
-	// webui.call('MyID_One', 'Hello');
-
-	response := e.string()
-	println('my_function_string: ${response}') // Hello
-
-	// Need Multiple Arguments?
-	//
-	// WebUI support only one argument. To get multiple arguments
-	// you can send a JSON string from JavaScript then decode it.
-}
-
-fn my_function_integer(e &ui.Event) {
-	// JavaScript:
-	// webui.call('MyID_Two', 123456789);
-
-	response := e.int()
-	println('my_function_integer: ${response}') // 123456789
-}
-
-fn my_function_boolean(e &ui.Event) {
-	// JavaScript:
-	// webui.call('MyID_Three', true);
-
-	response := e.bool()
-	println('my_function_boolean: ${response}') // true
-}
-
-fn my_function_with_response(e &ui.Event) {
-	// JavaScript:
-	// const result = webui.call('MyID_Four', number);
-
-	number := e.int() * 2
-	println('my_function_with_response: ${number}')
-	e.@return(number)
-}
-
-doc := '<!DOCTYPE html>
+const doc = '<!DOCTYPE html>
 <html>
 	<head>
 		<title>Call V from JavaScript Example</title>
@@ -71,16 +33,56 @@ doc := '<!DOCTYPE html>
 		<button onclick="MyJS();">Call my_function_with_response()</button>
 		<div>Double: <input type="text" id="MyInputID" value="2"></div>
 		<script>
-			function MyJS() {
+			async function MyJS() {
 				const MyInput = document.getElementById("MyInputID");
 				const number = MyInput.value;
-				webui.call("MyID_Four", number).then((response) => {
-						MyInput.value = response;
-				});
+				const result = await webui.call("MyID_Four", number);
+				MyInput.value = result;
 			}
 		</script>
 	</body>
 </html>'
+
+// JavaScript:
+// webui.call('MyID_One', 'Hello');
+fn my_function_string(e &ui.Event) voidptr {
+	response := e.string()
+	println('my_function_string: ${response}') // Hello
+
+	// Need Multiple Arguments?
+	//
+	// WebUI supports only one argument. For multiple arguments,
+	// send a JSON string from JavaScript and decode it.
+
+	return ui.no_result
+}
+
+// JavaScript:
+// webui.call('MyID_Two', 123456789);
+fn my_function_integer(e &ui.Event) voidptr {
+	response := e.int()
+	println('my_function_integer: ${response}') // 123456789
+
+	return ui.no_result
+}
+
+// JavaScript:
+// webui.call('MyID_Three', true);
+fn my_function_boolean(e &ui.Event) voidptr {
+	response := e.bool()
+	println('my_function_boolean: ${response}') // true
+
+	return ui.no_result
+}
+
+// JavaScript:
+// const result = webui.call('MyID_Four', number);
+fn my_function_with_response(e &ui.Event) int {
+	number := e.int() * 2
+	println('my_function_with_response: ${number}')
+
+	return number
+}
 
 mut w := ui.new_window() // Create a window
 

@@ -34,14 +34,14 @@ fn exit_app(e &ui.Event) {
 fn main() {
 	w.new_window()
 
-	w.bind('SwitchToSecondPage', switch_to_second_page)
-	w.bind('OpenNewWindow', show_second_window)
-	w.bind('Exit', exit_app)
-	w.bind('', events) // Bind events
+	w.bind[voidptr]('SwitchToSecondPage', switch_to_second_page)
+	w.bind[voidptr]('OpenNewWindow', show_second_window)
+	w.bind[voidptr]('Exit', exit_app)
+	w.bind[voidptr]('', events) // Bind events
 	w.show('index.html')! // Show a new window
 
 	w2.new_window()
-	w2.bind('Exit', exit_app)
+	w2.bind[voidptr]('Exit', exit_app)
 
 	ui.set_root_folder(@VMODROOT)
 	ui.wait() // Wait until all windows get closed

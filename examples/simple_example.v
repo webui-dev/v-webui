@@ -26,10 +26,10 @@ const doc = '<!DOCTYPE html>
 	</body>
 </html>'
 
-fn check_the_password(e &ui.Event) {
+fn check_the_password(e &ui.Event) voidptr {
 	password := e.window.script('return document.getElementById("MyInput").value;') or {
 		eprintln(err)
-		return
+		return ui.no_result
 	}
 	println('Password: ' + password)
 
@@ -38,11 +38,13 @@ fn check_the_password(e &ui.Event) {
 	} else {
 		e.window.run("alert('Sorry. Wrong password.');")
 	}
+	return ui.no_result
 }
 
 // Close all opened windows
-fn close_the_application(e &ui.Event) {
+fn close_the_application(e &ui.Event) voidptr {
 	ui.exit()
+	return ui.no_result
 }
 
 // Create a window
