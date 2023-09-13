@@ -23,32 +23,32 @@ pub struct ScriptOptions {
 }
 
 pub enum EventType {
-	disconnected = 0
-	connected = 1
-	multi_connection = 2
+	disconnected        = 0
+	connected           = 1
+	multi_connection    = 2
 	unwanted_connection = 3
-	mouse_click = 4
-	navigation = 5
-	callback = 6
+	mouse_click         = 4
+	navigation          = 5
+	callback            = 6
 }
 
 pub enum Browser {
-	any = 0
-	chrome = 1
-	firefox = 2
-	edge = 3
-	safari = 4
+	any      = 0
+	chrome   = 1
+	firefox  = 2
+	edge     = 3
+	safari   = 4
 	chromium = 5
-	opera = 6
-	brave = 7
-	vivaldi = 8
-	epic = 9
-	yandex = 10
+	opera    = 6
+	brave    = 7
+	vivaldi  = 8
+	epic     = 9
+	yandex   = 10
 }
 
 pub enum Runtime {
-	@none = 0
-	deno = 1
+	@none  = 0
+	deno   = 1
 	nodejs = 2
 }
 
