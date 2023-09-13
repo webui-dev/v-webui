@@ -200,23 +200,18 @@ pub fn (e Event) decode[T]() !T {
 	return json.decode(T, e.string()) or { return error('Failed decoding arguments. `${err}`') }
 }
 
-type Response = bool | i64 | int | string
-
 // Return the response to JavaScript.
-pub fn (e &Event) @return(response Response) {
-	match response {
-		int {
-			C.webui_return_int(e, i64(response))
-		}
-		i64 {
-			C.webui_return_int(e, response)
-		}
-		string {
-			C.webui_return_string(e, &char(response.str))
-		}
-		bool {
-			C.webui_return_bool(e, response)
-		}
+pub fn (e &Event) @return[T](response T) {
+	$if response is int {
+		C.webui_return_int(e, i64(response))
+	} $else $if response is i64 {
+		C.webui_return_int(e, response)
+	} $else $if response is string {
+		C.webui_return_string(e, &char(response.str))
+	} $else $if response is bool {
+		C.webui_return_bool(e, response)
+	} $else $if response !is voidptr {
+		C.webui_return_string(e, json.encode(response).str)
 	}
 }
 
