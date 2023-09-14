@@ -107,13 +107,14 @@ const html = '<!DOCTYPE html>
   </body>
 </html>'
 
-fn my_v_func(e &ui.Event) {
+fn my_v_func(e &ui.Event) voidptr {
 	println('Hello From V!')
+	return ui.no_result
 }
 
 w := ui.new_window()
 w.bind('my_v_func', my_v_func)
-w.show(html)
+w.show(html)!
 ui.wait()
 ```
 
