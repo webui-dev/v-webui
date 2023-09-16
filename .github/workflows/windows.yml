@@ -21,7 +21,7 @@ jobs:
       - name: Setup WebUI Library
         shell: bash
         run: |
-          v -d ci run ${{ env.MOD_NAME }}/setup.vsh
+          v run ${{ env.MOD_NAME }}/setup.vsh
           mv ${{ env.MOD_NAME }} ~/.vmodules/${{ env.MOD_NAME }}
       - name: Cache
         uses: actions/cache/save@v3
