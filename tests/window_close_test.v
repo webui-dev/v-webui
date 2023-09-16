@@ -7,7 +7,7 @@ fn test_window_close() {
 	// Wait for the window to show
 	ui.set_timeout(30)
 	w.show('<html style="background: #654da9; color: #eee">
-<head><script src="/webui.js"></script></head>
+<head><script src="webui.js"></script></head>
 <body><samp>${@FN}</samp></body>
 </html>') or {
 		assert false

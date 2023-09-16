@@ -17,7 +17,7 @@ const doc = '<!DOCTYPE html>
 				margin: 5px 0 10px;
 			}
 		</style>
-		<script src="/webui.js"></script>
+		<script src="webui.js"></script>
 	</head>
 	<body>
 		<h1>WebUI 2 - V Example</h1><br>

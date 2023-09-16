@@ -47,7 +47,7 @@ fn test_fn_call() {
 
 	w.show('<html style="background: #654da9; color: #eee">
 <head>
-	<script src="/webui.js"></script>
+	<script src="webui.js"></script>
 </head>
 <body>
 	<samp>${@FN}</samp>

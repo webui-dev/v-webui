@@ -16,7 +16,7 @@ w.show('<!DOCTYPE html>
 			}
 		</style>
 		<!-- Connect this window to the background app -->
-		<script src="/webui.js"></script>
+		<script src="webui.js"></script>
 	</head>
 	<body>
 		<h1>WebUI - Kiosk Example</h1>

@@ -99,7 +99,7 @@ const html = '<!DOCTYPE html>
         text-align: center;
       }
     </style>
-    <script src="/webui.js"></script>
+    <script src="webui.js"></script>
   </head>
   <body>
     <h1>Thanks for using WebUI!</h1>
