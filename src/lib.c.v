@@ -1,6 +1,12 @@
 module vwebui
 
-#include "@VMODROOT/webui/webui.h"
+#include "@VMODROOT/webui/include/webui.h"
+
+$if webui_log ? {
+	#flag -L@VMODROOT/webui/debug -lwebui-2-static
+} $else {
+	#flag -L@VMODROOT/webui -lwebui-2-static
+}
 
 #flag -L@VMODROOT/webui -lwebui-2-static
 #flag linux -lpthread -lm
