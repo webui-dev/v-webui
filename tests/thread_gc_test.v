@@ -25,6 +25,9 @@ fn allocate_lots_of_memory() {
 	log.info('allocate_lots_of_memory end')
 }
 
+// WebUI launches its own threads for the web server.
+// The garbage collector could be triggered unintentionally and destroy variables in bind callbacks.
+// This test ensures a regression of the GC fix.
 fn test_thread_gc() {
 	log.info('> ${@METHOD} start')
 	defer {
