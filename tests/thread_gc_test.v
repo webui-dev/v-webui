@@ -49,7 +49,11 @@ fn test_thread_gc() {
 			log.info('>>> v_fn ended')
 		}
 		allocate_lots_of_memory()
-		assert e.string() == 'foo'
+		assert e.get_arg[string]() or {
+			eprintln(err)
+			assert false
+			exit(0)
+		} == 'foo'
 		app.fn_was_called = true
 	})
 
