@@ -158,11 +158,6 @@ pub fn (w Window) set_multi_access(status bool) {
 	C.webui_set_multi_access(w, status)
 }
 
-// decode decodes Base64 encoded text received from the the UI.
-pub fn (e Event) decode[T]() !T {
-	return json.decode(T, e.string()) or { return error('Failed decoding arguments. `${err}`') }
-}
-
 // set_hide determines whether the window is run in hidden mode.
 pub fn (w Window) set_hide(status bool) {
 	C.webui_set_hide(w, status)
@@ -219,6 +214,11 @@ pub fn (e &Event) string() string {
 // bool parses the JavaScript argument as integer.
 pub fn (e &Event) bool() bool {
 	return C.webui_get_bool(e)
+}
+
+// decode parses the JavaScript argument into a V data type.
+pub fn (e Event) decode[T]() !T {
+	return json.decode(T, e.string()) or { return error('Failed decoding arguments. `${err}`') }
 }
 
 // @return returns the response to JavaScript.
