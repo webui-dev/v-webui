@@ -193,30 +193,25 @@ pub fn (w Window) set_runtime(runtime Runtime) {
 	C.webui_set_runtime(w, runtime)
 }
 
-// int parses the JavaScript argument as integer.
-pub fn (e &Event) int() int {
-	return int(C.webui_get_int(e))
-}
-
-// i64 parses the JavaScript argument as integer.
-pub fn (e &Event) i64() i64 {
-	return C.webui_get_int(e)
-}
-
-// string parses the JavaScript argument as integer.
-pub fn (e &Event) string() string {
-	// Ensure GCC and Clang compiles with `-cstrict`
-	return unsafe { (&char(C.webui_get_string(e))).vstring() }
-}
-
-// bool parses the JavaScript argument as integer.
-pub fn (e &Event) bool() bool {
-	return C.webui_get_bool(e)
-}
-
-// decode parses the JavaScript argument into a V data type.
-pub fn (e Event) decode[T]() !T {
-	return json.decode(T, e.string()) or { return error('Failed decoding arguments. `${err}`') }
+// get_arg parses the JavaScript argument into a V data type.
+pub fn (e &Event) get_arg[T]() !T {
+	if e.size == 0 {
+		element := unsafe { (&char(e.element)).vstring() }
+		return error('`${element}` did not receive a `${T.name}` argument.')
+	}
+	return $if T is int {
+		int(C.webui_get_int(e))
+	} $else $if T is i64 {
+		C.webui_get_int(e)
+	} $else $if T is string {
+		unsafe { (&char(C.webui_get_string(e))).vstring() }
+	} $else $if T is bool {
+		C.webui_get_bool(e)
+	} $else {
+		json.decode(T, (&char(C.webui_get_string(e))).vstring()) or {
+			return error('Failed decoding `${T.name}` argument. ${err}')
+		}
+	}
 }
 
 // @return returns the response to JavaScript.
