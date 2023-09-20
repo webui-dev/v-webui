@@ -45,7 +45,7 @@ const doc = '<!DOCTYPE html>
 // JavaScript:
 // webui.call('MyID_One', 'Hello');
 fn my_function_string(e &ui.Event) voidptr {
-	response := e.string()
+	response := e.get_arg[string]() or { return ui.no_result }
 	println('my_function_string: ${response}') // Hello
 
 	// Need Multiple Arguments?
@@ -59,7 +59,7 @@ fn my_function_string(e &ui.Event) voidptr {
 // JavaScript:
 // webui.call('MyID_Two', 123456789);
 fn my_function_integer(e &ui.Event) voidptr {
-	response := e.int()
+	response := e.get_arg[int]() or { return ui.no_result }
 	println('my_function_integer: ${response}') // 123456789
 
 	return ui.no_result
@@ -68,7 +68,7 @@ fn my_function_integer(e &ui.Event) voidptr {
 // JavaScript:
 // webui.call('MyID_Three', true);
 fn my_function_boolean(e &ui.Event) voidptr {
-	response := e.bool()
+	response := e.get_arg[bool]() or { return ui.no_result }
 	println('my_function_boolean: ${response}') // true
 
 	return ui.no_result
@@ -77,21 +77,22 @@ fn my_function_boolean(e &ui.Event) voidptr {
 // JavaScript:
 // const result = webui.call('MyID_Four', number);
 fn my_function_with_response(e &ui.Event) int {
-	number := e.int() * 2
+	number := e.get_arg[int]() or { return 0 } * 2
 	println('my_function_with_response: ${number}')
 
 	return number
 }
 
-mut w := ui.new_window() // Create a window
+// Create a window.
+mut w := ui.new_window()
 
-// Show the window, panic on fail
-w.show(doc) or { panic(err) }
+// Show the window, panic on fail.
+w.show(doc)!
 
 w.bind('MyID_One', my_function_string)
 w.bind('MyID_Two', my_function_integer)
 w.bind('MyID_Three', my_function_boolean)
 w.bind('MyID_Four', my_function_with_response)
 
-// Wait until all windows get closed
+// Wait until all windows get closed.
 ui.wait()

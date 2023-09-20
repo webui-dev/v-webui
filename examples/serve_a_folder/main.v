@@ -5,7 +5,7 @@ const (
 	w2 = ui.Window(2)
 )
 
-// This function gets called every time there is an event
+// This function gets called every time there is an event.
 fn events(e &ui.Event) {
 	if e.event_type == .connected {
 		println('Connected.')
@@ -14,7 +14,7 @@ fn events(e &ui.Event) {
 	} else if e.event_type == .mouse_click {
 		println('Click.')
 	} else if e.event_type == .navigation {
-		println('Starting navigation to: ${e.string()}')
+		println('Starting navigation to: ${e.get_arg[string]() or {}}')
 	}
 }
 
@@ -37,12 +37,12 @@ fn main() {
 	w.bind[voidptr]('SwitchToSecondPage', switch_to_second_page)
 	w.bind[voidptr]('OpenNewWindow', show_second_window)
 	w.bind[voidptr]('Exit', exit_app)
-	w.bind[voidptr]('', events) // Bind events
-	w.show('index.html')! // Show a new window
+	w.bind[voidptr]('', events) // Bind events.
+	w.show('index.html')! // Show a new window.
 
 	w2.new_window()
 	w2.bind[voidptr]('Exit', exit_app)
 
 	ui.set_root_folder(@VMODROOT)
-	ui.wait() // Wait until all windows get closed
+	ui.wait() // Wait until all windows get closed>
 }
