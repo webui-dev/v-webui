@@ -4,6 +4,7 @@ const doc = '<!DOCTYPE html>
 <html>
 	<head>
 		<title>Call V from JavaScript Example</title>
+		<script src="webui.js"></script>
 		<style>
 			body {
 				background: linear-gradient(to left, #36265a, #654da9);
@@ -16,8 +17,6 @@ const doc = '<!DOCTYPE html>
 				margin: 5px 0 10px;
 			}
 		</style>
-		<!-- Connect this window to the background app -->
-		<script src="webui.js"></script>
 	</head>
 	<body>
 		<h1>WebUI - Call V from JavaScript</h1>
