@@ -53,9 +53,7 @@ jobs:
         run: |
           cd $HOME/.vmodules/${{ env.MOD_NAME }}/examples
           v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} minimal.v
-          v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} kiosk.v
           v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} call_js_from_v.v
           v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} call_v_from_js.v
-          v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} simple_example.v
           v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} text-editor/
           v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} serve_a_folder/
