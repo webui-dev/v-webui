@@ -12,15 +12,19 @@ fn test_fn_call() {
 
 	// Initial function that is being called from the browser.
 	w.bind('v_fn', fn (e &ui.Event) voidptr {
-		assert e.string() == 'foo'
+		assert e.get_arg[string]() or {
+			eprintln(err)
+			assert false
+			exit(0)
+		} == 'foo'
 		// Call a JS function that calls another V function.
 		e.window.run('await callV();')
 		return ui.no_result
 	})
 	// Next V function that is called from the JS function `callV()` that is called above.
 	w.bind('v_fn_with_obj_arg', fn (e &ui.Event) Person {
-		mut p := e.decode[Person]() or {
-			eprintln('Failed decoding person. ${err}')
+		mut p := e.get_arg[Person]() or {
+			eprintln(err)
 			assert false
 			exit(0)
 		}
@@ -35,8 +39,8 @@ fn test_fn_call() {
 	// Uses the alternative generic declaration for a function with a void return value,
 	// omitting the need to add a return to the function body.
 	w.bind[voidptr]('assert_and_exit', fn (e &ui.Event) {
-		mut p := e.decode[Person]() or {
-			eprintln('Failed decoding person. ${err}')
+		mut p := e.get_arg[Person]() or {
+			eprintln(err)
 			assert false
 			exit(0)
 		}
