@@ -36,12 +36,9 @@ target/
 nul
 
 # Binary files
-lib_test
 main
-minimal
-simple_example
-kiosk
-call_v_from_js
-call_js_from_v
-serve_a_folder
-text-editor
+examples/minimal
+examples/call_v_from_js
+examples/call_js_from_v
+examples/serve_a_folder/serve_a_folder
+examples/text-editor/text-editor

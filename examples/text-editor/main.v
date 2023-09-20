@@ -10,13 +10,12 @@ mut:
 
 fn (mut f File) open(e &ui.Event) {
 	println('Open')
-	file := e.string()
-	if file == '' {
+	file := e.get_arg[string]() or {
 		e.window.run("webui.call('Open', prompt`File Location`)")
 		return
 	}
 	file_content := os.read_file(file) or {
-		println('Failed reading file: ${file}')
+		eprintln('Failed to read file: ${file}')
 		return
 	}
 	f_name := file.all_after_last(os.path_separator)
@@ -28,10 +27,7 @@ fn (mut f File) open(e &ui.Event) {
 
 fn (f &File) save(e &ui.Event) {
 	println('Save')
-	content := e.string()
-	if content == '' {
-		return
-	}
+	content := e.get_arg[string]() or { return }
 	os.write_file(f.path, content) or {
 		eprintln(err)
 		return

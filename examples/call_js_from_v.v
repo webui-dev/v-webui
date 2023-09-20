@@ -41,22 +41,22 @@ fn my_function_count(e &ui.Event) voidptr {
 	return ui.no_result
 }
 
-// Close all opened windows
+// Close all opened windows.
 fn my_function_exit(e &ui.Event) {
 	ui.exit()
 }
 
-// Create a window
+// Create a window.
 mut w := ui.new_window()
 
-// Bind HTML elements to functions
+// Bind HTML elements to functions.
 w.bind('MyButton1', my_function_count)
 // Alternative way to bind a function that does not return a value to JS
 // and omits the return in the function body.
 w.bind[voidptr]('MyButton2', my_function_exit)
 
-// Show the window, panic on fail
-w.show(doc) or { panic(err) }
+// Show the window, panic on fail.
+w.show(doc)!
 
-// Wait until all windows get closed
+// Wait until all windows get closed.
 ui.wait()
