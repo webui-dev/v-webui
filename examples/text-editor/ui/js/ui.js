@@ -83,27 +83,6 @@ window.addEventListener("DOMContentLoaded", (event) => {
     codeMirrorInstance.setSize("100%", "99%");
 });
 
-function getFileExtension(path) {
-    console.log('getFileExtension: ' + path);
-    return path.split('.').pop();
-}
-
-function getFileName(path) {
-    console.log('getFileName: ' + path);
-    return path.split(/[/\\]/).pop();
-}
-
 function changeWindowTitle(newTitle) {
     document.title = newTitle;
-}
-
-// Set file title and language
-function SetFile(path_base64) {
-    const path = webui.decode(path_base64);
-    const Extension = getFileExtension(path);
-    const FileName = getFileName(path);
-    console.log('Extension: ' + path);
-    console.log('FileName: ' + path);
-    SetFileModeExtension(Extension);
-    changeWindowTitle(FileName);
 }

@@ -1,46 +1,46 @@
 import vwebui as ui
 import encoding.base64
 import os
-import json
 
-fn close(e &ui.Event) {
-	ui.exit()
+[heap]
+struct File {
+mut:
+	path string
 }
 
-fn open(e &ui.Event) {
-	str := e.string()
-	if str == '' {
+fn (mut f File) open(e &ui.Event) {
+	println('Open')
+	file := e.string()
+	if file == '' {
 		e.window.run("webui.call('Open', prompt`File Location`)")
 		return
-	} else if str == 'null' {
+	}
+	file_content := os.read_file(file) or {
+		println('Failed reading file: ${file}')
 		return
 	}
-	file := e.string()
-	if file != '' {
-		file_content := os.read_file(file) or {
-			println('Failed to read file: ${file}')
-			''
-		}
+	f.path = file
+	f.name = file.all_after_last(os.path_separator)
+	e.window.run('SetFileModeExtension`${os.file_ext(f.name)}`')
+	e.window.run('addText`${base64.encode_str(file_content)}`')
+	e.window.run('changeWindowTitle`${f.name}`')
+}
 
-		encoded_file := base64.encode_str(file)
-		encoded_file_content := base64.encode_str(file_content)
-		e.window.run('SetFile`${encoded_file}`')
-		e.window.run('addText`${encoded_file_content}`')
-		e.window.run('window.opened_file = `${file}`')
+fn (f &File) save(e &ui.Event) {
+	println('Save')
+	content := e.string()
+	if content == '' {
+		return
+	}
+	os.write_file(f.path, content) or {
+		eprintln(err)
+		return
 	}
 }
 
-struct Save {
-	file    string
-	content string
-}
-
-fn save(e &ui.Event) {
-	resp := json.decode(Save, e.string()) or {
-		e.window.run("ui.call('Save', JSON.stringify({file:window.opened_file,content:window.atob`${base64.encode_str(e.string())}`}))")
-		return
-	}
-	os.write_file(resp.file, resp.content) or { panic(err) }
+fn close(e &ui.Event) {
+	println('Close')
+	ui.exit()
 }
 
 fn main() {
@@ -48,8 +48,9 @@ fn main() {
 
 	w.set_root_folder(@VMODROOT)
 
-	w.bind[voidptr]('Open', open)
-	w.bind[voidptr]('Save', save)
+	mut file := File{}
+	w.bind[voidptr]('Open', file.open)
+	w.bind[voidptr]('Save', file.save)
 	w.bind[voidptr]('Close', close)
 	w.show('ui/index.html') or { panic(err) }
 
