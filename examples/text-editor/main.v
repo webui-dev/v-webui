@@ -19,11 +19,11 @@ fn (mut f File) open(e &ui.Event) {
 		println('Failed reading file: ${file}')
 		return
 	}
-	f.path = file
-	f.name = file.all_after_last(os.path_separator)
-	e.window.run('SetFileModeExtension`${os.file_ext(f.name)}`')
+	f_name := file.all_after_last(os.path_separator)
+	e.window.run('SetFileModeExtension`${os.file_ext(f_name)}`')
 	e.window.run('addText`${base64.encode_str(file_content)}`')
-	e.window.run('changeWindowTitle`${f.name}`')
+	e.window.run('changeWindowTitle`${f_name}`')
+	f.path = file
 }
 
 fn (f &File) save(e &ui.Event) {
