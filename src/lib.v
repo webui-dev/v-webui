@@ -156,6 +156,16 @@ pub fn (w Window) set_multi_access(status bool) {
 	C.webui_set_multi_access(w, status)
 }
 
+// encode sends text based data to the UI using Base64 encoding.
+pub fn encode(data string) string {
+	return unsafe { C.webui_encode(&char(data.str)).vstring() }
+}
+
+// decode decodes Base64 encoded text received from the the UI.
+pub fn decode(data string) string {
+	return unsafe { C.webui_decode(&char(data.str)).vstring() }
+}
+
 // set_hide determines whether the window is run in hidden mode.
 pub fn (w Window) set_hide(status bool) {
 	C.webui_set_hide(w, status)

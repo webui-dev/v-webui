@@ -58,8 +58,8 @@ fn C.webui_get_bool(e &Event) bool
 fn C.webui_return_int(e &Event, n i64)
 fn C.webui_return_string(e &Event, s &char)
 fn C.webui_return_bool(e &Event, b bool)
-fn C.webui_encode(str &char) &char // not wrapped
-fn C.webui_decode(str &char) &char // not wrapped
+fn C.webui_encode(str &char) &char
+fn C.webui_decode(str &char) &char
 fn C.webui_free(ptr voidptr) // not wrapped
 fn C.webui_malloc(size usize) voidptr // not wrapped
 fn C.webui_send_raw(size Window, func &char, raw voidptr, size usize) // not wrapped

@@ -1,5 +1,4 @@
 import vwebui as ui
-import encoding.base64
 import os
 
 [heap]
@@ -20,7 +19,7 @@ fn (mut f File) open(e &ui.Event) {
 	}
 	f_name := file.all_after_last(os.path_separator)
 	e.window.run('SetFileModeExtension`${os.file_ext(f_name)}`')
-	e.window.run('addText`${base64.encode_str(file_content)}`')
+	e.window.run('addText`${ui.encode(file_content)}`')
 	e.window.run('changeWindowTitle`${f_name}`')
 	f.path = file
 }
