@@ -197,13 +197,14 @@ pub fn (w Window) set_runtime(runtime Runtime) {
 pub fn (e &Event) get_arg[T]() !T {
 	if e.size == 0 {
 		element := unsafe { (&char(e.element)).vstring() }
-		return error('`${element}` did not receive a `${T.name}` argument.')
+		return error('`${element}` did not receive an argument.')
 	}
 	return $if T is int {
 		int(C.webui_get_int(e))
 	} $else $if T is i64 {
 		C.webui_get_int(e)
 	} $else $if T is string {
+		// Cast to `&char` to ensure GCC and Clang compiles with `-cstrict`.
 		unsafe { (&char(C.webui_get_string(e))).vstring() }
 	} $else $if T is bool {
 		C.webui_get_bool(e)
