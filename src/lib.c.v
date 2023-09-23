@@ -41,12 +41,20 @@ fn C.webui_exit()
 fn C.webui_set_root_folder(win Window, path &char)
 fn C.webui_set_default_root_folder(path &char)
 fn C.webui_set_file_handler(win Window, handler fn (file_name &char, length int)) // not wrapped
-
-// -- Other ---------------------------
 fn C.webui_is_shown(win Window) bool
 fn C.webui_set_timeout(second usize)
 fn C.webui_set_icon(win Window, icon &char, icon_type &char)
 fn C.webui_set_multi_access(win Window, status bool)
+fn C.webui_encode(str &char) &char
+fn C.webui_decode(str &char) &char
+fn C.webui_free(ptr voidptr) // not wrapped
+fn C.webui_malloc(size usize) voidptr // not wrapped
+fn C.webui_send_raw(size Window, func &char, raw voidptr, size usize) // not wrapped
+fn C.webui_set_hide(win Window, status bool)
+fn C.webui_set_size(win Window, width usize, height usize)
+fn C.webui_set_position(win Window, x usize, y usize)
+fn C.webui_set_profile(win Window, name &char, path &char)
+fn C.webui_get_url(win Window) &char
 
 // -- JavaScript ----------------------
 fn C.webui_run(win Window, script &char)
@@ -58,14 +66,6 @@ fn C.webui_get_bool(e &Event) bool
 fn C.webui_return_int(e &Event, n i64)
 fn C.webui_return_string(e &Event, s &char)
 fn C.webui_return_bool(e &Event, b bool)
-fn C.webui_encode(str &char) &char
-fn C.webui_decode(str &char) &char
-fn C.webui_free(ptr voidptr) // not wrapped
-fn C.webui_malloc(size usize) voidptr // not wrapped
-fn C.webui_send_raw(size Window, func &char, raw voidptr, size usize) // not wrapped
-fn C.webui_set_hide(win Window, status bool)
-fn C.webui_set_size(win Window, width usize, height usize)
-fn C.webui_set_position(win Window, x usize, y usize)
 
 // -- Interface ----------------------- // not wrapped
 fn C.webui_interface_bind(win Window, element &char, func fn (win Window, event_type EventType, element &char, data &char, data_size usize, event_num usize)) Function
