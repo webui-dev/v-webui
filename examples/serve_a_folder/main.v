@@ -1,4 +1,6 @@
 import vwebui as ui
+import os
+import time
 
 const (
 	w  = ui.Window(1)
@@ -25,6 +27,22 @@ fn switch_to_second_page(e &ui.Event) {
 
 fn show_second_window(e &ui.Event) {
 	w2.show('second.html') or { eprintln(err) }
+	// Remove Go Back button when showing second page in another window.
+	// Give the window 10 seconds to show up.
+	for _ in 0 .. 1000 {
+		if w2.is_shown() {
+			break
+		}
+		// Slow down check interval to reduce load.
+		time.sleep(10 * time.millisecond)
+	}
+	if !w2.is_shown() {
+		return
+	}
+	// Let DOM load.
+	time.sleep(50 * time.millisecond)
+	// Remove button.
+	w2.run("document.getElementById('go-back').remove();")
 }
 
 fn exit_app(e &ui.Event) {
@@ -34,15 +52,15 @@ fn exit_app(e &ui.Event) {
 fn main() {
 	w.new_window()
 
-	w.bind[voidptr]('SwitchToSecondPage', switch_to_second_page)
-	w.bind[voidptr]('OpenNewWindow', show_second_window)
-	w.bind[voidptr]('Exit', exit_app)
-	w.bind[voidptr]('', events) // Bind events.
+	w.bind[voidptr]('switch-to-second-page', switch_to_second_page)
+	w.bind[voidptr]('open-new-window', show_second_window)
+	w.bind[voidptr]('exit', exit_app)
+	w.bind[voidptr]('', events) // Bind all events.
 	w.show('index.html')! // Show a new window.
 
 	w2.new_window()
-	w2.bind[voidptr]('Exit', exit_app)
+	w2.bind[voidptr]('exit', exit_app)
 
-	ui.set_root_folder(@VMODROOT)
-	ui.wait() // Wait until all windows get closed>
+	ui.set_root_folder(os.join_path(@VMODROOT, 'ui'))
+	ui.wait() // Wait until all windows get closed.
 }
