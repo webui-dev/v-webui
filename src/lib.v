@@ -18,8 +18,10 @@ pub type Event = C.webui_event_t
 
 [params]
 pub struct ScriptOptions {
-	max_response_size usize = 8192
-	timeout           usize
+	// The maximum buffer size for the script response.
+	max_response_size usize = 8 * 1024
+	// Timeout in seconds.
+	timeout usize
 }
 
 pub enum EventType {
