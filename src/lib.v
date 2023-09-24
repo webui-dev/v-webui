@@ -10,6 +10,7 @@ All rights reserved.
 module vwebui
 
 import json
+import time
 
 // A Window number of a WebUI window.
 pub type Window = usize
@@ -34,6 +35,14 @@ pub struct ScriptOptions {
 	max_response_size usize = 8 * 1024
 	// Timeout in seconds.
 	timeout usize
+}
+
+[params]
+pub struct ShowOptions {
+	// Wait for the window to be recognized as shown.
+	await bool
+	// Timeout in seconds.
+	timeout usize = 10
 }
 
 pub enum EventType {
@@ -110,19 +119,36 @@ pub fn (w Window) bind[T](element string, func fn (&Event) T) Function {
 	})
 }
 
+fn (w Window) await_shown(timeout usize) ! {
+	for _ in 0 .. timeout * 100 {
+		if w.is_shown() {
+			return
+		}
+		// Slow down check interval to reduce load.
+		time.sleep(10 * time.millisecond)
+	}
+	return error('Failed showing window.')
+}
+
 // show opens a window using embedded HTML, or a file.
 // If the window is already open, it will be refreshed.
-pub fn (w Window) show(content string) ! {
+pub fn (w Window) show(content string, opts ShowOptions) ! {
 	if !C.webui_show(w, &char(content.str)) {
 		return error('Failed showing window.')
+	}
+	if opts.await {
+		return w.await_shown(opts.timeout)
 	}
 }
 
 // show_browser opens a window using embedded HTML, or a file in a specified browser.
 // If the window is already open, it will be refreshed.
-pub fn (w Window) show_browser(content string, browser Browser) ! {
+pub fn (w Window) show_browser(content string, browser Browser, opts ShowOptions) ! {
 	if !C.webui_show_browser(w, &char(content.str), browser) {
 		return error('Failed showing window in `${browser}`.')
+	}
+	if opts.await {
+		return w.await_shown(opts.timeout)
 	}
 }
 
