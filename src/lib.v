@@ -46,6 +46,7 @@ pub enum Browser {
 	vivaldi
 	epic
 	yandex
+	chromium_based
 }
 
 pub enum Runtime {
