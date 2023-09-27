@@ -10,10 +10,13 @@ module vwebui
 
 import json
 
+// A Window number of a WebUI window.
 pub type Window = usize
 
+// A unique function ID returned by the bind event.
 pub type Function = usize
 
+// An Event which a V function receives that is called by javascript.
 pub struct Event {
 	size usize // JavaScript data len
 pub:
