@@ -122,7 +122,10 @@ Find more examples in the [`examples/`](https://github.com/webui-dev/v-webui/tre
 
 ## Documentation
 
-- [Online Documentation - V](https://webui.me/docs/2.4.0/#/v_api)
+- [Online Documentation](https://webui.me/docs/#/v) (WIP)
+
+> **Note**
+> Until our Online Documentation is finished, you can referrer to [`src/lib.v`](https://github.com/webui-dev/v-webui/tree/main/src/lib.v) or use V's builtin `v doc -comments vwebui.src` for the latest overview of exported and commented functions.
 
 ## Supported Web Browsers
 
