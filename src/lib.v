@@ -1,6 +1,7 @@
 /*
 V-WebUI 2.4.0-beta
 https://github.com/webui-dev/v-webui
+Copyright (c) 2023 Mehmet Ali.
 Copyright (c) 2023 WebUI Contributors.
 Licensed under MIT License.
 All rights reserved.
