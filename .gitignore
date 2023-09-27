@@ -1,44 +1,30 @@
-# Build
+# Binaries
+*
+!*/
+!*.*
+
+# Build files
 *.exe
+*.exe~
+*.a
+*.so
+*.o
+*.obj
 *.dll
 *.so
+*.so.*
 *.dylib
-*.a
-*.ilk
-*.pdb
-*.lib
-*.exp
-*.res
-*.out
-*.o
-*.def
-*.obj
 webui/
-setup
 
-# IDE
+# Common editor/system specific metadata
+.DS_Store
 .idea/
 .vscode/
-.vs/
-Debug/
-Release/
+*.iml
 
-# Python
-__pycache__/
-dist/
-webui2.egg-info/
+# Private files
+.env
+*.db
 
-# Rust
-target/
-*.lock
-
-# Broken NTFS
-nul
-
-# Binary files
-main
-examples/minimal
-examples/call_v_from_js
-examples/call_js_from_v
-examples/serve_a_folder/serve_a_folder
-examples/text-editor/text-editor
+# Generated docs
+_docs/
