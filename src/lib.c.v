@@ -30,7 +30,7 @@ struct C.GC_stack_base {}
 fn C.webui_new_window() Window
 fn C.webui_new_window_id(win_id Window)
 fn C.webui_get_new_window_id() Window
-fn C.webui_bind(win Window, elem &char, func fn (&Event)) Function
+fn C.webui_bind(win Window, elem &char, func fn (&C.webui_event_t)) Function
 fn C.webui_show(win Window, content &char) bool
 fn C.webui_show_browser(win Window, content &char, browser Browser) bool
 fn C.webui_set_kiosk(win Window, kiosk bool)
@@ -61,12 +61,12 @@ fn C.webui_navigate(win Window, url &char)
 fn C.webui_run(win Window, script &char)
 fn C.webui_script(win Window, script &char, timeout usize, buffer &char, buffer_length usize) bool
 fn C.webui_set_runtime(win Window, runtime Runtime)
-fn C.webui_get_int(e &Event) i64
-fn C.webui_get_string(e &Event) &char
-fn C.webui_get_bool(e &Event) bool
-fn C.webui_return_int(e &Event, n i64)
-fn C.webui_return_string(e &Event, s &char)
-fn C.webui_return_bool(e &Event, b bool)
+fn C.webui_get_int(e &C.webui_event_t) i64
+fn C.webui_get_string(e &C.webui_event_t) &char
+fn C.webui_get_bool(e &C.webui_event_t) bool
+fn C.webui_return_int(e &C.webui_event_t, n i64)
+fn C.webui_return_string(e &C.webui_event_t, s &char)
+fn C.webui_return_bool(e &C.webui_event_t, b bool)
 
 // -- Interface ----------------------- // not wrapped
 fn C.webui_interface_bind(win Window, element &char, func fn (win Window, event_type EventType, element &char, data &char, data_size usize, event_num usize)) Function

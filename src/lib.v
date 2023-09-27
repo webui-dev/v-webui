@@ -14,7 +14,15 @@ pub type Window = usize
 
 pub type Function = usize
 
-pub type Event = C.webui_event_t
+pub struct Event {
+	size usize // JavaScript data len
+pub:
+	window       Window    // The window object number
+	event_type   EventType // Event type
+	element      string    // HTML element ID
+	data         string    // JavaScript data
+	event_number usize     // Internal WebUI
+}
 
 [params]
 pub struct ScriptOptions {
@@ -78,12 +86,22 @@ pub fn new_window_id() Window {
 
 // bind binds a specific html element click event with a function. Empty element means all events.
 pub fn (w Window) bind[T](element string, func fn (&Event) T) Function {
-	return C.webui_bind(w, &char(element.str), fn [func] [T](e &Event) {
+	return C.webui_bind(w, &char(element.str), fn [func] [T](c_event &C.webui_event_t) {
+		// Register internal WebUI thread in V GC.
 		sb := C.GC_stack_base{}
 		C.GC_get_stack_base(&sb)
 		C.GC_register_my_thread(&sb)
-		resp := func(e)
-		e.@return(resp)
+		// Create V event from C event.
+		e := Event{
+			window: c_event.window
+			event_type: c_event.event_type
+			element: unsafe { if c_event.element != nil { c_event.element.vstring() } else { '' } }
+			data: unsafe { if c_event.data != nil { c_event.data.vstring() } else { '' } }
+			size: c_event.size
+			event_number: c_event.event_number
+		}
+		// Call user callback function and return response.
+		e.@return(func(e))
 		C.GC_unregister_my_thread()
 	})
 }
@@ -226,37 +244,49 @@ pub fn (w Window) set_runtime(runtime Runtime) {
 // get_arg parses the JavaScript argument into a V data type.
 pub fn (e &Event) get_arg[T]() !T {
 	if e.size == 0 {
-		element := unsafe { (&char(e.element)).vstring() }
-		return error('`${element}` did not receive an argument.')
+		return error('`${e.element}` did not receive an argument.')
 	}
+	c_event := e.c_struct()
 	return $if T is int {
-		int(C.webui_get_int(e))
+		int(C.webui_get_int(c_event))
 	} $else $if T is i64 {
-		C.webui_get_int(e)
+		C.webui_get_int(c_event)
 	} $else $if T is string {
 		// Cast to `&char` to ensure GCC and Clang compiles with `-cstrict`.
-		unsafe { (&char(C.webui_get_string(e))).vstring() }
+		e.data
 	} $else $if T is bool {
-		C.webui_get_bool(e)
+		C.webui_get_bool(c_event)
 	} $else {
-		json.decode(T, (&char(C.webui_get_string(e))).vstring()) or {
-			return error('Failed decoding `${T.name}` argument. ${err}')
-		}
+		json.decode(T, e.data) or { return error('Failed decoding `${T.name}` argument. ${err}') }
+	}
+}
+
+// == Private Utils =========================================================++
+
+fn (e &Event) c_struct() &C.webui_event_t {
+	return &C.webui_event_t{
+		window: e.window
+		event_type: e.event_type
+		element: &char(e.element.str)
+		data: &char(e.data.str)
+		size: e.size
+		event_number: e.event_number
 	}
 }
 
 // @return returns the response to JavaScript.
 // This became an internal function that now helps returning values to JS in bind callbacks.
 fn (e &Event) @return[T](response T) {
+	c_event := e.c_struct()
 	$if response is int {
-		C.webui_return_int(e, i64(response))
+		C.webui_return_int(c_event, i64(response))
 	} $else $if response is i64 {
-		C.webui_return_int(e, response)
+		C.webui_return_int(c_event, response)
 	} $else $if response is string {
-		C.webui_return_string(e, &char(response.str))
+		C.webui_return_string(c_event, &char(response.str))
 	} $else $if response is bool {
-		C.webui_return_bool(e, response)
+		C.webui_return_bool(c_event, response)
 	} $else $if response !is voidptr {
-		C.webui_return_string(e, json.encode(response).str)
+		C.webui_return_string(c_event, json.encode(response).str)
 	}
 }
