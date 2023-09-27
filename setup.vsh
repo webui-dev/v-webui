@@ -39,7 +39,7 @@ fn run(cmd cli.Command) ! {
 	archive := archives[platform.str()] or {
 		return error('The setup script currently does not support `${platform}`.')
 	}[arch.str()] or {
-		return error('The setup script currently does not support `${arch}` architectures.')
+		return error('The setup script currently does not support `${arch}` architectures on `${platform}`.')
 	}
 
 	println('Downloading...')
