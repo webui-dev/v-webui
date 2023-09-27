@@ -252,41 +252,10 @@ pub fn (e &Event) get_arg[T]() !T {
 	} $else $if T is i64 {
 		C.webui_get_int(c_event)
 	} $else $if T is string {
-		// Cast to `&char` to ensure GCC and Clang compiles with `-cstrict`.
 		e.data
 	} $else $if T is bool {
 		C.webui_get_bool(c_event)
 	} $else {
 		json.decode(T, e.data) or { return error('Failed decoding `${T.name}` argument. ${err}') }
-	}
-}
-
-// == Private Utils =========================================================++
-
-fn (e &Event) c_struct() &C.webui_event_t {
-	return &C.webui_event_t{
-		window: e.window
-		event_type: e.event_type
-		element: &char(e.element.str)
-		data: &char(e.data.str)
-		size: e.size
-		event_number: e.event_number
-	}
-}
-
-// @return returns the response to JavaScript.
-// This became an internal function that now helps returning values to JS in bind callbacks.
-fn (e &Event) @return[T](response T) {
-	c_event := e.c_struct()
-	$if response is int {
-		C.webui_return_int(c_event, i64(response))
-	} $else $if response is i64 {
-		C.webui_return_int(c_event, response)
-	} $else $if response is string {
-		C.webui_return_string(c_event, &char(response.str))
-	} $else $if response is bool {
-		C.webui_return_bool(c_event, response)
-	} $else $if response !is voidptr {
-		C.webui_return_string(c_event, json.encode(response).str)
 	}
 }
