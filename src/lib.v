@@ -196,6 +196,11 @@ pub fn (w Window) get_url() string {
 	return unsafe { (&char(C.webui_get_url(w))).vstring() }
 }
 
+// navigate navigates to a specified URL
+pub fn (w Window) navigate(url string) {
+	C.webui_navigate(w, &char(url.str))
+}
+
 // == Javascript ==============================================================
 
 // run executes JavaScript without waiting for the response.
