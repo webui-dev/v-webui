@@ -16,7 +16,8 @@ fn events(e &ui.Event) {
 	} else if e.event_type == .mouse_click {
 		println('Click.')
 	} else if e.event_type == .navigation {
-		println('Starting navigation to: ${e.get_arg[string]() or {}}')
+		println('Starting navigation to: ${e.data}')
+		w.navigate(e.data)
 	}
 }
 
@@ -27,8 +28,8 @@ fn switch_to_second_page(e &ui.Event) {
 
 fn show_second_window(e &ui.Event) {
 	w2.show('second.html') or { eprintln(err) }
-	// Remove Go Back button when showing second page in another window.
-	// Give the window 10 seconds to show up.
+	// Remove the `Go Back` button when showing the second page in another window.
+	// Wait max. 10 seconds until the window is recognized as shown.
 	for _ in 0 .. 1000 {
 		if w2.is_shown() {
 			break
@@ -39,9 +40,9 @@ fn show_second_window(e &ui.Event) {
 	if !w2.is_shown() {
 		return
 	}
-	// Let DOM load.
+	// Let the DOM load.
 	time.sleep(50 * time.millisecond)
-	// Remove button.
+	// Remove the `Go Back` button.
 	w2.run("document.getElementById('go-back').remove();")
 }
 
@@ -50,17 +51,26 @@ fn exit_app(e &ui.Event) {
 }
 
 fn main() {
+	// Set the root folder for the UI.
+	ui.set_root_folder(os.join_path(@VMODROOT, 'ui'))
+
+	// Prepare the main window.
 	w.new_window()
 
+	// Bind HTML elements to functions
 	w.bind[voidptr]('switch-to-second-page', switch_to_second_page)
 	w.bind[voidptr]('open-new-window', show_second_window)
 	w.bind[voidptr]('exit', exit_app)
-	w.bind[voidptr]('', events) // Bind all events.
-	w.show('index.html')! // Show a new window.
+	// Bind all events.
+	w.bind[voidptr]('', events)
 
+	// Show the main window.
+	w.show('index.html')!
+
+	// Prepare the second window.
 	w2.new_window()
 	w2.bind[voidptr]('exit', exit_app)
 
-	ui.set_root_folder(os.join_path(@VMODROOT, 'ui'))
-	ui.wait() // Wait until all windows get closed.
+	// Wait until all windows get closed.
+	ui.wait()
 }
