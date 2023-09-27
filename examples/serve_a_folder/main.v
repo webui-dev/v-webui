@@ -1,6 +1,5 @@
 import vwebui as ui
 import os
-import time
 
 const (
 	w  = ui.Window(1)
@@ -27,22 +26,8 @@ fn switch_to_second_page(e &ui.Event) {
 }
 
 fn show_second_window(e &ui.Event) {
-	w2.show('second.html') or { eprintln(err) }
+	w2.show('second.html', await: true) or { eprintln(err) }
 	// Remove the `Go Back` button when showing the second page in another window.
-	// Wait max. 10 seconds until the window is recognized as shown.
-	for _ in 0 .. 1000 {
-		if w2.is_shown() {
-			break
-		}
-		// Slow down check interval to reduce load.
-		time.sleep(10 * time.millisecond)
-	}
-	if !w2.is_shown() {
-		return
-	}
-	// Let the DOM load.
-	time.sleep(50 * time.millisecond)
-	// Remove the `Go Back` button.
 	w2.run("document.getElementById('go-back').remove();")
 }
 
