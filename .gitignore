@@ -2,8 +2,6 @@
 *
 !*/
 !*.*
-
-# Build files
 *.exe
 *.exe~
 *.a
