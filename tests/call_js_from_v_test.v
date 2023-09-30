@@ -1,6 +1,5 @@
 import vwebui as ui
 import vwebui.tests.utils
-import time
 
 fn test_js_fn_call() {
 	w := ui.new_window()
