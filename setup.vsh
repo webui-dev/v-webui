@@ -11,7 +11,10 @@ const (
 	base_url = 'https://github.com/webui-dev/webui/releases/'
 	archives = {
 		'Linux':   {
-			'amd64': 'webui-linux-gcc-x64.tar.gz'
+			'amd64':   'webui-linux-gcc-x64.tar.gz'
+			'aarch64': 'webui-linux-gcc-aarch64.tar.gz'
+			'arm64':   'webui-linux-gcc-aarch64.tar.gz'
+			'arm32':   'webui-linux-gcc-arm.tar.gz'
 		}
 		'MacOS':   {
 			'amd64': 'webui-macos-clang-x64.tar.gz'
@@ -28,7 +31,7 @@ fn run(cmd cli.Command) ! {
 	nightly := cmd.flags.get_bool('nightly')!
 
 	// Remove old library files.
-	// TODO: remove that wit certainty are WebUI files instead of full dir.
+	// TODO: remove WebUI files selectively instead of the entire dir to avoid deleting potentially added user files.
 	$if windows {
 		// During tests, `rmdir_all` on Windows could run into permission errors.
 		execute('rd /s /q ${out_dir}')
