@@ -1,6 +1,7 @@
 module vwebui
 
 import json
+import time
 
 struct C.GC_stack_base {}
 
@@ -8,6 +9,17 @@ fn C.GC_allow_register_threads()
 fn C.GC_get_stack_base(ptr &C.GC_stack_base) int
 fn C.GC_register_my_thread(const_ptr &C.GC_stack_base) int
 fn C.GC_unregister_my_thread() int
+
+fn (w Window) await_shown(timeout usize) ! {
+	for _ in 0 .. timeout * 100 {
+		if w.is_shown() {
+			return
+		}
+		// Slow down check interval to reduce load.
+		time.sleep(10 * time.millisecond)
+	}
+	return error('Failed showing window.')
+}
 
 fn (e &Event) c_struct() &C.webui_event_t {
 	return &C.webui_event_t{
