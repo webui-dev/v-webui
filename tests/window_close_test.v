@@ -1,4 +1,5 @@
 import vwebui as ui
+import vwebui.tests.utils
 import time
 
 fn test_window_close() {
@@ -23,11 +24,11 @@ fn test_window_close() {
 		assert false
 	}
 
-	// Wait for the window to close
 	w.close()
-	time.sleep(3 * time.second)
-	if w.is_shown() {
-		eprintln('Failed closing window.')
-		assert false
+	// Wait for the window to close
+	if !utils.timeout(10, fn [w] () bool {
+		return !w.is_shown()
+	}) {
+		assert false, 'Failed closing window.'
 	}
 }

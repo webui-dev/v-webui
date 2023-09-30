@@ -1,16 +1,8 @@
 import log
 import time
 import vwebui as ui
-
-fn wait_condition(max_iterations int, sleep_duration time.Duration, cb fn () bool) bool {
-	for i in 0 .. max_iterations {
-		if cb() {
-			return true
-		}
-		time.sleep(sleep_duration)
-	}
-	return false
-}
+import vwebui.tests.utils
+import os
 
 struct App {
 mut:
@@ -29,9 +21,9 @@ fn allocate_lots_of_memory() {
 // The garbage collector could be triggered unintentionally and destroy variables in bind callbacks.
 // This test ensures a regression of the GC fix.
 fn test_thread_gc() {
-	log.info('> ${@METHOD} start')
+	log.info('> ${@FN} start')
 	defer {
-		log.info('> ${@METHOD} end')
+		log.info('> ${@FN} end')
 	}
 
 	allocate_lots_of_memory()
@@ -49,33 +41,17 @@ fn test_thread_gc() {
 			log.info('>>> v_fn ended')
 		}
 		allocate_lots_of_memory()
-		assert e.get_arg[string]() or {
-			eprintln(err)
-			assert false
-			exit(0)
-		} == 'foo'
+		assert e.get_arg[string]() or { '' } == 'foo'
 		app.fn_was_called = true
 	})
 
-	w.show('<html style="background: #654da9; color: #eee">
-<head><script src="webui.js"></script></head>
-<body>
-	<samp>${@FN}</samp>
-	<script>setTimeout(async () => { await webui.call("v_fn", "foo"); }, 1000)</script>
-</body>
-</html>') or {
-		assert false, 'Failed at w.show'
-	}
+	// Show window, wait for it to be recognized as shown.
+	w.show(utils.gen_html(@FN, 'setTimeout(async () => { await webui.call("v_fn", "foo"); }, 500)'),
+		await: true
+	) or { assert false, err.str() }
 
-	// Wait for the window to show
-	ui.set_timeout(30)
-	if !wait_condition(300, 100 * time.millisecond, fn [w] () bool {
-		return w.is_shown()
-	}) {
-		assert false, 'Timeout showing window.'
-	}
 	log.info('> w.is_shown: ${w.is_shown()}')
-	if !wait_condition(300, 100 * time.millisecond, fn [mut app] () bool {
+	if !utils.timeout(30, fn [mut app] () bool {
 		return app.fn_was_called
 	}) {
 		assert false, 'Timeout while waiting for the v binded callback to be called'
