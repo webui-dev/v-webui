@@ -55,6 +55,7 @@ pub enum EventType {
 }
 
 pub enum Browser {
+	NoBrowser
 	any
 	chrome
 	firefox
