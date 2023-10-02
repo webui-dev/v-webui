@@ -1,5 +1,4 @@
 import log
-import time
 import vwebui as ui
 import vwebui.tests.utils
 

@@ -50,9 +50,12 @@ jobs:
       - name: Setup Browser
         uses: browser-actions/setup-chrome@v1
       - name: Test
-        run: |
-          VJOBS=1 xvfb-run v -cc clang -stats test "$HOME/.vmodules/${{ env.MOD_NAME }}/tests/"
-
+        id: test
+        continue-on-error: true
+        run: VJOBS=1 xvfb-run v -cc clang -stats test "$HOME/.vmodules/${{ env.MOD_NAME }}/tests/"
+      - name: Test with Logs
+        if: steps.test.outcome != 'success'
+        run: VJOBS=1 xvfb-run -a v -cc clang -stats -d webui_log test "$HOME/.vmodules/${{ env.MOD_NAME }}/tests/"
   build-examples:
     needs: setup
     strategy:
