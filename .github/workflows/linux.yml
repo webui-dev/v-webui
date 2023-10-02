@@ -51,6 +51,7 @@ jobs:
         uses: browser-actions/setup-chrome@v1
       - name: Test
         id: test
+        continue-on-error: true
         run: VJOBS=1 xvfb-run v -cc clang -stats test "$HOME/.vmodules/${{ env.MOD_NAME }}/tests/"
       - name: Test with Logs
         if: steps.test.outcome != 'success'
