@@ -51,9 +51,11 @@ jobs:
         uses: browser-actions/setup-chrome@v1
       - name: Test
         run: |
-          # VJOBS=1 xvfb-run v -cc clang -stats test "$HOME/.vmodules/${{ env.MOD_NAME }}/tests/"
-          VJOBS=1 xvfb-run v run "$HOME/.vmodules/${{ env.MOD_NAME }}/tests/ci.v"
-
+          VJOBS=1 xvfb-run v -cc clang -stats test "$HOME/.vmodules/${{ env.MOD_NAME }}/tests/"
+          if [ $? -eq 1 ]; then
+              echo "Tests failed. Re-running with `-d webui_log`."
+              VJOBS=1 xvfb-run v -cc clang -stats -d webui_log test "$HOME/.vmodules/${{ env.MOD_NAME }}/tests/"
+          fi
   build-examples:
     needs: setup
     strategy:
