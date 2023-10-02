@@ -11,7 +11,7 @@ fn test_window_close() {
 <head><script src="webui.js"></script></head>
 <body><samp>${@FN}</samp></body>
 </html>') or {
-		assert false
+		assert false, err.str()
 	}
 	for i in 0 .. 30 {
 		if w.is_shown() {
@@ -20,8 +20,7 @@ fn test_window_close() {
 		time.sleep(1 * time.second)
 	}
 	if !w.is_shown() {
-		eprintln('Timeout showing window.')
-		assert false
+		assert false, 'Timeout showing window.'
 	}
 
 	w.close()
