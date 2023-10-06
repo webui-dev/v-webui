@@ -42,6 +42,11 @@ pub struct ShowOptions {
 	timeout usize = 10
 }
 
+[params]
+pub struct GetArgOptions {
+	idx usize
+}
+
 pub enum EventType {
 	disconnected = C.WEBUI_EVENT_DISCONNECTED
 	connected    = C.WEBUI_EVENT_CONNECTED
@@ -250,21 +255,22 @@ pub fn (w Window) set_runtime(runtime Runtime) {
 }
 
 // get_arg parses the JavaScript argument into a V data type.
-pub fn (e &Event) get_arg[T]() !T {
+pub fn (e &Event) get_arg[T](opts GetArgOptions) !T {
 	c_event := e.c_struct()
-	if C.webui_get_size(c_event) == 0 {
+	if C.webui_get_size_at(c_event, opts.idx) == 0 {
 		return error('`${e.element}` did not receive an argument.')
 	}
+	idx := opts.idx // Additional declaration currently fixes builder error in comptime statements.
 	return $if T is int {
-		int(C.webui_get_int(c_event))
+		int(C.webui_get_int_at(c_event, idx))
 	} $else $if T is i64 {
-		C.webui_get_int(c_event)
+		C.webui_get_int_at(c_event, idx)
 	} $else $if T is string {
-		unsafe { (&char(C.webui_get_string(c_event))).vstring() }
+		unsafe { (&char(C.webui_get_string_at(c_event, idx))).vstring() }
 	} $else $if T is bool {
 		C.webui_get_bool(c_event)
 	} $else {
-		json.decode(T, unsafe { (&char(C.webui_get_string(c_event))).vstring() }) or {
+		json.decode(T, unsafe { (&char(C.webui_get_string_at(c_event, idx))).vstring() }) or {
 			return error('Failed decoding `${T.name}` argument. ${err}')
 		}
 	}

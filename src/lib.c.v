@@ -57,9 +57,13 @@ fn C.webui_run(win Window, script &char)
 fn C.webui_script(win Window, script &char, timeout usize, buffer &char, buffer_length usize) bool
 fn C.webui_set_runtime(win Window, runtime Runtime)
 fn C.webui_get_int(e &C.webui_event_t) i64
+fn C.webui_get_int_at(e &C.webui_event_t, idx usize) i64
 fn C.webui_get_string(e &C.webui_event_t) &char
+fn C.webui_get_string_at(e &C.webui_event_t, idx usize) &char
 fn C.webui_get_bool(e &C.webui_event_t) bool
+fn C.webui_get_bool_at(e &C.webui_event_t, idx usize) bool
 fn C.webui_get_size(e &C.webui_event_t) usize
+fn C.webui_get_size_at(e &C.webui_event_t, idx usize) usize
 fn C.webui_return_int(e &C.webui_event_t, n i64)
 fn C.webui_return_string(e &C.webui_event_t, s &char)
 fn C.webui_return_bool(e &C.webui_event_t, b bool)
