@@ -127,6 +127,19 @@ Find more examples in the [`examples/`](https://github.com/webui-dev/v-webui/tre
 > **Note**
 > Until our Online Documentation is finished, you can referrer to [`src/lib.v`](https://github.com/webui-dev/v-webui/tree/main/src/lib.v) or use V's builtin `v doc -comments vwebui.src` for the latest overview of exported and commented functions.
 
+
+- To use WebUI's debug build in your V-WebUI application, add the `-d webui_log` flag. E.g.:
+
+  ```sh
+  v -d webui_log run examples/call_v_from_js.v
+  ```
+
+- Run tests locally:
+
+  ```sh
+  VJOBS=1 v -stats test tests/
+  ```
+
 ## Supported Web Browsers
 
 | Browser | Windows | macOS | Linux |
