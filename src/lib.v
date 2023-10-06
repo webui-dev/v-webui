@@ -24,6 +24,7 @@ pub:
 	event_type   EventType // Event type
 	element      string    // HTML element ID
 	event_number usize     // Internal WebUI
+	bind_id      usize     // Bind ID
 }
 
 [params]
@@ -111,6 +112,7 @@ pub fn (w Window) bind[T](element string, func fn (&Event) T) Function {
 			event_type: c_event.event_type
 			element: unsafe { if c_event.element != nil { c_event.element.vstring() } else { '' } }
 			event_number: c_event.event_number
+			bind_id: c_event.bind_id
 		}
 		// Call user callback function and return response.
 		e.@return(func(e))
