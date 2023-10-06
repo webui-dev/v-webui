@@ -73,4 +73,4 @@ fn C.webui_return_bool(e &C.webui_event_t, b bool)
 fn C.webui_interface_bind(win Window, element &char, func fn (win Window, event_type EventType, element &char, event_num usize, bind_id usize)) Function
 fn C.webui_interface_set_response(win Window, event_num usize, resp &char)
 fn C.webui_interface_is_app_running() bool
-fn C.webui_interface_get_bind_id(win Window, element &char) Function
+fn C.webui_interface_get_window_id(win Window) Window
