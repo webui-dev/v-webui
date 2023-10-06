@@ -252,8 +252,7 @@ pub fn (w Window) set_runtime(runtime Runtime) {
 // get_arg parses the JavaScript argument into a V data type.
 pub fn (e &Event) get_arg[T]() !T {
 	c_event := e.c_struct()
-	raw_arg := unsafe { (&char(C.webui_get_string(c_event))).vstring() }
-	if raw_arg == '' {
+	if C.webui_get_size(c_event) == 0 {
 		return error('`${e.element}` did not receive an argument.')
 	}
 	return $if T is int {
@@ -261,10 +260,12 @@ pub fn (e &Event) get_arg[T]() !T {
 	} $else $if T is i64 {
 		C.webui_get_int(c_event)
 	} $else $if T is string {
-		raw_arg
+		unsafe { (&char(C.webui_get_string(c_event))).vstring() }
 	} $else $if T is bool {
 		C.webui_get_bool(c_event)
 	} $else {
-		json.decode(T, raw_arg) or { return error('Failed decoding `${T.name}` argument. ${err}') }
+		json.decode(T, unsafe { (&char(C.webui_get_string(c_event))).vstring() }) or {
+			return error('Failed decoding `${T.name}` argument. ${err}')
+		}
 	}
 }

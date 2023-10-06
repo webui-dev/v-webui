@@ -59,6 +59,7 @@ fn C.webui_set_runtime(win Window, runtime Runtime)
 fn C.webui_get_int(e &C.webui_event_t) i64
 fn C.webui_get_string(e &C.webui_event_t) &char
 fn C.webui_get_bool(e &C.webui_event_t) bool
+fn C.webui_get_size(e &C.webui_event_t) usize
 fn C.webui_return_int(e &C.webui_event_t, n i64)
 fn C.webui_return_string(e &C.webui_event_t, s &char)
 fn C.webui_return_bool(e &C.webui_event_t, b bool)
