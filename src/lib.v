@@ -47,8 +47,6 @@ pub struct ShowOptions {
 pub enum EventType {
 	disconnected
 	connected
-	multi_connection
-	unwanted_connection
 	mouse_click
 	navigation
 	callback
@@ -189,11 +187,6 @@ pub fn set_timeout(timeout usize) {
 // set_icon sets the default embedded HTML favicon.
 pub fn (w Window) set_icon(icon string, icon_type string) {
 	C.webui_set_icon(w, &char(icon.str), &char(icon_type.str))
-}
-
-// set_multi_access determines whether the window URL can be reused in normal web browsers.
-pub fn (w Window) set_multi_access(status bool) {
-	C.webui_set_multi_access(w, status)
 }
 
 // encode sends text based data to the UI using Base64 encoding.

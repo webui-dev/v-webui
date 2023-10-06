@@ -42,7 +42,6 @@ fn C.webui_set_file_handler(win Window, handler fn (file_name &char, length int)
 fn C.webui_is_shown(win Window) bool
 fn C.webui_set_timeout(second usize)
 fn C.webui_set_icon(win Window, icon &char, icon_type &char)
-fn C.webui_set_multi_access(win Window, status bool)
 fn C.webui_encode(str &char) &char
 fn C.webui_decode(str &char) &char
 fn C.webui_free(ptr voidptr) // not wrapped
