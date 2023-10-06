@@ -252,7 +252,7 @@ pub fn (w Window) set_runtime(runtime Runtime) {
 // get_arg parses the JavaScript argument into a V data type.
 pub fn (e &Event) get_arg[T]() !T {
 	c_event := e.c_struct()
-	raw_arg := unsafe { C.webui_get_string(c_event).vstring() }
+	raw_arg := unsafe { (&char(C.webui_get_string(c_event))).vstring() }
 	if raw_arg == '' {
 		return error('`${e.element}` did not receive an argument.')
 	}
