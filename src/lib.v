@@ -19,12 +19,10 @@ pub type Function = usize
 
 // An Event which a V function receives that is called by javascript.
 pub struct Event {
-	size usize // JavaScript data len
 pub:
 	window       Window    // The window object number
 	event_type   EventType // Event type
 	element      string    // HTML element ID
-	data         string    // JavaScript data
 	event_number usize     // Internal WebUI
 }
 
@@ -107,8 +105,6 @@ pub fn (w Window) bind[T](element string, func fn (&Event) T) Function {
 			window: c_event.window
 			event_type: c_event.event_type
 			element: unsafe { if c_event.element != nil { c_event.element.vstring() } else { '' } }
-			data: unsafe { if c_event.data != nil { c_event.data.vstring() } else { '' } }
-			size: c_event.size
 			event_number: c_event.event_number
 		}
 		// Call user callback function and return response.
@@ -255,19 +251,20 @@ pub fn (w Window) set_runtime(runtime Runtime) {
 
 // get_arg parses the JavaScript argument into a V data type.
 pub fn (e &Event) get_arg[T]() !T {
-	if e.size == 0 {
+	c_event := e.c_struct()
+	raw_arg := unsafe { C.webui_get_string(c_event).vstring() }
+	if raw_arg == '' {
 		return error('`${e.element}` did not receive an argument.')
 	}
-	c_event := e.c_struct()
 	return $if T is int {
 		int(C.webui_get_int(c_event))
 	} $else $if T is i64 {
 		C.webui_get_int(c_event)
 	} $else $if T is string {
-		e.data
+		raw_arg
 	} $else $if T is bool {
 		C.webui_get_bool(c_event)
 	} $else {
-		json.decode(T, e.data) or { return error('Failed decoding `${T.name}` argument. ${err}') }
+		json.decode(T, raw_arg) or { return error('Failed decoding `${T.name}` argument. ${err}') }
 	}
 }

@@ -26,8 +26,6 @@ fn (e &Event) c_struct() &C.webui_event_t {
 		window: e.window
 		event_type: e.event_type
 		element: &char(e.element.str)
-		data: &char(e.data.str)
-		size: e.size
 		event_number: e.event_number
 	}
 }

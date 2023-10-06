@@ -15,8 +15,12 @@ fn events(e &ui.Event) {
 	} else if e.event_type == .mouse_click {
 		println('Click.')
 	} else if e.event_type == .navigation {
-		println('Starting navigation to: ${e.data}')
-		w.navigate(e.data)
+		target := e.get_arg[string]() or {
+			eprintln(err)
+			return
+		}
+		println('Starting navigation to: ${target}')
+		w.navigate(target)
 	}
 }
 
