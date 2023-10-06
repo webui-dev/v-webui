@@ -45,11 +45,11 @@ pub struct ShowOptions {
 }
 
 pub enum EventType {
-	disconnected
-	connected
-	mouse_click
-	navigation
-	callback
+	disconnected = C.WEBUI_EVENT_DISCONNECTED
+	connected    = C.WEBUI_EVENT_CONNECTED
+	mouse_click  = C.WEBUI_EVENT_MOUSE_CLICK
+	navigation   = C.WEBUI_EVENT_NAVIGATION
+	callback     = C.WEBUI_EVENT_CALLBACK
 }
 
 pub enum Browser {
