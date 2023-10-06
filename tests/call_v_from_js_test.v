@@ -61,7 +61,6 @@ fn test_get_js_arg() {
 
 	script := '
 	setTimeout(async () => {
-		console.log("hello")
 		const person = {
 			name: "Bob",
 			age: 30
@@ -81,6 +80,40 @@ fn test_get_js_arg() {
 
 	// We call `w.close()` from the last V function that is called from JS.
 	// Ensure that it closes, otherwise the test can run infinitely. Timeout after 1min.
+	if !utils.timeout(60, fn [w] () bool {
+		return !w.is_shown()
+	}) {
+		assert false, 'Timeout while waiting JS calling V.'
+	}
+}
+
+fn test_get_js_arg_at_idx() {
+	w := ui.new_window()
+	// V function, called from JS, receiving the above return value as argument and asserts it's correctness.
+	w.bind[voidptr]('v_fn_getting_arg_at_idx', fn [w] (e &ui.Event) {
+		assert e.get_arg[string](idx: 0) or { '' } == 'foo'
+		assert e.get_arg[int](idx: 1) or { 0 } == 123
+		assert e.get_arg[bool](idx: 2) or { false } == true
+		assert e.get_arg[Person](idx: 3) or { Person{} } == Person{'Bob', 30}
+		assert e.get_arg[[]int](idx: 4) or { [0] } == [1, 2, 3]
+		e.window.close()
+	})
+
+	script := '
+	setTimeout(async () => {
+		const str = "foo"
+			int = 123,
+			bool = true,
+			struct = { name: "Bob", age: 30 },
+			array = [1, 2, 3];
+		await webui.call("v_fn_getting_arg_at_idx", str, int, bool, JSON.stringify(struct), JSON.stringify(array));
+	}, 500)'
+
+	// Show window, wait for it to be recognized as shown.
+	w.show(utils.gen_html(@FN, script),
+		await: true
+	) or { assert false, err.str() }
+
 	if !utils.timeout(60, fn [w] () bool {
 		return !w.is_shown()
 	}) {
