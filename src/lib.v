@@ -268,7 +268,7 @@ pub fn (e &Event) get_arg[T](opts GetArgOptions) !T {
 	} $else $if T is string {
 		unsafe { (&char(C.webui_get_string_at(c_event, idx))).vstring() }
 	} $else $if T is bool {
-		C.webui_get_bool(c_event)
+		C.webui_get_bool_at(c_event, idx)
 	} $else {
 		json.decode(T, unsafe { (&char(C.webui_get_string_at(c_event, idx))).vstring() }) or {
 			return error('Failed decoding `${T.name}` argument. ${err}')
