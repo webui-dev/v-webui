@@ -1,7 +1,4 @@
-# Binaries
-*
-!*/
-!*.*
+# Binaries by extension
 *.exe
 *.exe~
 *.a
@@ -12,7 +9,14 @@
 *.so
 *.so.*
 *.dylib
-webui/
+
+# Binaries in project root
+setup
+
+# All sub-level build binaries
+*/**/*
+!*/**/*/
+!*/**/*.*
 
 # Common editor/system specific metadata
 .DS_Store
