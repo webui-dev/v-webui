@@ -1,0 +1,31 @@
+name: Lint
+
+on:
+  workflow_call:
+
+jobs:
+  fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup V
+        uses: vlang/setup-v@v1.3
+        with:
+          check-latest: true
+      - uses: actions/checkout@v4
+        with:
+          path: vwebui
+      - name: Check formatting
+        run: v fmt -verify vwebui/
+
+  vet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup V
+        uses: vlang/setup-v@v1.3
+        with:
+          check-latest: true
+      - uses: actions/checkout@v4
+        with:
+          path: vwebui
+      - name: Run vet
+        run: v vet vwebui/
