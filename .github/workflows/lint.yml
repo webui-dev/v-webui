@@ -28,4 +28,4 @@ jobs:
         with:
           path: vwebui
       - name: Run vet
-        run: v vet vwebui/
+        run: v vet vwebui/src/
