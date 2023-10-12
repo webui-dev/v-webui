@@ -177,7 +177,7 @@ pub fn set_root_folder(path string) {
 	C.webui_set_default_root_folder(&char(path.str))
 }
 
-// is_show checks if the window is still running.
+// is_shown checks if the window is still running.
 pub fn (w Window) is_shown() bool {
 	return C.webui_is_shown(w)
 }
