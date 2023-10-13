@@ -22,11 +22,11 @@ const doc = '<!DOCTYPE html>
 		<h1>WebUI - Call V from JavaScript</h1>
 		<br>
 		<p>Call V functions with arguments (<em>See the logs in your terminal</em>)</p>
-		<button onclick="webui.call(\'MyID_One\', \'Hello\');">Call my_function_string()</button>
+		<button onclick="webui.call(\'MyID_One\', \'Hello\', \'World\');">Call my_function_string()</button>
 		<br>
-		<button onclick="webui.call(\'MyID_Two\', 123456789);">Call my_function_integer()</button>
+		<button onclick="webui.call(\'MyID_Two\', 123, 456, 789);">Call my_function_integer()</button>
 		<br>
-		<button onclick="webui.call(\'MyID_Three\', true);">Call my_function_boolean()</button>
+		<button onclick="webui.call(\'MyID_Three\', true, false);">Call my_function_boolean()</button>
 		<br>
 		<p>Call a V function that returns a response</p>
 		<button onclick="MyJS();">Call my_function_with_response()</button>
@@ -45,13 +45,11 @@ const doc = '<!DOCTYPE html>
 // JavaScript:
 // webui.call('MyID_One', 'Hello');
 fn my_function_string(e &ui.Event) voidptr {
-	response := e.get_arg[string]() or { return ui.no_result }
-	println('my_function_string: ${response}') // Hello
+	str1 := e.get_arg[string]() or { return ui.no_result }
+	str2 := e.get_arg[string](idx: 1) or { '' }
 
-	// Need Multiple Arguments?
-	//
-	// WebUI supports only one argument. For multiple arguments,
-	// send a JSON string from JavaScript and decode it.
+	println('my_function_string 1: ${str1}') // Hello
+	println('my_function_string 2: ${str2}') // World
 
 	return ui.no_result
 }
@@ -59,8 +57,13 @@ fn my_function_string(e &ui.Event) voidptr {
 // JavaScript:
 // webui.call('MyID_Two', 123456789);
 fn my_function_integer(e &ui.Event) voidptr {
-	response := e.get_arg[int]() or { return ui.no_result }
-	println('my_function_integer: ${response}') // 123456789
+	num1 := e.get_arg[int](idx: 0) or { return ui.no_result }
+	num2 := e.get_arg[int](idx: 1) or { 0 }
+	num3 := e.get_arg[int](idx: 2) or { 0 }
+
+	println('my_function_integer 1: ${num1}') // 123
+	println('my_function_integer 2: ${num2}') // 456
+	println('my_function_integer 3: ${num3}') // 789
 
 	return ui.no_result
 }
@@ -68,8 +71,11 @@ fn my_function_integer(e &ui.Event) voidptr {
 // JavaScript:
 // webui.call('MyID_Three', true);
 fn my_function_boolean(e &ui.Event) voidptr {
-	response := e.get_arg[bool]() or { return ui.no_result }
-	println('my_function_boolean: ${response}') // true
+	status1 := e.get_arg[bool]() or { return ui.no_result }
+	status2 := e.get_arg[bool](idx: 1) or { return ui.no_result }
+
+	println('my_function_boolean 1: ${status1}') // true
+	println('my_function_boolean 2: ${status2}') // false
 
 	return ui.no_result
 }
@@ -78,6 +84,7 @@ fn my_function_boolean(e &ui.Event) voidptr {
 // const result = webui.call('MyID_Four', number);
 fn my_function_with_response(e &ui.Event) int {
 	number := e.get_arg[int]() or { return 0 } * 2
+
 	println('my_function_with_response: ${number}')
 
 	return number
