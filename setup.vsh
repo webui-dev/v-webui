@@ -12,8 +12,8 @@ const (
 	archives = {
 		'Linux':   {
 			'amd64':   'webui-linux-gcc-x64.tar.gz'
-			'aarch64': 'webui-linux-gcc-aarch64.tar.gz'
-			'arm64':   'webui-linux-gcc-aarch64.tar.gz'
+			'aarch64': 'webui-linux-gcc-arm64.tar.gz'
+			'arm64':   'webui-linux-gcc-arm64.tar.gz'
 			'arm32':   'webui-linux-gcc-arm.tar.gz'
 		}
 		'MacOS':   {
