@@ -234,6 +234,11 @@ pub fn (w Window) navigate(url string) {
 	C.webui_navigate(w, &char(url.str))
 }
 
+// clean frees all memory resources. Should be called only at the end.
+pub fn clean() {
+	C.webui_clean()
+}
+
 // == Javascript ==============================================================
 
 // run executes JavaScript without waiting for the response.

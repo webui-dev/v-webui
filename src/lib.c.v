@@ -51,6 +51,7 @@ fn C.webui_set_position(win Window, x usize, y usize)
 fn C.webui_set_profile(win Window, name &char, path &char)
 fn C.webui_get_url(win Window) &char
 fn C.webui_navigate(win Window, url &char)
+fn C.webui_clean()
 
 // -- JavaScript ----------------------
 fn C.webui_run(win Window, script &char)
