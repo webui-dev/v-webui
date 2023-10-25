@@ -8,7 +8,6 @@ $if webui_log ? {
 	#flag -L@VMODROOT/webui -lwebui-2-static
 }
 
-#flag -L@VMODROOT/webui -lwebui-2-static
 #flag linux -lpthread -lm
 #flag darwin -lpthread -lm
 #flag windows -lwebui-2 -lws2_32
