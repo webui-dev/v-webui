@@ -22,70 +22,66 @@ const doc = '<!DOCTYPE html>
 		<h1>WebUI - Call V from JavaScript</h1>
 		<br>
 		<p>Call V functions with arguments (<em>See the logs in your terminal</em>)</p>
-		<button onclick="webui.call(\'MyID_One\', \'Hello\', \'World\');">Call my_function_string()</button>
+		<button onclick="webui.handleStr(\'Hello\', \'World\');">Call handle_str()</button>
 		<br>
-		<button onclick="webui.call(\'MyID_Two\', 123, 456, 789);">Call my_function_integer()</button>
+		<button onclick="webui.handleInt(123, 456, 789);">Call handle_int()</button>
 		<br>
-		<button onclick="webui.call(\'MyID_Three\', true, false);">Call my_function_boolean()</button>
+		<button onclick="webui.handleBool(true, false);">Call handle_bool()</button>
 		<br>
 		<p>Call a V function that returns a response</p>
-		<button onclick="MyJS();">Call my_function_with_response()</button>
-		<div>Double: <input type="text" id="MyInputID" value="2"></div>
+		<button onclick="MyJS();">Call get_response()</button>
+		<div>Double: <input type="text" id="my-input" value="2"></div>
 		<script>
 			async function MyJS() {
-				const MyInput = document.getElementById("MyInputID");
-				const number = MyInput.value;
-				const result = await webui.call("MyID_Four", number);
-				MyInput.value = result;
+				const myInput = document.getElementById("my-input");
+				const number = myInput.value;
+				const result = await webui.getResponse(number);
+				myInput.value = result;
 			}
 		</script>
 	</body>
 </html>'
 
-// JavaScript:
-// webui.call('MyID_One', 'Hello');
-fn my_function_string(e &ui.Event) voidptr {
+// JavaScript: `webui.handleStr('Hello', 'World');`
+fn handle_str(e &ui.Event) voidptr {
 	str1 := e.get_arg[string]() or { return ui.no_result }
 	str2 := e.get_arg[string](idx: 1) or { '' }
 
-	println('my_function_string 1: ${str1}') // Hello
-	println('my_function_string 2: ${str2}') // World
+	println('handle_str 1: ${str1}') // Hello
+	println('handle_str 2: ${str2}') // World
 
 	return ui.no_result
 }
 
-// JavaScript:
-// webui.call('MyID_Two', 123456789);
-fn my_function_integer(e &ui.Event) voidptr {
+// JavaScript: `webui.handleInt(123, 456, 789);`
+fn handle_int(e &ui.Event) voidptr {
 	num1 := e.get_arg[int](idx: 0) or { return ui.no_result }
 	num2 := e.get_arg[int](idx: 1) or { 0 }
 	num3 := e.get_arg[int](idx: 2) or { 0 }
 
-	println('my_function_integer 1: ${num1}') // 123
-	println('my_function_integer 2: ${num2}') // 456
-	println('my_function_integer 3: ${num3}') // 789
+	println('handle_int 1: ${num1}') // 123
+	println('handle_int 2: ${num2}') // 456
+	println('handle_int 3: ${num3}') // 789
 
 	return ui.no_result
 }
 
-// JavaScript:
-// webui.call('MyID_Three', true);
-fn my_function_boolean(e &ui.Event) voidptr {
+// JavaScript: webui.handleBool(true, false);
+fn handle_bool(e &ui.Event) voidptr {
 	status1 := e.get_arg[bool]() or { return ui.no_result }
 	status2 := e.get_arg[bool](idx: 1) or { return ui.no_result }
 
-	println('my_function_boolean 1: ${status1}') // true
-	println('my_function_boolean 2: ${status2}') // false
+	println('handle_bool 1: ${status1}') // true
+	println('handle_bool 2: ${status2}') // false
 
 	return ui.no_result
 }
 
-// JavaScript:
-// const result = webui.call('MyID_Four', number);
-fn my_function_with_response(e &ui.Event) int {
+// JavaScript: `const result = await webui.getResponse(number);`
+fn get_response(e &ui.Event) int {
 	number := e.get_arg[int]() or { return 0 } * 2
 
-	println('my_function_with_response: ${number}')
+	println('get_response: ${number}')
 
 	return number
 }
@@ -96,10 +92,10 @@ mut w := ui.new_window()
 // Show the window, panic on fail.
 w.show(doc)!
 
-w.bind('MyID_One', my_function_string)
-w.bind('MyID_Two', my_function_integer)
-w.bind('MyID_Three', my_function_boolean)
-w.bind('MyID_Four', my_function_with_response)
+w.bind('handleStr', handle_str)
+w.bind('handleInt', handle_int)
+w.bind('handleBool', handle_bool)
+w.bind('getResponse', get_response)
 
 // Wait until all windows get closed.
 ui.wait()
