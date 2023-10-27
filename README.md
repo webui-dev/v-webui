@@ -51,9 +51,11 @@
 
 ## Features
 
-- Fully Independent (*No need for any third-party runtimes*)
-- Lightweight (*~900 Kb*) & Small memory footprint
-- Fast binary communication protocol between WebUI and the browser (*Instead of JSON*)
+- Parent library written in pure C
+- Fully Independent (No need for any third-party runtimes)
+- Lightweight ~200 Kb & Small memory footprint
+- Fast binary communication protocol between WebUI and the browser (Instead of JSON)
+- One header file
 - Multi-platform & Multi-Browser
 - Using private profile for safety
 
@@ -103,7 +105,7 @@ const html = '<!DOCTYPE html>
   </head>
   <body>
     <h1>Thanks for using WebUI!</h1>
-    <button onclick="webui.call(\'my_v_func\')">Call V!</button>
+    <button onclick="webui.my_v_func()">Call V!</button>
   </body>
 </html>'
 
@@ -127,7 +129,6 @@ Find more examples in the [`examples/`](https://github.com/webui-dev/v-webui/tre
 > **Note**
 > Until our Online Documentation is finished, you can referrer to [`src/lib.v`](https://github.com/webui-dev/v-webui/tree/main/src/lib.v) or use V's builtin `v doc -comments vwebui.src` for the latest overview of exported and commented functions.
 
-
 - To use WebUI's debug build in your V-WebUI application, add the `-d webui_log` flag. E.g.:
 
   ```sh
@@ -142,18 +143,18 @@ Find more examples in the [`examples/`](https://github.com/webui-dev/v-webui/tre
 
 ## Supported Web Browsers
 
-| Browser | Windows | macOS | Linux |
-| ------ | ------ | ------ | ------ |
-| Mozilla Firefox | ✔️ | ✔️ | ✔️ |
-| Google Chrome | ✔️ | ✔️ | ✔️ |
-| Microsoft Edge | ✔️ | ✔️ | ✔️ |
-| Chromium | ✔️ | ✔️ | ✔️ |
-| Yandex | ✔️ | ✔️ | ✔️ |
-| Brave | ✔️ | ✔️ | ✔️ |
-| Vivaldi | ✔️ | ✔️ | ✔️ |
-| Epic | ✔️ | ✔️ | *not available* |
-| Apple Safari | *not available* | *coming soon* | *not available* |
-| Opera | *coming soon* | *coming soon* | *coming soon* |
+| Browser         | Windows         | macOS         | Linux           |
+| --------------- | --------------- | ------------- | --------------- |
+| Mozilla Firefox | ✔️              | ✔️            | ✔️              |
+| Google Chrome   | ✔️              | ✔️            | ✔️              |
+| Microsoft Edge  | ✔️              | ✔️            | ✔️              |
+| Chromium        | ✔️              | ✔️            | ✔️              |
+| Yandex          | ✔️              | ✔️            | ✔️              |
+| Brave           | ✔️              | ✔️            | ✔️              |
+| Vivaldi         | ✔️              | ✔️            | ✔️              |
+| Epic            | ✔️              | ✔️            | _not available_ |
+| Apple Safari    | _not available_ | _coming soon_ | _not available_ |
+| Opera           | _coming soon_   | _coming soon_ | _coming soon_   |
 
 ### License
 
