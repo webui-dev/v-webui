@@ -5,30 +5,32 @@ import os
 import v.pref
 import net.http
 
-const (
-	platform = pref.get_host_os()
-	arch     = pref.get_host_arch()
-	base_url = 'https://github.com/webui-dev/webui/releases/'
-	archives = {
-		'Linux':   {
-			'amd64':   'webui-linux-gcc-x64.tar.gz'
-			'aarch64': 'webui-linux-gcc-arm64.tar.gz'
-			'arm64':   'webui-linux-gcc-arm64.tar.gz'
-			'arm32':   'webui-linux-gcc-arm.tar.gz'
-		}
-		'MacOS':   {
-			'amd64': 'webui-macos-clang-x64.tar.gz'
-			'arm64': 'webui-macos-clang-arm64.tar.gz'
-		}
-		'Windows': {
-			'amd64': 'webui-windows-gcc-x64.zip'
-		}
+// Latest tag that should is tested with the wrapper.
+// Other versions might include breaking changes.
+const webui_version = '2.4.1'
+const platform = pref.get_host_os()
+const arch = pref.get_host_arch()
+const base_url = 'https://github.com/webui-dev/webui/releases/'
+const archives = {
+	'Linux':   {
+		'amd64':   'webui-linux-gcc-x64.zip'
+		'aarch64': 'webui-linux-gcc-arm64.zip'
+		'arm64':   'webui-linux-gcc-arm64.zip'
+		'arm32':   'webui-linux-gcc-arm.zip'
 	}
-)
+	'MacOS':   {
+		'amd64': 'webui-macos-clang-x64.zip'
+		'arm64': 'webui-macos-clang-arm64.zip'
+	}
+	'Windows': {
+		'amd64': 'webui-windows-gcc-x64.zip'
+	}
+}
 
 fn run(cmd cli.Command) ! {
 	out_dir := cmd.flags.get_string('output')!
 	nightly := cmd.flags.get_bool('nightly')!
+	latest := cmd.flags.get_bool('nightly')!
 
 	// Remove old library files.
 	// TODO: remove WebUI files selectively instead of the entire dir to avoid deleting potentially added user files.
@@ -46,7 +48,13 @@ fn run(cmd cli.Command) ! {
 	}
 
 	println('Downloading...')
-	url := base_url + if nightly { 'download/nightly/' } else { 'latest/download/' }
+	url := base_url + if latest {
+		'latest/download/'
+	} else if nightly {
+		'download/nightly/'
+	} else {
+		'download/${webui_version}/'
+	}
 	http.download_file(url + archive, archive) or {
 		return error('Failed downloading archive `${archive}`. ${err}')
 	}
@@ -61,11 +69,10 @@ fn run(cmd cli.Command) ! {
 		mv(join_path(dir, dir), out_dir)!
 		rmdir(dir)!
 	} $else {
-		unzip_res := execute('tar -xvzf ${archive}')
-		if unzip_res.exit_code != 0 {
-			return error('Failed extracting archive `${archive}`. ${unzip_res.output}')
+		if system('unzip -o ${archive}') != 0 {
+			return error('Failed to extract archive `${archive}`')
 		}
-		mv(archive.all_before('.tar'), out_dir)!
+		mv(archive.all_before('.zip'), out_dir)!
 	}
 	rm(archive)!
 
@@ -92,12 +99,18 @@ mut cmd := cli.Command{
 			global: true
 			default_value: [join_path(@VMODROOT, 'webui')]
 		},
+		// Download other versions, might include breaking changes.
 		cli.Flag{
 			flag: .bool
 			name: 'nightly'
 			description: 'Download the nightly version instead of the latest stable version.'
 			global: true
-			default_value: ['true'] // Remove after WebUI v2.4.0 was released
+		},
+		cli.Flag{
+			flag: .bool
+			name: 'latest'
+			description: 'Download the latest latest stable version.'
+			global: true
 		},
 	]
 	execute: run
