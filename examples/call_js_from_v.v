@@ -22,9 +22,9 @@ const doc = '<!DOCTYPE html>
 	<body>
 		<h1>WebUI - Call JavaScript from V</h1>
 		<br>
-		<button id="MyButton1">Count <span id="count">0<span></button>
+		<button id="increment-js">Count <span id="count">0</span></button>
 		<br>
-		<button id="MyButton2">Exit</button>
+		<button id="exit">Exit</button>
 		<script>
 			let count = document.getElementById("count").innerHTML;
 			function SetCount(number) {
@@ -50,10 +50,10 @@ fn my_function_exit(e &ui.Event) {
 mut w := ui.new_window()
 
 // Bind HTML elements to functions.
-w.bind('MyButton1', my_function_count)
+w.bind('increment-js', my_function_count)
 // Alternative way to bind a function that does not return a value to JS
 // and omits the return in the function body.
-w.bind[voidptr]('MyButton2', my_function_exit)
+w.bind[voidptr]('exit', my_function_exit)
 
 // Show the window, panic on fail.
 w.show(doc)!
