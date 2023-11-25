@@ -12,7 +12,7 @@ $if webui_log ? {
 #flag darwin -lpthread -lm
 #flag windows -lwebui-2 -lws2_32
 
-[typedef]
+@[typedef]
 struct C.webui_event_t {
 pub:
 	window       Window    // The window object number

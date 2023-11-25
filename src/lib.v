@@ -27,7 +27,7 @@ pub:
 	bind_id      usize     // Bind ID
 }
 
-[params]
+@[params]
 pub struct ScriptOptions {
 	// The maximum buffer size for the script response.
 	max_response_size usize = 8 * 1024
@@ -35,7 +35,7 @@ pub struct ScriptOptions {
 	timeout usize
 }
 
-[params]
+@[params]
 pub struct ShowOptions {
 	// Wait for the window to be recognized as shown.
 	await bool
@@ -43,7 +43,7 @@ pub struct ShowOptions {
 	timeout usize = 10
 }
 
-[params]
+@[params]
 pub struct GetArgOptions {
 	idx usize
 }

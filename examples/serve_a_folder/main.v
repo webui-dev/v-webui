@@ -1,10 +1,8 @@
 import vwebui as ui
 import os
 
-const (
-	w  = ui.Window(1)
-	w2 = ui.Window(2)
-)
+const w = ui.Window(1)
+const w2 = ui.Window(2)
 
 // This function gets called every time there is an event.
 fn events(e &ui.Event) {
