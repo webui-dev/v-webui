@@ -48,7 +48,7 @@ After the installation, prepare the WebUI library for usage.
 v run %USERPROFILE%/.vmodules/vwebui/setup.vsh
 ```
 
-> **Note**
+> [!TIP]
 > On Windows it is recommended to use GCC or Clang to compile a WebUI V program. TCC is currently not working due to missing header files.
 > You can use the `-cc` flag to specify a custom compiler. E.g.:
 >
@@ -97,7 +97,7 @@ Find more examples in the [`examples/`](https://github.com/webui-dev/v-webui/tre
 
 - [Online Documentation](https://webui.me/docs/#/v) (WIP)
 
-> **Note**
+> [!NOTE]
 > Until our Online Documentation is finished, you can referrer to [`src/lib.v`](https://github.com/webui-dev/v-webui/tree/main/src/lib.v) or use V's builtin `v doc -comments vwebui.src` for the latest overview of exported and commented functions.
 
 - To use WebUI's debug build in your V-WebUI application, add the `-d webui_log` flag. E.g.:
