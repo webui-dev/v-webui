@@ -7,7 +7,7 @@ import net.http
 
 // Latest tag that should is tested with the wrapper.
 // Other versions might include breaking changes.
-const webui_version = '2.4.1'
+const webui_version = '2.4.2'
 const platform = pref.get_host_os()
 const arch = pref.get_host_arch()
 const base_url = 'https://github.com/webui-dev/webui/releases/'
