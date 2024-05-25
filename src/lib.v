@@ -29,6 +29,7 @@ pub:
 
 @[params]
 pub struct ScriptOptions {
+pub:
 	// The maximum buffer size for the script response.
 	max_response_size usize = 8 * 1024
 	// Timeout in seconds.
@@ -37,6 +38,7 @@ pub struct ScriptOptions {
 
 @[params]
 pub struct ShowOptions {
+pub:
 	// Wait for the window to be recognized as shown.
 	await bool
 	// Timeout in seconds.
@@ -45,6 +47,7 @@ pub struct ShowOptions {
 
 @[params]
 pub struct GetArgOptions {
+pub:
 	idx usize
 }
 
