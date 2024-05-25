@@ -10,7 +10,7 @@ import net.http
 const webui_version = '2.4.2'
 const platform = pref.get_host_os()
 const arch = pref.get_host_arch()
-const base_url = 'https://github.com/webui-dev/webui/releases/'
+const base_url = 'https://github.com/webui-dev/webui/releases'
 const archives = {
 	'Linux':   {
 		'amd64':   'webui-linux-gcc-x64.zip'
@@ -47,16 +47,15 @@ fn run(cmd cli.Command) ! {
 		return error('The setup script currently does not support `${arch}` architectures on `${platform}`.')
 	}
 
-	println('Downloading...')
-	url := base_url + if latest {
-		'latest/download/'
-	} else if nightly {
-		'download/nightly/'
-	} else {
-		'download/${webui_version}/'
+	version, version_url := match true {
+		latest { 'lastest', 'latest/download' }
+		nightly { 'nightly', 'download/nightly' }
+		else { webui_version, 'download/${webui_version}' }
 	}
-	http.download_file(url + archive, archive) or {
-		return error('Failed downloading archive `${archive}`. ${err}')
+	println('Downloading WebUI@${version}...')
+	url := '${base_url}/${version_url}/${archive}'
+	http.download_file(url, archive) or {
+		return error('Failed downloading archive `${archive}` from `${url}`. ${err}')
 	}
 
 	println('Extracting...')
