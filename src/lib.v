@@ -61,19 +61,19 @@ pub enum EventType {
 }
 
 pub enum Browser {
-	no_browser
-	any
-	chrome
-	firefox
-	edge
-	safari
-	chromium
-	opera
-	brave
-	vivaldi
-	epic
-	yandex
-	chromium_based
+	no_browser     = C.NoBrowser
+	any            = C.AnyBrowser
+	chrome         = C.Chrome
+	firefox        = C.Firefox
+	edge           = C.Edge
+	safari         = C.Safari
+	chromium       = C.Chromium
+	opera          = C.Opera
+	brave          = C.Brave
+	vivaldi        = C.Vivaldi
+	epic           = C.Epic
+	yandex         = C.Yandex
+	chromium_based = C.ChromiumBased
 }
 
 pub enum Runtime {
