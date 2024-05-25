@@ -1,12 +1,13 @@
-/*
-V-WebUI 2.4.0-beta
-https://github.com/webui-dev/v-webui
-Copyright (c) 2023 Mehmet Ali.
-Copyright (c) 2023 WebUI Contributors.
-Licensed under MIT License.
-All rights reserved.
-*/
-
+// V-WebUI
+//
+// Is a lightweight portable lib that allows to use any web browser as a GUI,
+// with V in the backend and HTML5 in the frontend.
+//
+// License: MIT
+// Source: https://github.com/webui-dev/v-webui
+//
+// Copyright (c) 2023 Mehmet Ali.
+// Copyright (c) 2023 WebUI Contributors.
 module vwebui
 
 import json
