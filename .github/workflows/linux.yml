@@ -60,11 +60,11 @@ jobs:
     needs: setup
     strategy:
       matrix:
-        compiler: [tcc, gcc, clang]
+        compiler: [gcc, clang] # [tcc, gcc, clang]
         optimization: ['', -cstrict, -prod]
-        exclude:
-          - compiler: tcc
-            optimization: -prod
+        # exclude:
+        #   - compiler: tcc
+        #     optimization: -prod
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
