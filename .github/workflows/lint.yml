@@ -7,25 +7,27 @@ jobs:
   fmt:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup V
-        uses: vlang/setup-v@v1.3
+      - name: Restore cache
+        uses: actions/cache/restore@v4
         with:
-          check-latest: true
-      - uses: actions/checkout@v4
-        with:
-          path: vwebui
-      - name: Check formatting
-        run: v fmt -verify vwebui/
+          path: |
+            ~/v
+            ~/.vmodules
+          key: ${{ runner.os }}-${{ github.sha }}
+          fail-on-cache-miss: true
+      - name: Verify formatting
+        run: ~/v/v fmt -verify ~/.vmodules/vwebui && exit 0 || ~/v/v fmt -diff ~/.vmodules/vwebui && exit 1
 
   vet:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup V
-        uses: vlang/setup-v@v1.3
+      - name: Restore cache
+        uses: actions/cache/restore@v4
         with:
-          check-latest: true
-      - uses: actions/checkout@v4
-        with:
-          path: vwebui
-      - name: Run vet
-        run: v vet -W vwebui/src/
+          path: |
+            ~/v
+            ~/.vmodules
+          key: ${{ runner.os }}-${{ github.sha }}
+          fail-on-cache-miss: true
+      - name: Vet
+        run: ~/v/v vet -W ~/.vmodules/vwebui
