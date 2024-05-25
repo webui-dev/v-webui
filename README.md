@@ -43,7 +43,9 @@ After the installation, prepare the WebUI library for usage.
 ```sh
 # Linux / macOs
 ~/.vmodules/vwebui/setup.vsh
+```
 
+```sh
 # Windows PowerShell
 v run %USERPROFILE%/.vmodules/vwebui/setup.vsh
 ```
