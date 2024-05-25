@@ -100,7 +100,7 @@ Find more examples in the [`examples/`](https://github.com/webui-dev/v-webui/tre
 - [Online Documentation](https://webui.me/docs/#/v) (WIP)
 
 > [!NOTE]
-> Until our Online Documentation is finished, you can referrer to [`src/lib.v`](https://github.com/webui-dev/v-webui/tree/main/src/lib.v) or use V's builtin `v doc -comments vwebui.src` for the latest overview of exported and commented functions.
+> Until our online documentation is finished, you can refer to [`src/lib.v`](https://github.com/webui-dev/v-webui/tree/main/src/lib.v) or use V's built-in `v doc -comments vwebui` in the terminal for the latest overview of exported functions.
 
 - To use WebUI's debug build in your V-WebUI application, add the `-d webui_log` flag. E.g.:
 
