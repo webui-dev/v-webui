@@ -53,15 +53,11 @@ jobs:
         run: v -showcc self && v doctor
       - name: Build
         run: |
-          $exampleDirs = Get-ChildItem -Path "$HOME/.vmodules/vwebui/examples" -Depth 0 -Directory
-          foreach ($dir in $exampleDirs) {
-              $cmd = "v $dir"
+          $examplePaths = Get-ChildItem -Path "$HOME/.vmodules/vwebui/examples" -Depth 0
+          foreach ($path in $examplePaths) {
+            if ($path.PSIsContainer -or $path -like "*.v") {
+              $cmd = "v $path"
               Write-Output $cmd
               Invoke-Expression $cmd
-          }
-          $exampleFiles = Get-ChildItem -Path "$HOME/.vmodules/vwebui/examples" -Depth 0 -File
-          foreach ($file in $exampleFiles) {
-              $cmd = "v $file"
-              Write-Output $cmd
-              Invoke-Expression $cmd
+            }
           }

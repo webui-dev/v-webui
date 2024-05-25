@@ -90,13 +90,10 @@ jobs:
         run: ~/v/v symlink && v -showcc self && v doctor
       - name: Build
         run: |
-          for dir in $(find ~/.vmodules/vwebui/examples/* -maxdepth 0 -type d); do
-            cmd="v $dir/"
-            echo "$cmd"
-            eval "$cmd"
-          done
-          for file in $(find ~/.vmodules/vwebui/examples/* -maxdepth 0 -type d); do
-            cmd="v $file"
+          for path in $(find ~/.vmodules/vwebui/examples/* -maxdepth 0); do
+            if [[ -d "$path" || "$path" == *.v ]]; then
+              cmd="v $path"
+            fi
             echo "$cmd"
             eval "$cmd"
           done
