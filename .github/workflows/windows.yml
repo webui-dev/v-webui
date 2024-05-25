@@ -3,59 +3,65 @@ name: Windows
 on:
   workflow_call:
 
-env:
-  MOD_NAME: vwebui
-
 jobs:
   setup:
     runs-on: windows-latest
     steps:
-      - name: Install V
-        uses: vlang/setup-v@v1.3
+      - uses: actions/checkout@v4
         with:
-          check-latest: true
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-        with:
-          path: ${{ env.MOD_NAME }}
-      - name: Setup WebUI Library
+          path: vwebui
+      - name: Setup V
         shell: bash
         run: |
-          v run ${{ env.MOD_NAME }}/setup.vsh
-          mv ${{ env.MOD_NAME }} ~/.vmodules/${{ env.MOD_NAME }}
-      - name: Cache
-        uses: actions/cache/save@v3
+          curl -Lo v_windows.zip https://github.com/vlang/v/releases/latest/download/v_windows.zip
+          7z x v_windows.zip
+          mv v ~/v && ~/v/v symlink
+      - name: Setup WebUI library
+        run: |
+          bash -c "mkdir -p ~/.vmodules && mv vwebui ~/.vmodules/vwebui"
+          v run $HOME/.vmodules/vwebui/setup.vsh
+      - name: Save cache
+        uses: actions/cache/save@v4
         with:
           path: |
-            vlang
+            ~/v
             ~/.vmodules
           key: ${{ runner.os }}-${{ github.sha }}
 
   build-examples:
     needs: setup
+    runs-on: windows-latest
     strategy:
       matrix:
-        # only gcc on windows for now
-        compiler: [gcc]
-        optimization: ['', -prod]
+        cc: [gcc] # only gcc on windows for now
+        optimization: ['', '-W -cstrict']
       fail-fast: false
-    runs-on: windows-latest
+    env:
+      VFLAGS: -cg -cc ${{ matrix.cc }}
     steps:
-      - name: Restore Cache
-        uses: actions/cache/restore@v3
+      - name: Restore cache
+        uses: actions/cache/restore@v4
         with:
           path: |
-            vlang
+            ~/v
             ~/.vmodules
           key: ${{ runner.os }}-${{ github.sha }}
           fail-on-cache-miss: true
-      - name: Setup V
-        uses: vlang/setup-v@v1.3
+      - name: Symlink V
+        run: ~/v/v symlink
+      - name: Compile V
+        run: v -showcc self && v doctor
       - name: Build
         run: |
-          cd $HOME/.vmodules/${{ env.MOD_NAME }}/examples
-          v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} minimal.v
-          v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} call_js_from_v.v
-          v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} call_v_from_js.v
-          v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} text-editor/
-          v -cg -cc ${{ matrix.compiler }} ${{ matrix.optimization }} serve_a_folder/
+          $exampleDirs = Get-ChildItem -Path "$HOME/.vmodules/vwebui/examples" -Depth 0 -Directory
+          foreach ($dir in $exampleDirs) {
+              $cmd = "v $dir"
+              Write-Output $cmd
+              Invoke-Expression $cmd
+          }
+          $exampleFiles = Get-ChildItem -Path "$HOME/.vmodules/vwebui/examples" -Depth 0 -File
+          foreach ($file in $exampleFiles) {
+              $cmd = "v $file"
+              Write-Output $cmd
+              Invoke-Expression $cmd
+          }
