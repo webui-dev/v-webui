@@ -7,7 +7,7 @@
 // Source: https://github.com/webui-dev/v-webui
 //
 // Copyright (c) 2023 Mehmet Ali.
-// Copyright (c) 2023 WebUI Contributors.
+// Copyright (c) 2023-2024 WebUI Contributors.
 module vwebui
 
 import json
