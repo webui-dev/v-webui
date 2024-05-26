@@ -30,7 +30,7 @@ const archives = {
 fn run(cmd cli.Command) ! {
 	out_dir := cmd.flags.get_string('output')!
 	nightly := cmd.flags.get_bool('nightly')!
-	latest := cmd.flags.get_bool('nightly')!
+	latest := cmd.flags.get_bool('latest')!
 
 	// Remove old library files.
 	// TODO: remove WebUI files selectively instead of the entire dir to avoid deleting potentially added user files.
