@@ -77,9 +77,9 @@ pub enum Browser {
 }
 
 pub enum Runtime {
-	@none
-	deno
-	nodejs
+	@none  = C.None
+	deno   = C.Deno
+	nodejs = C.NodeJS
 }
 
 pub const no_result = unsafe { nil }
