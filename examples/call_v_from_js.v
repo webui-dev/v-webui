@@ -89,13 +89,13 @@ fn get_response(e &ui.Event) int {
 // Create a window.
 mut w := ui.new_window()
 
-// Show the window, panic on fail.
-w.show(doc)!
-
 w.bind('handleStr', handle_str)
 w.bind('handleInt', handle_int)
 w.bind('handleBool', handle_bool)
 w.bind('getResponse', get_response)
+
+// Show the window, panic on fail.
+w.show(doc)!
 
 // Wait until all windows get closed.
 ui.wait()
