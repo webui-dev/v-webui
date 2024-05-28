@@ -5,25 +5,24 @@ import os
 import v.pref
 import net.http
 
-// Latest tag that should is tested with the wrapper.
-// Other versions might include breaking changes.
+// Last WebUI tag that is known to work with the wrapper. Other versions may contain breaking changes.
+// It must be available in webui's repository e.g., `https://github.com/webui-dev/webui/releases/tag/2.4.2/`
 const webui_version = '2.4.2'
 const platform = pref.get_host_os()
 const arch = pref.get_host_arch()
 const base_url = 'https://github.com/webui-dev/webui/releases'
 const archives = {
-	'Linux':   {
-		'amd64':   'webui-linux-gcc-x64.zip'
-		'aarch64': 'webui-linux-gcc-arm64.zip'
-		'arm64':   'webui-linux-gcc-arm64.zip'
-		'arm32':   'webui-linux-gcc-arm.zip'
+	pref.OS.linux: {
+		pref.Arch.amd64: 'webui-linux-gcc-x64.zip'
+		.arm64:          'webui-linux-gcc-arm64.zip'
+		.arm32:          'webui-linux-gcc-arm.zip'
 	}
-	'MacOS':   {
-		'amd64': 'webui-macos-clang-x64.zip'
-		'arm64': 'webui-macos-clang-arm64.zip'
+	.macos:        {
+		pref.Arch.amd64: 'webui-macos-clang-x64.zip'
+		.arm64:          'webui-macos-clang-arm64.zip'
 	}
-	'Windows': {
-		'amd64': 'webui-windows-gcc-x64.zip'
+	.windows:      {
+		pref.Arch.amd64: 'webui-windows-gcc-x64.zip'
 	}
 }
 
@@ -41,9 +40,9 @@ fn run(cmd cli.Command) ! {
 		rmdir_all(out_dir) or {}
 	}
 
-	archive := archives[platform.str()] or {
+	archive := archives[platform] or {
 		return error('The setup script currently does not support `${platform}`.')
-	}[arch.str()] or {
+	}[arch] or {
 		return error('The setup script currently does not support `${arch}` architectures on `${platform}`.')
 	}
 
