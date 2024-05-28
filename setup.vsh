@@ -119,6 +119,9 @@ ${colorize(term.blue,
 			}
 		}
 	}
+	$if debug {
+		dump(version)
+	}
 
 	tmp_dir := os.join_path(os.temp_dir(), 'webui_${version}')
 	os.mkdir(tmp_dir) or {}
@@ -139,9 +142,13 @@ ${colorize(term.blue,
 
 	println('Extracting...')
 	szip.extract_zip_to_dir(archive_download_dest, tmp_dir)!
-	if semver.from(version)! < semver.from('2.4.1')! {
-		os.rm(archive_download_dest) or {}
-		mv(tmp_dir, out_dir)!
+	if version != 'nightly' {
+		if semver.from(version)! < semver.from('2.4.1')! {
+			os.rm(archive_download_dest) or {}
+			mv(tmp_dir, out_dir)!
+		} else {
+			mv(archive_download_dest.all_before('.zip'), out_dir)!
+		}
 	} else {
 		mv(archive_download_dest.all_before('.zip'), out_dir)!
 	}
