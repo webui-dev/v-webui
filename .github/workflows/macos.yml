@@ -16,6 +16,9 @@ jobs:
           unzip -o v_macos_arm64.zip
           mv v ~/v && ~/v/v symlink
       - name: Setup WebUI library
+        env:
+          # Set an auth token since a GH runner can come pre-exhausted.
+          WEBUI_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           mkdir -p ~/.vmodules && mv vwebui ~/.vmodules/vwebui
           ~/.vmodules/vwebui/setup.vsh

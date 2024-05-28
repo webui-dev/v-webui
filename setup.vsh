@@ -4,13 +4,26 @@ import cli
 import os
 import v.pref
 import net.http
+import json
+import compress.szip
+import term { colorize }
+import arrays
+import semver
 
-// Last WebUI tag that is known to work with the wrapper. Other versions may contain breaking changes.
-// It must be available in webui's repository e.g., `https://github.com/webui-dev/webui/releases/tag/2.4.2/`
-const webui_version = '2.4.2'
+// https://api.github.com/repos/webui-dev/webui/releases
+struct Release {
+	tag_name   string
+	prerelease bool
+}
+
+struct Releases {
+	c []Release
+	v []Release
+}
+
+const webui_release_base_url = 'https://github.com/webui-dev/webui/releases'
 const platform = pref.get_host_os()
 const arch = pref.get_host_arch()
-const base_url = 'https://github.com/webui-dev/webui/releases'
 const archives = {
 	pref.OS.linux: {
 		pref.Arch.amd64: 'webui-linux-gcc-x64.zip'
@@ -26,18 +39,42 @@ const archives = {
 	}
 }
 
+fn get_webui_releases() !Releases {
+	mut request := http.Request{}
+	token := os.getenv('WEBUI_GH_TOKEN')
+	if token != '' {
+		request.header.add(.authorization, 'Bearer ${token}')
+	}
+	request.url = 'https://api.github.com/repos/webui-dev/webui/releases'
+	c_repo_resp := request.do()!
+	if c_repo_resp.status_code != 200 {
+		return error('Failed get success status when fetching WebUI releases: ${c_repo_resp}')
+	}
+	request.url = 'https://api.github.com/repos/webui-dev/v-webui/releases'
+	v_repo_resp := request.do()!
+	if v_repo_resp.status_code != 200 {
+		return error('Failed get success status when fetching V-WebUI releases: ${v_repo_resp}')
+	}
+	return Releases{json.decode([]Release, c_repo_resp.body)!, json.decode([]Release,
+		v_repo_resp.body)!}
+}
+
+fn (releases Releases) find_matching_parent_tag(tag string) ?string {
+	last_v_tag := releases.v[0].tag_name.trim_string_left('v')
+	for release in releases.c {
+		if release.tag_name.trim_string_left('v') == last_v_tag {
+			return release.tag_name
+		}
+	}
+	return none
+}
+
 fn run(cmd cli.Command) ! {
 	out_dir := cmd.flags.get_string('output')!
-	nightly := cmd.flags.get_bool('nightly')!
-	latest := cmd.flags.get_bool('latest')!
 
-	// Remove old library files.
-	// TODO: remove WebUI files selectively instead of the entire dir to avoid deleting potentially added user files.
-	$if windows {
-		// During tests, `rmdir_all` on Windows could run into permission errors.
-		execute('rd /s /q ${out_dir}')
-	} $else {
-		rmdir_all(out_dir) or {}
+	releases := get_webui_releases() or { return error('Failed to fetch releases: ${err}') }
+	$if debug && verbose ? {
+		dump(releases)
 	}
 
 	archive := archives[platform] or {
@@ -45,48 +82,87 @@ fn run(cmd cli.Command) ! {
 	}[arch] or {
 		return error('The setup script currently does not support `${arch}` architectures on `${platform}`.')
 	}
-
-	version, version_url := match true {
-		latest { 'lastest', 'latest/download' }
-		nightly { 'nightly', 'download/nightly' }
-		else { webui_version, 'download/${webui_version}' }
+	$if debug {
+		dump(archive)
 	}
+
+	if os.exists(out_dir) {
+		input := os.input('WebUI output directory `${out_dir}` already exists.
+${colorize(term.blue,
+			'::')} Do you want to replace it? [Y/n] ${colorize(term.blue, '❯')} ')
+		if input.to_lower() != 'y' {
+			return
+		}
+		$if windows {
+			// During tests on Windows, `rmdir_all` ocassionally run into permission errors.
+			execute('rd /s /q ${out_dir}')
+		} $else {
+			rmdir_all(out_dir) or {}
+		}
+	}
+
+	version_arg := cmd.args[0] or { 'latest' }
+	version := match version_arg {
+		'nightly' {
+			releases.c[0].tag_name
+		}
+		'latest' {
+			// vfmt off
+			arrays.find_first(releases.c, fn (it Release) bool {
+				return !it.prerelease
+			}) or { return error('Failed to find WebUI release') }.tag_name
+			// vfmt on
+		}
+		else {
+			releases.find_matching_parent_tag(version_arg) or {
+				return error('Failed to find the matching WebUI C release.')
+			}
+		}
+	}
+
+	tmp_dir := os.join_path(os.temp_dir(), 'webui_${version}')
+	os.mkdir(tmp_dir) or {}
+	defer {
+		rmdir_all(tmp_dir) or {}
+	}
+
 	println('Downloading WebUI@${version}...')
-	url := '${base_url}/${version_url}/${archive}'
-	http.download_file(url, archive) or {
+	url := '${webui_release_base_url}/download/${version}/${archive}'
+	archive_download_dest := os.join_path(tmp_dir, archive)
+	$if debug {
+		dump(url)
+		dump(archive_download_dest)
+	}
+	http.download_file(url, archive_download_dest) or {
 		return error('Failed downloading archive `${archive}` from `${url}`. ${err}')
 	}
 
 	println('Extracting...')
-	$if windows {
-		unzip_res := execute('powershell -command Expand-Archive -LiteralPath ${archive}')
-		if unzip_res.exit_code != 0 {
-			return error('Failed extracting archive `${archive}`. ${unzip_res.output}')
-		}
-		dir := archive.all_before('.zip')
-		mv(join_path(dir, dir), out_dir)!
-		rmdir(dir)!
-	} $else {
-		if system('unzip -o ${archive}') != 0 {
-			return error('Failed to extract archive `${archive}`')
-		}
-		mv(archive.all_before('.zip'), out_dir)!
+	szip.extract_zip_to_dir(archive_download_dest, tmp_dir)!
+	if semver.from(version)! < semver.from('2.4.1')! {
+		os.rm(archive_download_dest) or {}
+		mv(tmp_dir, out_dir)!
+	} else {
+		mv(archive_download_dest.all_before('.zip'), out_dir)!
 	}
-	rm(archive)!
 
 	println('Done.')
 }
 
 mut cmd := cli.Command{
 	name: 'setup.vsh'
+	usage: '<version>'
 	posix_mode: true
-	required_args: 0
 	pre_execute: fn (cmd cli.Command) ! {
-		if cmd.args.len > cmd.required_args {
-			eprintln('Unknown commands ${cmd.args}.\n')
+		if cmd.args.len > 1 {
+			eprintln('Too many arguments: <${cmd.args}>.\n')
 			cmd.execute_help()
 			exit(0)
 		}
+	}
+	defaults: struct {
+		help: cli.CommandFlag{false, true}
+		man: false
 	}
 	flags: [
 		cli.Flag{
@@ -96,19 +172,6 @@ mut cmd := cli.Command{
 			description: 'Specify the output path for the download WebUI platfrom release.'
 			global: true
 			default_value: [join_path(@VMODROOT, 'webui')]
-		},
-		// Download other versions, might include breaking changes.
-		cli.Flag{
-			flag: .bool
-			name: 'nightly'
-			description: 'Download the nightly version instead of the latest stable version.'
-			global: true
-		},
-		cli.Flag{
-			flag: .bool
-			name: 'latest'
-			description: 'Download the latest latest stable version.'
-			global: true
 		},
 	]
 	execute: run

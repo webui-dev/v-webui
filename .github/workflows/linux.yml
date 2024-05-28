@@ -11,6 +11,9 @@ jobs:
         with:
           path: vwebui
       - name: Setup V
+        env:
+          # Set an auth token since a GH runner can come pre-exhausted.
+          WEBUI_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           curl -Lo v_linux.zip https://github.com/vlang/v/releases/latest/download/v_linux.zip
           unzip -o v_linux.zip
