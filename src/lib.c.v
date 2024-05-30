@@ -1,12 +1,15 @@
 module vwebui
 
 #include "@VMODROOT/webui/include/webui.h"
+$if macos {
+	#include "@VMODROOT/webui/src/webview/wkwebview.m"
+}
 
 #flag -I@VMODROOT/webui/include/ -DNDEBUG -DNO_CACHING -DNO_CGI -DUSE_WEBSOCKET
 #flag @VMODROOT/webui/src/civetweb/civetweb.c
 #flag @VMODROOT/webui/src/webui.c
 
-#flag darwin -framework WebKit
+#flag darwin -framework WebKit -framework Cocoa
 #flag windows -lWs2_32 -lOle32
 
 $if msvc {
