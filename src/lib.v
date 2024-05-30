@@ -253,11 +253,11 @@ pub fn (w Window) run(script string) {
 // script executes JavaScript and returns the response (Make sure the response buffer can hold the response).
 // The default max_response_size is 8KiB.
 pub fn (w Window) script(javascript string, opts ScriptOptions) !string {
-	mut buffer := []u8{len: int(opts.max_response_size)}.str().str
-	if !C.webui_script(w, &char(javascript.str), opts.timeout, &char(buffer), opts.max_response_size) {
+	mut buffer := []u8{len: int(opts.max_response_size)}
+	if !C.webui_script(w, &char(javascript.str), opts.timeout, &char(buffer.data), opts.max_response_size) {
 		return error('Failed running script. `${javascript}`')
 	}
-	return unsafe { buffer.vstring() }
+	return unsafe { buffer.bytestr() }
 }
 
 // set_runtime sets the runtime for .js and .ts files to Deno or Nodejs.
