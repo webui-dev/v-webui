@@ -2,15 +2,27 @@ module vwebui
 
 #include "@VMODROOT/webui/include/webui.h"
 
-$if webui_log ? {
-	#flag -L@VMODROOT/webui/debug -lwebui-2-static
-} $else {
-	#flag -L@VMODROOT/webui -lwebui-2-static
-}
+#flag -I@VMODROOT/webui/include/ -DNDEBUG -DNO_CACHING -DNO_CGI -DUSE_WEBSOCKET
+#flag @VMODROOT/webui/src/civetweb/civetweb.c
+#flag @VMODROOT/webui/src/webui.c
 
 #flag linux -lpthread -lm
-#flag darwin -lpthread -lm
-#flag windows -lwebui-2 -lws2_32
+#flag darwin -lpthread -lm -framework WebKit
+#flag windows -lws2_32 -lOle32
+
+$if msvc {
+	#flag -lAdvapi32 -lShell32 -luser32
+}
+$if use_tls ? {
+	#flag -DWEBUI_USE_TLS -DWEBUI_TLS -DNO_SSL_DL -DOPENSSL_API_1_1
+	#flag -lssl -lcrypto
+	#flag windows -lbcrypt
+} $else {
+	#flag -DNO_SSL
+}
+$if debug ? {
+	#flag -DWEBUI_LOG
+}
 
 @[typedef]
 struct C.webui_event_t {

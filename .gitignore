@@ -9,7 +9,6 @@
 *.so
 *.so.*
 *.dylib
-webui/
 
 # Binaries in project root
 setup
