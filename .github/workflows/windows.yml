@@ -10,6 +10,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           path: vwebui
+          submodules: true
       - name: Setup V
         shell: bash
         run: |
@@ -17,12 +18,8 @@ jobs:
           7z x v_windows.zip
           mv v ~/v && ~/v/v symlink
       - name: Setup WebUI library
-        env:
-          # Set an auth token since a GH runner can come pre-exhausted.
-          WEBUI_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          bash -c "mkdir -p ~/.vmodules && mv vwebui ~/.vmodules/vwebui"
-          v run $HOME/.vmodules/vwebui/setup.vsh
+        shell: bash
+        run: mkdir -p ~/.vmodules && mv vwebui ~/.vmodules/vwebui
       - name: Save cache
         uses: actions/cache/save@v4
         with:

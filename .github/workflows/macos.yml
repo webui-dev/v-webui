@@ -10,18 +10,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           path: vwebui
+          submodules: true
       - name: Setup V
         run: |
           curl -Lo v_macos_arm64.zip https://github.com/vlang/v/releases/latest/download/v_macos_arm64.zip
           unzip -o v_macos_arm64.zip
           mv v ~/v && ~/v/v symlink
       - name: Setup WebUI library
-        env:
-          # Set an auth token since a GH runner can come pre-exhausted.
-          WEBUI_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          mkdir -p ~/.vmodules && mv vwebui ~/.vmodules/vwebui
-          ~/.vmodules/vwebui/setup.vsh
+        run: mkdir -p ~/.vmodules && mv vwebui ~/.vmodules/vwebui
       - name: Save cache
         uses: actions/cache/save@v4
         with:
