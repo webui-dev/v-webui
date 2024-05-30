@@ -107,7 +107,7 @@ Find more examples in the [`examples/`](https://github.com/webui-dev/v-webui/tre
 - To use WebUI's debug build in your V-WebUI application, add the `-d debug` flag. E.g.:
 
   ```sh
-  v -d debug run examples/call_v_from_js.v
+  v -d webui_log run examples/call_v_from_js.v
   ```
 
 - Run tests locally:
