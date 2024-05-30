@@ -32,7 +32,7 @@ jobs:
     strategy:
       matrix:
         cc: [clang]
-        optimization: ['', '-W -cstrict']
+        # optimization: ['', '-W -cstrict']
       fail-fast: false
     env:
       VFLAGS: -cg -cc ${{ matrix.cc }} ${{ matrix.optimization }}

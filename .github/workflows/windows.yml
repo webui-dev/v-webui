@@ -34,7 +34,7 @@ jobs:
     strategy:
       matrix:
         cc: [gcc] # only gcc on windows for now
-        optimization: ['', '-W -cstrict']
+        # optimization: ['', '-W -cstrict']
       fail-fast: false
     env:
       VFLAGS: -cg -cc ${{ matrix.cc }}

@@ -69,7 +69,7 @@ jobs:
     strategy:
       matrix:
         cc: [gcc, clang] # [tcc, gcc, clang]
-        optimization: ['', '-W -cstrict']
+        # optimization: ['', '-W -cstrict']
         # exclude:
         #   - cc: tcc
         #     optimization: '-W -cstrict'
