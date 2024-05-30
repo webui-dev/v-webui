@@ -52,31 +52,45 @@ v install https://github.com/webui-dev/v-webui
 import vwebui as ui
 
 const html = '<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <style>
-      body {
-        background: linear-gradient(to left, #36265a, #654da9);
-        color: AliceBlue;
-        font: 16px sans-serif;
-        text-align: center;
-      }
-    </style>
-    <script src="webui.js"></script>
-  </head>
-  <body>
-    <h1>Thanks for using WebUI!</h1>
-    <button onclick="webui.my_v_func()">Call V!</button>
-  </body>
+<html>
+   <head>
+      <script src="webui.js"></script>
+      <style>
+         body {
+            background: linear-gradient(to left, #36265a, #654da9);
+            color: AliceBlue;
+            font: 16px sans-serif;
+            text-align: center;
+            margin-top: 30px;
+         }
+      </style>
+   </head>
+   <body>
+      <h1>Welcome to WebUI!</h1>
+      <br>
+      <input type="text" id="name" value="Neo">
+      <button onclick="handleVResponse();">Call V</button>
+      <br>
+      <br>
+      <div><samp id="greeting"></samp></div>
+      <script>
+         async function handleVResponse() {
+            const inputName = document.getElementById("name");
+            const result = await webui.greet(inputName.value);
+            document.getElementById("greeting").innerHTML = result;
+         }
+      </script>
+   </body>
 </html>'
 
-fn my_v_func(e &ui.Event) voidptr {
-	println('Hello From V!')
-	return ui.no_result
+fn greet(e &ui.Event) string {
+	name := e.get_arg[string]() or { panic('expected an argument') }
+	println('${name} has reached the backend!')
+	return 'Hello ${name} 🐇'
 }
 
-w := ui.new_window()
-w.bind('my_v_func', my_v_func)
+mut w := ui.new_window()
+w.bind('greet', greet)
 w.show(html)!
 ui.wait()
 ```

@@ -29,10 +29,10 @@ const doc = '<!DOCTYPE html>
 		<button onclick="webui.handleBool(true, false);">Call handle_bool()</button>
 		<br>
 		<p>Call a V function that returns a response</p>
-		<button onclick="MyJS();">Call get_response()</button>
+		<button onclick="handleVResponse();">Call get_response()</button>
 		<div>Double: <input type="text" id="my-input" value="2"></div>
 		<script>
-			async function MyJS() {
+			async function handleVResponse() {
 				const myInput = document.getElementById("my-input");
 				const number = myInput.value;
 				const result = await webui.getResponse(number);
