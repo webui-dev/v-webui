@@ -38,19 +38,7 @@ v install https://github.com/webui-dev/v-webui
 
 ## Usage
 
-After the installation, prepare the WebUI library for usage.
-
-```sh
-# Linux / macOs
-~/.vmodules/vwebui/setup.vsh
-```
-
-```sh
-# Windows PowerShell
-v run %USERPROFILE%/.vmodules/vwebui/setup.vsh
-```
-
-> [!TIP]
+> [!NOTE]
 > It is recommended to use GCC or Clang to compile a WebUI V program.
 > TCC is currently not working due to missing header files. E.g.:
 >
@@ -99,13 +87,13 @@ Find more examples in the [`examples/`](https://github.com/webui-dev/v-webui/tre
 
 - [Online Documentation](https://webui.me/docs/#/v) (WIP)
 
-> [!NOTE]
+> [!TIP]
 > Until our online documentation is finished, you can refer to [`src/lib.v`](https://github.com/webui-dev/v-webui/tree/main/src/lib.v) or use V's built-in `v doc -comments vwebui` in the terminal for the latest overview of exported functions.
 
-- To use WebUI's debug build in your V-WebUI application, add the `-d webui_log` flag. E.g.:
+- To use WebUI's debug build in your V-WebUI application, add the `-d debug` flag. E.g.:
 
   ```sh
-  v -d webui_log run examples/call_v_from_js.v
+  v -d debug run examples/call_v_from_js.v
   ```
 
 - Run tests locally:
