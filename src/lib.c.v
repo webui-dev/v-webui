@@ -7,15 +7,15 @@ module vwebui
 #flag @VMODROOT/webui/src/webui.c
 
 #flag darwin -framework WebKit
-#flag windows -lws2_32 -lOle32
+#flag windows -lWs2_32 -lOle32
 
 $if msvc {
-	#flag -lAdvapi32 -lShell32 -luser32
+	#flag -lAdvapi32 -lShell32 -lUser32
 }
 $if use_tls ? {
 	#flag -DWEBUI_USE_TLS -DWEBUI_TLS -DNO_SSL_DL -DOPENSSL_API_1_1
 	#flag -lssl -lcrypto
-	#flag windows -lbcrypt
+	#flag windows -lBcrypt
 } $else {
 	#flag -DNO_SSL
 }
