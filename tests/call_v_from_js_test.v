@@ -20,16 +20,16 @@ fn test_v_fn_call() {
 	}, 500)'
 
 	// Show window, wait for it to be recognized as shown.
-	w.show(utils.gen_html(@FN, script),
-		await: true
-	) or { assert false, err.str() }
+	w.show(utils.gen_html(@FN, script), await: true) or { assert false, err.str() }
 
 	// Wait for v_fn to be called.
-	if !utils.timeout(30, fn [mut app] () bool {
-		return app.fn_was_called
-	}) {
-		assert false, 'Timeout while waiting for JS to call V.'
-	}
+	spawn fn [mut app] () {
+		if !utils.timeout(30, fn [mut app] () bool {
+			return app.fn_was_called
+		}) {
+			assert false, 'Timeout while waiting for JS to call V.'
+		}
+	}()
 }
 
 struct Person {
@@ -80,11 +80,13 @@ fn test_get_js_arg() {
 
 	// We call `w.close()` from the last V function that is called from JS.
 	// Ensure that it closes, otherwise the test can run infinitely. Timeout after 1min.
-	if !utils.timeout(60, fn [w] () bool {
-		return !w.is_shown()
-	}) {
-		assert false, 'Timeout while waiting JS calling V.'
-	}
+	spawn fn [w] () {
+		if !utils.timeout(60, fn [w] () bool {
+			return !w.is_shown()
+		}) {
+			assert false, 'Timeout while waiting JS calling V.'
+		}
+	}()
 }
 
 // V function bound to JS callback in next tests
@@ -117,11 +119,13 @@ fn test_get_js_arg_at_idx() {
 		await: true
 	) or { assert false, err.str() }
 
-	if !utils.timeout(60, fn [w] () bool {
-		return !w.is_shown()
-	}) {
-		assert false, 'Timeout while waiting JS calling V.'
-	}
+	spawn fn [w] () {
+		if !utils.timeout(60, fn [w] () bool {
+			return !w.is_shown()
+		}) {
+			assert false, 'Timeout while waiting JS calling V.'
+		}
+	}()
 }
 
 fn test_return_value_to_js() {
@@ -160,9 +164,16 @@ fn test_return_value_to_js() {
 		await: true
 	) or { assert false, err.str() }
 
-	if !utils.timeout(60, fn [w] () bool {
-		return !w.is_shown()
-	}) {
-		assert false, 'Timeout while waiting JS calling V.'
-	}
+	spawn fn [w] () {
+		if !utils.timeout(60, fn [w] () bool {
+			return !w.is_shown()
+		}) {
+			assert false, 'Timeout while waiting JS calling V.'
+			exit(1)
+		}
+	}()
+}
+
+fn test_run_wait() {
+	ui.wait() // Call wait once at the end of the test.
 }

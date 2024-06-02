@@ -49,9 +49,16 @@ fn test_thread_gc() {
 	) or { assert false, err.str() }
 
 	log.info('> w.is_shown: ${w.is_shown()}')
-	if !utils.timeout(30, fn [mut app] () bool {
-		return app.fn_was_called
-	}) {
-		assert false, 'Timeout while waiting for the v binded callback to be called'
-	}
+	spawn fn [mut app] () {
+		if !utils.timeout(30, fn [mut app] () bool {
+			return app.fn_was_called
+		}) {
+			assert false, 'Timeout while waiting for the V callback to be called'
+			exit(1)
+		}
+	}()
+}
+
+fn test_run_wait() {
+	ui.wait() // Call wait once at the end of all tests.
 }

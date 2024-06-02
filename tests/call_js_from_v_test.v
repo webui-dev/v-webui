@@ -19,15 +19,20 @@ fn test_js_fn_call() {
 		await webui.call("close_window")
 	}'
 	// Show window, wait for it to be recognized as shown.
-	w.show(utils.gen_html(@FN, script),
-		await: true
-	) or { assert false, err.str() }
+	w.show(utils.gen_html(@FN, script), await: true) or { assert false, err.str() }
 
 	// We call `w.close()` from the last V function that is called from JS.
 	// Ensure that it closes, otherwise the test can run infinitely. Timeout after 1min.
-	if !utils.timeout(30, fn [w] () bool {
-		return !w.is_shown()
-	}) {
-		assert false, 'Timeout while waiting for JS to call V.'
-	}
+	spawn fn [w] () {
+		if !utils.timeout(30, fn [w] () bool {
+			return !w.is_shown()
+		}) {
+			assert false, 'Timeout while waiting for JS to call V.'
+			exit(1)
+		}
+	}()
+}
+
+fn test_run_wait() {
+	ui.wait() // Call wait once at the end of all tests.
 }

@@ -7,12 +7,7 @@ fn test_window_close() {
 
 	// Wait for the window to show
 	ui.set_timeout(30)
-	w.show('<html style="background: #654da9; color: #eee">
-<head><script src="webui.js"></script></head>
-<body><samp>${@FN}</samp></body>
-</html>') or {
-		assert false, err.str()
-	}
+	w.show(utils.gen_html(@FN, '')) or { assert false, err.str() }
 	for i in 0 .. 30 {
 		if w.is_shown() {
 			break
@@ -25,9 +20,15 @@ fn test_window_close() {
 
 	w.close()
 	// Wait for the window to close
-	if !utils.timeout(10, fn [w] () bool {
-		return !w.is_shown()
-	}) {
-		assert false, 'Failed closing window.'
-	}
+	spawn fn [w] () {
+		if !utils.timeout(10, fn [w] () bool {
+			return !w.is_shown()
+		}) {
+			assert false, 'Failed closing window.'
+		}
+	}()
+}
+
+fn test_run_wait() {
+	ui.wait() // Call wait once at the end of all tests.
 }
