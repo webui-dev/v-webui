@@ -50,17 +50,16 @@ jobs:
           key: ${{ runner.os }}-${{ github.sha }}
           fail-on-cache-miss: true
       - name: Setup V
+        id: setup-v
         run: ~/v/v symlink && v -showcc self && v doctor
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install xvfb x11-xserver-utils
       - name: Setup browser
         uses: browser-actions/setup-chrome@v1
       - name: Test
-        id: test
-        continue-on-error: true
         run: VJOBS=1 xvfb-run v -stats test "$HOME/.vmodules/vwebui/tests/"
       - name: Test with Logs
-        if: steps.test.outcome != 'success'
+        if: ${{ !cancelled() && steps.setup-v.outcome == 'success' }}
         run: VJOBS=1 xvfb-run -a v -stats -d webui_log test "$HOME/.vmodules/vwebui/tests/"
 
   build-examples:
