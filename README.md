@@ -1,6 +1,6 @@
 <div align="center">
 
-# V-WebUI
+# WebUI V
 
 #### [Features](#features) · [Installation](#installation) · [Usage](#usage) · [Documentation](#documentation) · [WebUI](https://github.com/webui-dev/webui)
 
