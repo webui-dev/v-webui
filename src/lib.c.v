@@ -75,8 +75,9 @@ fn C.webui_delete_profile(win Window)
 fn C.webui_get_parent_process_id(win Window) usize
 fn C.webui_get_child_process_id(win Window) usize
 fn C.webui_set_port(win Window, port usize) bool
-// fn C.webui_config(option Config, port usize) bool
 fn C.webui_set_tls_certificate(certificate_pem &char, private_key_pem &char) bool
+
+// fn C.webui_config(option Config, port usize) bool
 
 // -- JavaScript ----------------------
 fn C.webui_run(win Window, script &char)
