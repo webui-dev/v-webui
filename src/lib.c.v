@@ -41,8 +41,10 @@ fn C.webui_new_window() Window
 fn C.webui_new_window_id(win_id Window)
 fn C.webui_get_new_window_id() Window
 fn C.webui_bind(win Window, elem &char, func fn (&C.webui_event_t)) Function
+fn C.webui_get_best_browser(win Window) Browser
 fn C.webui_show(win Window, content &char) bool
 fn C.webui_show_browser(win Window, content &char, browser Browser) bool
+fn C.webui_show_wv(win Window, content &char) bool
 fn C.webui_set_kiosk(win Window, kiosk bool)
 fn C.webui_wait()
 fn C.webui_close(win Window)
@@ -63,16 +65,28 @@ fn C.webui_set_hide(win Window, status bool)
 fn C.webui_set_size(win Window, width usize, height usize)
 fn C.webui_set_position(win Window, x usize, y usize)
 fn C.webui_set_profile(win Window, name &char, path &char)
+fn C.webui_set_proxy(win Window, proxy_server &char)
 fn C.webui_get_url(win Window) &char
+fn C.webui_set_public(win Window, status bool)
 fn C.webui_navigate(win Window, url &char)
 fn C.webui_clean()
+fn C.webui_delete_all_profiles()
+fn C.webui_delete_profile(win Window)
+fn C.webui_get_parent_process_id(win Window) usize
+fn C.webui_get_child_process_id(win Window) usize
+fn C.webui_set_port(win Window, port usize) bool
+// fn C.webui_config(option Config, port usize) bool
+fn C.webui_set_tls_certificate(certificate_pem &char, private_key_pem &char) bool
 
 // -- JavaScript ----------------------
 fn C.webui_run(win Window, script &char)
 fn C.webui_script(win Window, script &char, timeout usize, buffer &char, buffer_length usize) bool
 fn C.webui_set_runtime(win Window, runtime Runtime)
+fn C.webui_get_count(e &C.webui_event_t) usize
 fn C.webui_get_int(e &C.webui_event_t) i64
 fn C.webui_get_int_at(e &C.webui_event_t, idx usize) i64
+fn C.webui_get_float(e &C.webui_event_t) f64
+fn C.webui_get_float_at(e &C.webui_event_t, idx usize) f64
 fn C.webui_get_string(e &C.webui_event_t) &char
 fn C.webui_get_string_at(e &C.webui_event_t, idx usize) &char
 fn C.webui_get_bool(e &C.webui_event_t) bool
