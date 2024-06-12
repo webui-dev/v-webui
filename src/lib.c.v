@@ -15,11 +15,7 @@ $if macos {
 $if msvc {
 	#flag -lAdvapi32 -lShell32 -lUser32
 }
-$if use_tls ? {
-	#flag -DWEBUI_USE_TLS -DWEBUI_TLS -DNO_SSL_DL -DOPENSSL_API_1_1
-	#flag -lssl -lcrypto
-	#flag windows -lBcrypt
-} $else {
+$if !tls ? {
 	#flag -DNO_SSL
 }
 $if webui_log ? {
