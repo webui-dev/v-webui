@@ -128,7 +128,7 @@ pub fn (w Window) bind[T](element string, func fn (&Event) T) Function {
 // If the window is already open, it will be refreshed.
 pub fn (w Window) show(content string, opts ShowOptions) ! {
 	if !C.webui_show(w, &char(content.str)) {
-		return error('Failed showing window.')
+		return error('error: failed to show window')
 	}
 	if opts.await {
 		return w.await_shown(opts.timeout)
@@ -139,7 +139,7 @@ pub fn (w Window) show(content string, opts ShowOptions) ! {
 // If the window is already open, it will be refreshed.
 pub fn (w Window) show_browser(content string, browser Browser, opts ShowOptions) ! {
 	if !C.webui_show_browser(w, &char(content.str), browser) {
-		return error('Failed showing window in `${browser}`.')
+		return error('error: failed to show window in `${browser}`')
 	}
 	if opts.await {
 		return w.await_shown(opts.timeout)
@@ -255,7 +255,7 @@ pub fn (w Window) run(script string) {
 pub fn (w Window) script(javascript string, opts ScriptOptions) !string {
 	mut buffer := []u8{len: int(opts.max_response_size)}
 	if !C.webui_script(w, &char(javascript.str), opts.timeout, &char(buffer.data), opts.max_response_size) {
-		return error('Failed running script. `${javascript}`')
+		return error('error: failed to run script `${javascript}`: ${buffer.bytestr()}')
 	}
 	return unsafe { buffer.bytestr() }
 }
@@ -282,7 +282,7 @@ pub fn (e &Event) get_arg[T](opts GetArgOptions) !T {
 		C.webui_get_bool_at(c_event, idx)
 	} $else {
 		json.decode(T, unsafe { (&char(C.webui_get_string_at(c_event, idx))).vstring() }) or {
-			return error('Failed decoding `${T.name}` argument. ${err}')
+			return error('error: failed to decode `${T.name}` argument: ${err}')
 		}
 	}
 }
