@@ -51,9 +51,6 @@ v install https://github.com/webui-dev/v-webui
 ```v
 import vwebui as ui
 
-
-
-
 const html = '<!DOCTYPE html>
 <html>
    <head>
@@ -93,10 +90,10 @@ fn greet(e &ui.Event) string {
 }
 
 fn main() {
-mut w := ui.new_window()
-w.bind('greet', greet)
-w.show(html)!
-ui.wait()
+   mut w := ui.new_window()
+   w.bind('greet', greet)
+   w.show(html)!
+   ui.wait()
 }
 ```
 
