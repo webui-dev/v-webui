@@ -89,10 +89,12 @@ fn greet(e &ui.Event) string {
 	return 'Hello ${name} 🐇'
 }
 
-mut w := ui.new_window()
-w.bind('greet', greet)
-w.show(html)!
-ui.wait()
+fn main() {
+   mut w := ui.new_window()
+   w.bind('greet', greet)
+   w.show(html)!
+   ui.wait()
+}
 ```
 
 Find more examples in the [`examples/`](https://github.com/webui-dev/v-webui/tree/main/examples) directory.
