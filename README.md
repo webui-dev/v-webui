@@ -90,10 +90,10 @@ fn greet(e &ui.Event) string {
 }
 
 fn main() {
-   mut w := ui.new_window()
-   w.bind('greet', greet)
-   w.show(html)!
-   ui.wait()
+	mut w := ui.new_window()
+	w.bind('greet', greet)
+	w.show(html)!
+	ui.wait()
 }
 ```
 
