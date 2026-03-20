@@ -39,7 +39,7 @@ fn exit_app(e &ui.Event) {
 
 fn main() {
 	// Set the root folder for the UI.
-	ui.set_root_folder(os.join_path(@VMODROOT, 'ui'))
+	ui.set_root_folder(os.join_path(@VMODROOT, 'ui'))!
 
 	// Prepare the main window.
 	w.new_window()

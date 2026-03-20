@@ -11,7 +11,7 @@ fn main() {
 
 	w.bind[voidptr]('__close-btn', close)
 
-	w.set_root_folder(os.join_path(@VMODROOT, 'ui'))
+	w.set_root_folder(os.join_path(@VMODROOT, 'ui'))!
 
 	w.show_browser('index.html', .chromium_based) or {
 		w.show('index.html')!
