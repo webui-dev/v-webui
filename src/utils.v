@@ -23,10 +23,14 @@ fn (w Window) await_shown(timeout usize) ! {
 
 fn (e &Event) c_struct() &C.webui_event_t {
 	return &C.webui_event_t{
-		window: e.window
-		event_type: e.event_type
-		element: &char(e.element.str)
-		event_number: e.event_number
+		window:        e.window
+		event_type:    e.event_type
+		element:       &char(e.element.str)
+		event_number:  e.event_number
+		bind_id:       e.bind_id
+		client_id:     e.client_id
+		connection_id: e.connection_id
+		cookies:       &char(e.cookies.str)
 	}
 }
 
@@ -38,6 +42,8 @@ fn (e &Event) @return[T](response T) {
 		C.webui_return_int(c_event, i64(response))
 	} $else $if response is i64 {
 		C.webui_return_int(c_event, response)
+	} $else $if response is f64 {
+		C.webui_return_float(c_event, response)
 	} $else $if response is string {
 		C.webui_return_string(c_event, &char(response.str))
 	} $else $if response is bool {
